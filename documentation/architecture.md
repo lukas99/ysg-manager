@@ -3,6 +3,8 @@ This documentation is based on [arc42](https://arc42.org/download).
 
 ## Introduction and Goals
 ### Requirements Overview
+See [Trello board](https://trello.com/b/cTCQho4q/ysg-manager-skills) with requirements for skills management.
+
 **Player creation**
 * Players are created in Administration Application (number, name, outfield player / goal keeper). In future, team coaches can create the players at their own.
 * Players will be suggested on Skills Mobile App.
