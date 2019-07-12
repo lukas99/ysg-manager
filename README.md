@@ -21,7 +21,7 @@ execute the following commands
 
 `docker pull postgres:11.4`
 
-`docker run --rm --name ysg-postgres -e POSTGRES_USER=ysg -e POSTGRES_PASSWORD=ysg -e POSTGRES_DB=ysg-manager -d -p 5432:5432 postgres:11.4`
+`docker run --rm --name ysg-db -e POSTGRES_USER=ysg -e POSTGRES_PASSWORD=ysg -e POSTGRES_DB=ysg-manager -d -p 5432:5432 postgres:11.4`
 
 also see 
 * https://docs.docker.com/samples/library/postgres/
