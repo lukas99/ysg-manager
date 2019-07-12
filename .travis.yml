@@ -1,4 +1,6 @@
 language: java
 
+jdk: openjdk12
+
 before_install:
  - chmod +x mvnw # to allow travis to access mvnw
