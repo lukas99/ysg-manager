@@ -1,6 +1,11 @@
 language: java
 
+services:
+- docker
+
 jdk: openjdk12
 
 before_install:
- - chmod +x mvnw # to allow travis to access mvnw
+- chmod +x mvnw # to allow travis to access mvnw
+- docker pull postgres:11.4  
+- docker run --rm --name ysg-db -e POSTGRES_USER=ysg -e POSTGRES_PASSWORD=ysg -e POSTGRES_DB=ysg-manager -d -p 5432:5432 postgres:11.4
