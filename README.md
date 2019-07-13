@@ -26,3 +26,16 @@ execute the following commands
 also see 
 * https://docs.docker.com/samples/library/postgres/
 * https://hackernoon.com/dont-install-postgres-docker-pull-postgres-bee20e200198
+
+### Prepare Keycloak
+execute the following commands
+
+`docker network create keycloak-network`
+
+`docker pull postgres:11.4`
+
+`docker run --name ysg-keycloak-db --net keycloak-network -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=keycloak -d -p 5433:5432 postgres:11.4`
+
+`docker pull jboss/keycloak:6.0.1`
+
+`docker run --name ysg-keycloak --net keycloak-network -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e DB_USER=postgres -e DB_PASSWORD=postgres -e DB_ADDR=ysg-keycloak-db -e DB_PORT=5433 -d -p 8081:8080 jboss/keycloak:6.0.1`
