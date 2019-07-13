@@ -39,3 +39,6 @@ execute the following commands
 `docker pull jboss/keycloak:6.0.1`
 
 `docker run --name ysg-keycloak --net keycloak-network -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e DB_USER=postgres -e DB_PASSWORD=postgres -e DB_ADDR=ysg-keycloak-db -e DB_PORT=5433 -d -p 8081:8080 jboss/keycloak:6.0.1`
+
+also see
+* https://hub.docker.com/r/jboss/keycloak
