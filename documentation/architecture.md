@@ -89,6 +89,7 @@ Quality Scenarios
 * upload to back end by mobile device doesn't work -> provide possibility to export skill results to clipboard (on mobile device) and import these data (e.g. sent by email) in administration application.
 
 ## Glossary
+* **Skill Operator**: A skill chef or skill expert
 * **Skill Chef**: Person who collects the skill results like execution time or execution failures on the ice
 * **Skill Expert**: Person who assesses the skill executions and collects these results on the ice
 * **Skills Mobile App**: Mobile application used by skill chefs and skill experts to collect skill results.
