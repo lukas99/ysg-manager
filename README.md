@@ -42,3 +42,15 @@ execute the following commands
 
 also see
 * https://hub.docker.com/r/jboss/keycloak
+
+Import realm configuration: Login to Keyclaok admin console (see below), click "Add realm", "Import", select file "ysg-realm-export-DEV-local.json" from folder "keycloak-configuration". Then click "Create".
+
+# Systems Overview
+
+## Local Development
+* ysg-server: localhost:8080
+* ysg-keycloak: localhost:8081
+
+Predefined users (<username> / <password> (<role>))
+* admin / admin (Keycloak administrator)
+* admin / 1234 (YSG_ADMIN)
