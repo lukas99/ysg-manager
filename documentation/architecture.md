@@ -33,6 +33,10 @@ System context diagram:
 
 ## Building Block View
 
+### Class Diagram
+
+![Class diagram](./ysg-manager_class-diagram.jpg "Class diagram")
+
 ## Runtime View
 
 ## Deployment View
