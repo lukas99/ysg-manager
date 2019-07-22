@@ -6,7 +6,7 @@ This documentation is based on [arc42](https://arc42.org/download).
 See [Trello board](https://trello.com/b/cTCQho4q/ysg-manager-skills) with requirements for skills management.
 
 **Player creation**
-* Players are created in Administration Application (number, name, outfield player / goal keeper). In future, team coaches can create the players at their own.
+* Players are created in Administration Application (number, name, skater / goaltender). In future, team coaches can create the players at their own.
 * Players will be suggested on Skills Mobile App.
 * Skills Mobile App Users need to be able to add a player which doesn't yet exist.
 * Skills Mobile App Users don't fill in player names. If player is created on mobile app, it's name needs to be appended in Administration Application 
