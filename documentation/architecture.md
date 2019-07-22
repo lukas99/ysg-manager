@@ -21,7 +21,7 @@ See [Trello board](https://trello.com/b/cTCQho4q/ysg-manager-skills) with requir
 ###Technical Context
 System context diagram:
 
-![System context diagram](./ysg-manager_system-context-diagram.jpg "System context diagram")
+![System context diagram](./ysg-manager_system-context-diagram.png "System context diagram")
 
 ## Solution Strategy
 ### Skills Mobile App: Offline Solution Strategy
@@ -35,7 +35,7 @@ System context diagram:
 
 ### Class Diagram
 
-![Class diagram](./ysg-manager_class-diagram.jpg "Class diagram")
+![Class diagram](./ysg-manager_class-diagram.png "Class diagram")
 
 ## Runtime View
 
