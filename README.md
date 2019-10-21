@@ -51,6 +51,6 @@ Import realm configuration: Login to Keyclaok admin console (see below), click "
 * ysg-server: localhost:8080
 * ysg-keycloak: localhost:8081
 
-Predefined users (<username> / <password> (<role>))
+Predefined users (username / password (role))
 * admin / admin (Keycloak administrator)
-* admin / 1234 (YSG_ADMIN)
+* ysg-admin / 1234 (YSG_ADMIN)
