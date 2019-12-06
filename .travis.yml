@@ -3,7 +3,7 @@ language: java
 services:
 - docker
 
-jdk: openjdk12
+jdk: openjdk13
 
 before_install:
 # to allow travis to access mvnw
