@@ -6,7 +6,9 @@ create table skillresult (
 	failures integer default null,
 	points integer not null,
 	created timestamp not null,
-	modified timestamp not null
+	createdBy text not null,
+	modified timestamp not null,
+	modifiedBy text not null
 );
 
 alter table skillresult

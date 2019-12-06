@@ -6,7 +6,9 @@ create table player (
 	shirt_number integer not null,
 	position text not null,
 	created timestamp not null,
-	modified timestamp not null
+	createdBy text not null,
+	modified timestamp not null,
+	modifiedBy text not null
 );
 
 alter table player 

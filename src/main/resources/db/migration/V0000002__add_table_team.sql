@@ -4,7 +4,9 @@ create table team (
 	name text not null,
 	logo bytea default null,
 	created timestamp not null,
-	modified timestamp not null
+	createdBy text not null,
+	modified timestamp not null,
+	modifiedBy text not null
 );
 
 alter table team 

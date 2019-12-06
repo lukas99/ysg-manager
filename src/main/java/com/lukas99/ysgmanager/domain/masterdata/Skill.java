@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * A skill.
@@ -17,33 +18,28 @@ import lombok.Data;
 @Entity
 @Table
 @Data
-public class Skill {
-  
+@EqualsAndHashCode(callSuper = false)
+public class Skill extends Auditable {
+
   @Id
   private Long id;
-  
+
   private SkillType skillType;
-  
+
   private String name;
-  
+
   /**
    * The number to order the skills between each others.
    */
   private Integer number;
-  
+
   @ManyToOne
   private Tournament tournament;
-  
+
   @OneToMany(mappedBy = "skill")
   private List<SkillRating> ratings;
-  
+
   @OneToMany(mappedBy = "skill")
   private List<SkillResult> results;
-  
-  @CreatedDate
-  private Date created;
-
-  @LastModifiedDate
-  private Date modified;
 
 }

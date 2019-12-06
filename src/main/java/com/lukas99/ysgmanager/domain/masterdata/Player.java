@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * A hockey player.
@@ -17,32 +18,27 @@ import lombok.Data;
 @Entity
 @Table
 @Data
-public class Player {
-  
+@EqualsAndHashCode(callSuper = false)
+public class Player extends Auditable {
+
   @Id
   private Long id;
-  
+
   private String firstName;
-  
+
   private String lastName;
-  
+
   private Integer shirtNumber;
-  
+
   private PlayerPosition position;
-  
+
   @ManyToOne
   private Team team;
-  
+
   @OneToMany(mappedBy = "player")
   private List<SkillRating> skillRatings;
-  
+
   @OneToMany(mappedBy = "player")
   private List<SkillResult> skillResults;
-
-  @CreatedDate
-  private Date created;
-
-  @LastModifiedDate
-  private Date modified;
 
 }

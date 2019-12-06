@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * The rating of a player for a skill provided by a skill expert.
@@ -15,26 +16,21 @@ import lombok.Data;
 @Entity
 @Table
 @Data
-public class SkillRating {
-  
+@EqualsAndHashCode(callSuper = false)
+public class SkillRating extends Auditable {
+
   @Id
   private Long id;
-  
+
   @ManyToOne
   private Skill skill;
-  
+
   @ManyToOne
   private Player player;
-  
+
   /**
    * The score given by a skill expert.
    */
   private Integer score;
-  
-  @CreatedDate
-  private Date created;
-
-  @LastModifiedDate
-  private Date modified;
 
 }
