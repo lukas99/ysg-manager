@@ -17,18 +17,22 @@ Use [Google Code Style for Java](https://github.com/google/styleguide/blob/gh-pa
 Install Docker e.g. for Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
 ### Prepare PostgreSQL
-execute the following commands
+Execute the following commands to create the databases:
 
 `docker pull postgres:11.4`
 
-`docker run --name ysg-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=ysg-server -d -p 5432:5432 postgres:11.4`
+`docker run --name ysg-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=ysgServer -d -p 5432:5432 postgres:11.4`
 
-also see 
+`docker exec ysg-db psql -U postgres -c "CREATE DATABASE ysgServerTest;"`
+
+Hint: Use camel case for database names. Otherwise (with dashes 'ysg-server-test') docker exec complains: syntax error at or near "-"
+
+Also see: 
 * https://docs.docker.com/samples/library/postgres/
 * https://hackernoon.com/dont-install-postgres-docker-pull-postgres-bee20e200198
 
 ### Prepare Keycloak
-execute the following commands
+Execute the following commands:
 
 `docker network create keycloak-network`
 
