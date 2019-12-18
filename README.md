@@ -21,11 +21,7 @@ Execute the following commands to create the databases:
 
 `docker pull postgres:11.4`
 
-`docker run --name ysg-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=ysgServer -d -p 5432:5432 postgres:11.4`
-
-`docker exec ysg-db psql -U postgres -c "CREATE DATABASE ysgServerTest;"`
-
-Hint: Use camel case for database names. Otherwise (with dashes 'ysg-server-test') docker exec complains: syntax error at or near "-"
+`docker run --name ysg-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=ysg-server -d -p 5432:5432 postgres:11.4`
 
 Also see: 
 * https://docs.docker.com/samples/library/postgres/

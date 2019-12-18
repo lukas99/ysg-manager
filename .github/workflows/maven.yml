@@ -14,4 +14,4 @@ jobs:
       with:
         java-version: 13
     - name: Build with Maven
-      run: mvn -B compile --file pom.xml
+      run: mvn -B clean package --file pom.xml

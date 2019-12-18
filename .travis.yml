@@ -8,8 +8,3 @@ jdk: openjdk13
 before_install:
 # to allow travis to access mvnw
 - chmod +x mvnw
-# stop postgres service
-- sudo /etc/init.d/postgresql stop
-# configure db for tests
-- docker pull postgres:11.4  
-- docker run --name ysg-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=ysgServerTest -d -p 5432:5432 postgres:11.4
