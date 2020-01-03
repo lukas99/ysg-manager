@@ -4,7 +4,7 @@ create table skillresult (
 	player_id bigint not null,
 	time integer default null,
 	failures integer default null,
-	points integer not null,
+	points integer default null,
 	created timestamp not null,
 	createdBy text not null,
 	modified timestamp not null,
