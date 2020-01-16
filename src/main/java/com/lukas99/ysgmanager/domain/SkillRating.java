@@ -1,4 +1,4 @@
-package com.lukas99.ysgmanager.domain.masterdata;
+package com.lukas99.ysgmanager.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  * The rating of a player for a skill provided by a skill expert.
  */
 @Entity
-@Table
+@Table(name = "skillrating")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class SkillRating extends Auditable {

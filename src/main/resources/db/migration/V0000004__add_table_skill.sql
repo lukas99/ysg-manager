@@ -5,9 +5,9 @@ create table skill (
 	name text not null,
 	number integer default null,
 	created timestamp not null,
-	createdBy text not null,
+	created_by text not null,
 	modified timestamp not null,
-	modifiedBy text not null
+	modified_by text not null
 );
 
 alter table skill 

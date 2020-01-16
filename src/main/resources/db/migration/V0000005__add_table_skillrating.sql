@@ -4,9 +4,9 @@ create table skillrating (
 	player_id bigint not null,
 	score integer not null,
 	created timestamp not null,
-	createdBy text not null,
+	created_by text not null,
 	modified timestamp not null,
-	modifiedBy text not null
+	modified_by text not null
 );
 
 alter table skillrating

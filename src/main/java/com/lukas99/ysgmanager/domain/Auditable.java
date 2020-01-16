@@ -1,4 +1,4 @@
-package com.lukas99.ysgmanager.domain.masterdata;
+package com.lukas99.ysgmanager.domain;
 
 import java.util.Date;
 import javax.persistence.EntityListeners;

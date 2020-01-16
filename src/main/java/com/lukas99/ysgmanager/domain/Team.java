@@ -1,4 +1,4 @@
-package com.lukas99.ysgmanager.domain.masterdata;
+package com.lukas99.ysgmanager.domain;
 
 import java.util.List;
 import javax.persistence.Entity;

@@ -1,14 +1,12 @@
-package com.lukas99.ysgmanager.domain.masterdata;
+package com.lukas99.ysgmanager.domain;
 
-import java.util.Date;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,6 +22,7 @@ public class Skill extends Auditable {
   @Id
   private Long id;
 
+  @Column(name = "type")
   private SkillType skillType;
 
   private String name;

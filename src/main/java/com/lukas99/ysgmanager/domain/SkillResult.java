@@ -1,4 +1,4 @@
-package com.lukas99.ysgmanager.domain.masterdata;
+package com.lukas99.ysgmanager.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  * The result of a player for a skill execution.
  */
 @Entity
-@Table
+@Table(name = "skillresult")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class SkillResult extends Auditable {
