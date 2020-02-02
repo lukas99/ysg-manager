@@ -1,6 +1,7 @@
 package com.lukas99.ysgmanager.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -17,6 +18,7 @@ import lombok.EqualsAndHashCode;
 public class SkillResult extends Auditable {
 
   @Id
+  @GeneratedValue
   private Long id;
 
   @ManyToOne

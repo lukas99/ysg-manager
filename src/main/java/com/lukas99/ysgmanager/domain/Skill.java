@@ -3,6 +3,7 @@ package com.lukas99.ysgmanager.domain;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -20,6 +21,7 @@ import lombok.EqualsAndHashCode;
 public class Skill extends Auditable {
 
   @Id
+  @GeneratedValue
   private Long id;
 
   @Column(name = "type")

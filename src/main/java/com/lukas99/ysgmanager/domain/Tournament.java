@@ -2,6 +2,7 @@ package com.lukas99.ysgmanager.domain;
 
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -18,6 +19,7 @@ import lombok.EqualsAndHashCode;
 public class Tournament extends Auditable {
 
   @Id
+  @GeneratedValue
   private Long id;
 
   private String name;
