@@ -82,7 +82,11 @@ public class TournamentRestController {
     if (tournament.getId() == null) {
       throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
     }
-    Tournament result = tournamentService.save(tournament);
+    
+    Tournament existingTournament = tournamentService.findOne(tournament.getId()).get();
+    existingTournament.update(tournament);
+    
+    Tournament result = tournamentService.save(existingTournament);
     return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
         ENTITY_NAME, tournament.getId().toString())).body(result);
   }
