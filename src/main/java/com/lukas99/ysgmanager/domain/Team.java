@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,6 +17,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(callSuper = false)
 public class Team extends Auditable {
 
