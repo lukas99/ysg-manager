@@ -86,7 +86,11 @@ public class PlayerRestController {
     if (player.getId() == null) {
       throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
     }
-    Player result = playerService.save(player);
+    
+    Player existingPlayer = playerService.findOne(player.getId()).get();
+    existingPlayer.update(player);
+    
+    Player result = playerService.save(existingPlayer);
     return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
         ENTITY_NAME, player.getId().toString())).body(result);
   }

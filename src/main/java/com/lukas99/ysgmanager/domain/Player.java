@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,6 +18,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(callSuper = false)
 public class Player extends Auditable {
 
@@ -27,10 +30,13 @@ public class Player extends Auditable {
 
   private String lastName;
 
+  @NotNull
   private Integer shirtNumber;
 
+  @NotNull
   private PlayerPosition position;
 
+  @NotNull
   @ManyToOne
   private Team team;
 
@@ -39,5 +45,13 @@ public class Player extends Auditable {
 
   @OneToMany(mappedBy = "player")
   private List<SkillResult> skillResults;
+
+  public void update(Player player) {
+    firstName = player.getFirstName();
+    lastName = player.getLastName();
+    shirtNumber = player.getShirtNumber();
+    position = player.getPosition();
+    team = player.getTeam();
+  }
 
 }
