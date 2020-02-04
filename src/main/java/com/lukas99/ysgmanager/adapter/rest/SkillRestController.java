@@ -81,9 +81,12 @@ public class SkillRestController {
     if (skill.getId() == null) {
       throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
     }
-    Skill result = skillService.save(skill);
+
+    Skill existingSkill = skillService.findOne(skill.getId()).get();
+    existingSkill.update(skill);
+
     return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
-        ENTITY_NAME, skill.getId().toString())).body(result);
+        ENTITY_NAME, skill.getId().toString())).body(existingSkill);
   }
 
   /**

@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,6 +19,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(callSuper = false)
 public class Skill extends Auditable {
 
@@ -24,9 +27,11 @@ public class Skill extends Auditable {
   @GeneratedValue
   private Long id;
 
+  @NotNull
   @Column(name = "type")
   private SkillType skillType;
 
+  @NotNull
   private String name;
 
   /**
@@ -34,6 +39,7 @@ public class Skill extends Auditable {
    */
   private Integer number;
 
+  @NotNull
   @ManyToOne
   private Tournament tournament;
 
@@ -42,5 +48,12 @@ public class Skill extends Auditable {
 
   @OneToMany(mappedBy = "skill")
   private List<SkillResult> results;
+
+  public void update(Skill skill) {
+    skillType = skill.getSkillType();
+    name = skill.getName();
+    number = skill.getNumber();
+    tournament = skill.getTournament();
+  }
 
 }
