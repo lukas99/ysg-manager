@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,6 +16,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "skillresult")
 @Data
+@Builder(toBuilder = true)
 @EqualsAndHashCode(callSuper = false)
 public class SkillResult extends Auditable {
 
@@ -21,9 +24,11 @@ public class SkillResult extends Auditable {
   @GeneratedValue
   private Long id;
 
+  @NotNull
   @ManyToOne
   private Skill skill;
 
+  @NotNull
   @ManyToOne
   private Player player;
 
@@ -41,5 +46,13 @@ public class SkillResult extends Auditable {
    * The amount of points achieved during execution.
    */
   private Integer points;
+
+  public void update(SkillResult skillResult) {
+    skill = skillResult.getSkill();
+    player = skillResult.getPlayer();
+    time = skillResult.getTime();
+    failures = skillResult.getFailures();
+    points = skillResult.getPoints();
+  }
 
 }

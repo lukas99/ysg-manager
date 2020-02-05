@@ -1,5 +1,7 @@
 package com.lukas99.ysgmanager.domain;
 
+import javax.persistence.EntityManager;
+
 public class SkillTemplates {
 
   public static final String MAGIC_TRANSITIONS = "Magic Transitions";
@@ -13,9 +15,21 @@ public class SkillTemplates {
         .tournament(tournament).build();
   }
 
+  public static Skill magicTransitions(Tournament tournament, EntityManager em) {
+    Skill magicTransitions = magicTransitions(tournament);
+    em.persist(magicTransitions);
+    return magicTransitions;
+  }
+
   public static Skill bestShot(Tournament tournament) {
     return Skill.builder().name(BEST_SHOT).skillType(SkillType.POINTS).number(TWO)
         .tournament(tournament).build();
+  }
+
+  public static Skill bestShot(Tournament tournament, EntityManager em) {
+    Skill bestShot = bestShot(tournament);
+    em.persist(bestShot);
+    return bestShot;
   }
 
 }

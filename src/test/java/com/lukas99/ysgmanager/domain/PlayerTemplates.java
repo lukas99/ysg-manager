@@ -2,6 +2,7 @@ package com.lukas99.ysgmanager.domain;
 
 import static com.lukas99.ysgmanager.domain.PlayerPosition.GOALTENDER;
 import static com.lukas99.ysgmanager.domain.PlayerPosition.SKATER;
+import javax.persistence.EntityManager;
 
 public class PlayerTemplates {
 
@@ -21,6 +22,12 @@ public class PlayerTemplates {
   public static Player martinGerber(Team team) {
     return Player.builder().firstName(MARTIN).lastName(GERBER).position(GOALTENDER)
         .shirtNumber(TWENTY_NINE).team(team).build();
+  }
+
+  public static Player romanJosi(Team team, EntityManager em) {
+    Player romanJosi = romanJosi(team);
+    em.persist(romanJosi);
+    return romanJosi;
   }
 
 }
