@@ -48,8 +48,6 @@ public class Tournament extends Auditable {
   public void update(Tournament tournament) {
     this.name = tournament.getName();
     this.dateDescription = tournament.getDateDescription();
-    this.teams = tournament.getTeams();
-    this.skills = tournament.getSkills();
   }
 
 }
