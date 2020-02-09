@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestAlertException;
+import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestException;
 import com.lukas99.ysgmanager.domain.Tournament;
 import com.lukas99.ysgmanager.domain.TournamentService;
 import io.github.jhipster.web.util.HeaderUtil;
@@ -57,8 +57,7 @@ public class TournamentRestController {
       throws URISyntaxException {
     log.debug("REST request to save Tournament : {}", tournament);
     if (tournament.getId() != null) {
-      throw new BadRequestAlertException("A new tournament cannot already have an ID", ENTITY_NAME,
-          "idexists");
+      throw new BadRequestException("A new tournament cannot already have an ID");
     }
     Tournament result = tournamentService.save(tournament);
     return ResponseEntity.created(new URI("/api/tournaments/" + result.getId())).headers(HeaderUtil
@@ -80,12 +79,12 @@ public class TournamentRestController {
       throws URISyntaxException {
     log.debug("REST request to update Tournament : {}", tournament);
     if (tournament.getId() == null) {
-      throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+      throw new BadRequestException("Invalid id. It is null.");
     }
-    
+
     Tournament existingTournament = tournamentService.findOne(tournament.getId()).get();
     existingTournament.update(tournament);
-    
+
     Tournament result = tournamentService.save(existingTournament);
     return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
         ENTITY_NAME, tournament.getId().toString())).body(result);

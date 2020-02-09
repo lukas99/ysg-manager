@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
-import com.lukas99.ysgmanager.adapter.rest.errors.ExceptionTranslator;
 import com.lukas99.ysgmanager.domain.Player;
 import com.lukas99.ysgmanager.domain.PlayerPosition;
 import com.lukas99.ysgmanager.domain.PlayerRepository;
@@ -55,9 +54,6 @@ public class PlayerRestControllerIT extends IntegrationTest {
   private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
   @Autowired
-  private ExceptionTranslator exceptionTranslator;
-
-  @Autowired
   private EntityManager em;
 
   @Autowired
@@ -74,7 +70,6 @@ public class PlayerRestControllerIT extends IntegrationTest {
     final PlayerRestController playerRestController = new PlayerRestController(playerService);
     this.restPlayerMockMvc = MockMvcBuilders.standaloneSetup(playerRestController)
         .setCustomArgumentResolvers(pageableArgumentResolver)
-        .setControllerAdvice(exceptionTranslator)
         .setConversionService(createFormattingConversionService())
         .setMessageConverters(jacksonMessageConverter).setValidator(validator).build();
   }

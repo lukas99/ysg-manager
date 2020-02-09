@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestAlertException;
+import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestException;
 import com.lukas99.ysgmanager.domain.SkillResult;
 import com.lukas99.ysgmanager.domain.SkillResultService;
 import io.github.jhipster.web.util.HeaderUtil;
@@ -61,8 +61,7 @@ public class SkillResultRestController {
       throws URISyntaxException {
     log.debug("REST request to save SkillResult : {}", skillResult);
     if (skillResult.getId() != null) {
-      throw new BadRequestAlertException("A new skillResult cannot already have an ID", ENTITY_NAME,
-          "idexists");
+      throw new BadRequestException("A new skillResult cannot already have an ID");
     }
     SkillResult result = skillResultService.save(skillResult);
     return ResponseEntity.created(new URI("/api/skill-results/" + result.getId()))
@@ -86,12 +85,12 @@ public class SkillResultRestController {
       throws URISyntaxException {
     log.debug("REST request to update SkillResult : {}", skillResult);
     if (skillResult.getId() == null) {
-      throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+      throw new BadRequestException("Invalid id. It is null.");
     }
-    
+
     SkillResult existingSkillResult = skillResultService.findOne(skillResult.getId()).get();
     existingSkillResult.update(skillResult);
-    
+
     SkillResult result = skillResultService.save(existingSkillResult);
     return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
         ENTITY_NAME, skillResult.getId().toString())).body(result);

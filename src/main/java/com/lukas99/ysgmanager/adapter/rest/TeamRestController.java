@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestAlertException;
+import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestException;
 import com.lukas99.ysgmanager.domain.Team;
 import com.lukas99.ysgmanager.domain.TeamService;
 import io.github.jhipster.web.util.HeaderUtil;
@@ -55,8 +55,7 @@ public class TeamRestController {
   public ResponseEntity<Team> createTeam(@Valid @RequestBody Team team) throws URISyntaxException {
     log.debug("REST request to save Team : {}", team);
     if (team.getId() != null) {
-      throw new BadRequestAlertException("A new team cannot already have an ID", ENTITY_NAME,
-          "idexists");
+      throw new BadRequestException("A new team cannot already have an ID");
     }
     Team result = teamService.save(team);
     return ResponseEntity.created(new URI("/api/teams/" + result.getId())).headers(HeaderUtil
@@ -77,7 +76,7 @@ public class TeamRestController {
   public ResponseEntity<Team> updateTeam(@Valid @RequestBody Team team) throws URISyntaxException {
     log.debug("REST request to update Team : {}", team);
     if (team.getId() == null) {
-      throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+      throw new BadRequestException("Invalid id. It is null.");
     }
     Team result = teamService.save(team);
     return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,

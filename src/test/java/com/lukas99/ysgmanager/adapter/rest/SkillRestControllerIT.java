@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
-import com.lukas99.ysgmanager.adapter.rest.errors.ExceptionTranslator;
 import com.lukas99.ysgmanager.domain.Skill;
 import com.lukas99.ysgmanager.domain.SkillRepository;
 import com.lukas99.ysgmanager.domain.SkillService;
@@ -53,9 +52,6 @@ public class SkillRestControllerIT extends IntegrationTest {
   private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
   @Autowired
-  private ExceptionTranslator exceptionTranslator;
-
-  @Autowired
   private EntityManager em;
 
   @Autowired
@@ -72,7 +68,6 @@ public class SkillRestControllerIT extends IntegrationTest {
     final SkillRestController skillRestController = new SkillRestController(skillService);
     this.restSkillMockMvc = MockMvcBuilders.standaloneSetup(skillRestController)
         .setCustomArgumentResolvers(pageableArgumentResolver)
-        .setControllerAdvice(exceptionTranslator)
         .setConversionService(createFormattingConversionService())
         .setMessageConverters(jacksonMessageConverter).setValidator(validator).build();
   }

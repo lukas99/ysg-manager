@@ -30,7 +30,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
-import com.lukas99.ysgmanager.adapter.rest.errors.ExceptionTranslator;
 import com.lukas99.ysgmanager.domain.Tournament;
 import com.lukas99.ysgmanager.domain.TournamentRepository;
 import com.lukas99.ysgmanager.domain.TournamentService;
@@ -52,10 +51,6 @@ public class TournamentRestControllerIT extends IntegrationTest {
 
   @Autowired
   private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
-  @Autowired
-  private ExceptionTranslator exceptionTranslator;
-
   @Autowired
   private Validator validator;
 
@@ -71,7 +66,6 @@ public class TournamentRestControllerIT extends IntegrationTest {
         new TournamentRestController(tournamentService);
     this.restTournamentMockMvc = MockMvcBuilders.standaloneSetup(tournamentRestController)
         .setCustomArgumentResolvers(pageableArgumentResolver)
-        .setControllerAdvice(exceptionTranslator)
         .setConversionService(createFormattingConversionService())
         .setMessageConverters(jacksonMessageConverter).setValidator(validator).build();
   }

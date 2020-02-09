@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestAlertException;
+import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestException;
 import com.lukas99.ysgmanager.domain.Player;
 import com.lukas99.ysgmanager.domain.PlayerService;
 import io.github.jhipster.web.util.HeaderUtil;
@@ -61,8 +61,7 @@ public class PlayerRestController {
       throws URISyntaxException {
     log.debug("REST request to save Player : {}", player);
     if (player.getId() != null) {
-      throw new BadRequestAlertException("A new player cannot already have an ID", ENTITY_NAME,
-          "idexists");
+      throw new BadRequestException("A new player cannot already have an ID");
     }
     Player result = playerService.save(player);
     return ResponseEntity.created(new URI("/api/players/" + result.getId())).headers(HeaderUtil
@@ -84,12 +83,12 @@ public class PlayerRestController {
       throws URISyntaxException {
     log.debug("REST request to update Player : {}", player);
     if (player.getId() == null) {
-      throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+      throw new BadRequestException("Invalid id. It is null.");
     }
-    
+
     Player existingPlayer = playerService.findOne(player.getId()).get();
     existingPlayer.update(player);
-    
+
     Player result = playerService.save(existingPlayer);
     return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
         ENTITY_NAME, player.getId().toString())).body(result);

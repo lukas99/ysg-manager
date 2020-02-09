@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestAlertException;
+import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestException;
 import com.lukas99.ysgmanager.domain.SkillRating;
 import com.lukas99.ysgmanager.domain.SkillRatingService;
 import io.github.jhipster.web.util.HeaderUtil;
@@ -62,8 +62,7 @@ public class SkillRatingRestController {
       throws URISyntaxException {
     log.debug("REST request to save SkillRating : {}", skillRating);
     if (skillRating.getId() != null) {
-      throw new BadRequestAlertException("A new skillRating cannot already have an ID", ENTITY_NAME,
-          "idexists");
+      throw new BadRequestException("A new skillRating cannot already have an ID");
     }
     SkillRating result = skillRatingService.save(skillRating);
     return ResponseEntity.created(new URI("/api/skill-ratings/" + result.getId()))
@@ -87,7 +86,7 @@ public class SkillRatingRestController {
       throws URISyntaxException {
     log.debug("REST request to update SkillRating : {}", skillRating);
     if (skillRating.getId() == null) {
-      throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+      throw new BadRequestException("Invalid id. It is null.");
     }
 
     SkillRating existingSkillRating = skillRatingService.findOne(skillRating.getId()).get();
