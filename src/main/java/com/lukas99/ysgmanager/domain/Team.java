@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,10 +26,12 @@ public class Team extends Auditable {
   @GeneratedValue
   private Long id;
 
+  @NotNull
   private String name;
 
   private byte[] logo;
 
+  @NotNull
   @ManyToOne
   private Tournament tournament;
 
