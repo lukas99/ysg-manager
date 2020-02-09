@@ -19,15 +19,21 @@ public class PlayerTemplates {
         .shirtNumber(FIFITY_NINE).team(team).build();
   }
 
+  public static Player romanJosi(Team team, EntityManager em) {
+    Player romanJosi = romanJosi(team);
+    em.persist(romanJosi);
+    return romanJosi;
+  }
+
   public static Player martinGerber(Team team) {
     return Player.builder().firstName(MARTIN).lastName(GERBER).position(GOALTENDER)
         .shirtNumber(TWENTY_NINE).team(team).build();
   }
 
-  public static Player romanJosi(Team team, EntityManager em) {
-    Player romanJosi = romanJosi(team);
-    em.persist(romanJosi);
-    return romanJosi;
+  public static Player martinGerber(Team team, EntityManager em) {
+    Player martinGerber = martinGerber(team);
+    em.persist(martinGerber);
+    return martinGerber;
   }
 
 }
