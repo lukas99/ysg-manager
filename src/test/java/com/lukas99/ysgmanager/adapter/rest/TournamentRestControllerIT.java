@@ -9,6 +9,7 @@ import static com.lukas99.ysgmanager.domain.TournamentTemplates.ysg2019;
 import static com.lukas99.ysgmanager.domain.TournamentTemplates.ysg2020;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -17,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.List;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -146,12 +146,12 @@ public class TournamentRestControllerIT extends IntegrationTest {
     restTournamentMockMvc.perform(get("/api/tournaments?sort=id,desc")).andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$", hasSize(2)))
-        .andExpect(jsonPath("$.[0].id").value(Matchers.is(ysg2019.getId().intValue())))
-        .andExpect(jsonPath("$.[0].name").value(Matchers.is(YSG_2019)))
-        .andExpect(jsonPath("$.[0].dateDescription").value(Matchers.is(YSG_2019_DATE_DESCRIPTION)))
-        .andExpect(jsonPath("$.[1].id").value(Matchers.is(ysg2020.getId().intValue())))
-        .andExpect(jsonPath("$.[1].name").value(Matchers.is(YSG_2020)))
-        .andExpect(jsonPath("$.[1].dateDescription").value(Matchers.is(YSG_2020_DATE_DESCRIPTION)));
+        .andExpect(jsonPath("$.[0].id").value(is(ysg2019.getId().intValue())))
+        .andExpect(jsonPath("$.[0].name").value(is(YSG_2019)))
+        .andExpect(jsonPath("$.[0].dateDescription").value(is(YSG_2019_DATE_DESCRIPTION)))
+        .andExpect(jsonPath("$.[1].id").value(is(ysg2020.getId().intValue())))
+        .andExpect(jsonPath("$.[1].name").value(is(YSG_2020)))
+        .andExpect(jsonPath("$.[1].dateDescription").value(is(YSG_2020_DATE_DESCRIPTION)));
   }
 
   @Test
@@ -185,6 +185,7 @@ public class TournamentRestControllerIT extends IntegrationTest {
 
     int databaseSizeBeforeUpdate = tournamentRepository.findAll().size();
 
+    // Update the tournament
     Tournament updatedTournament = ysg2019().toBuilder().id(ysg2019.getId()).name("updatedName")
         .dateDescription("updatedDateDescription").build();
 
