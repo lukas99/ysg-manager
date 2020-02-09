@@ -84,9 +84,10 @@ public class SkillRestController {
 
     Skill existingSkill = skillService.findOne(skill.getId()).get();
     existingSkill.update(skill);
-
+    
+    Skill result = skillService.save(existingSkill);
     return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
-        ENTITY_NAME, skill.getId().toString())).body(existingSkill);
+        ENTITY_NAME, skill.getId().toString())).body(result);
   }
 
   /**
