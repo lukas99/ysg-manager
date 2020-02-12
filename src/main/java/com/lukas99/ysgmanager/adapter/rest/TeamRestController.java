@@ -78,7 +78,11 @@ public class TeamRestController {
     if (team.getId() == null) {
       throw new BadRequestException("Invalid id. It is null.");
     }
-    Team result = teamService.save(team);
+
+    Team existingTeam = teamService.findOne(team.getId()).get();
+    existingTeam.update(team);
+
+    Team result = teamService.save(existingTeam);
     return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
         ENTITY_NAME, team.getId().toString())).body(result);
   }

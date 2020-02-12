@@ -38,4 +38,10 @@ public class Team extends Auditable {
   @OneToMany
   private List<Player> players;
 
+  public void update(Team team) {
+    name = team.getName();
+    logo = team.getLogo();
+    tournament = team.getTournament();
+  }
+
 }
