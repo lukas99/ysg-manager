@@ -1,7 +1,9 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import static com.lukas99.ysgmanager.adapter.rest.TestUtil.createFormattingConversionService;
+import static com.lukas99.ysgmanager.adapter.rest.TestUtils.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -11,6 +13,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.lukas99.ysgmanager.domain.Player;
+import com.lukas99.ysgmanager.domain.PlayerPosition;
+import com.lukas99.ysgmanager.domain.PlayerRepository;
+import com.lukas99.ysgmanager.domain.PlayerService;
+import com.lukas99.ysgmanager.domain.PlayerTemplates;
+import com.lukas99.ysgmanager.domain.Team;
+import com.lukas99.ysgmanager.domain.TeamService;
+import com.lukas99.ysgmanager.domain.TeamTemplates;
+import com.lukas99.ysgmanager.domain.Tournament;
+import com.lukas99.ysgmanager.domain.TournamentTemplates;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,16 +37,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Validator;
-import com.lukas99.ysgmanager.domain.Player;
-import com.lukas99.ysgmanager.domain.PlayerPosition;
-import com.lukas99.ysgmanager.domain.PlayerRepository;
-import com.lukas99.ysgmanager.domain.PlayerService;
-import com.lukas99.ysgmanager.domain.PlayerTemplates;
-import com.lukas99.ysgmanager.domain.Team;
-import com.lukas99.ysgmanager.domain.TeamTemplates;
-import com.lukas99.ysgmanager.domain.Tournament;
-import com.lukas99.ysgmanager.domain.TournamentTemplates;
 
 /**
  * Integration tests for the {@link PlayerRestController}.
@@ -48,6 +51,9 @@ public class PlayerRestControllerIT extends IntegrationTest {
   private PlayerService playerService;
 
   @Autowired
+  private TeamService teamService;
+
+  @Autowired
   private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
   @Autowired
@@ -56,30 +62,32 @@ public class PlayerRestControllerIT extends IntegrationTest {
   @Autowired
   private EntityManager em;
 
-  @Autowired
-  private Validator validator;
-
   private MockMvc restPlayerMockMvc;
 
+  private Team ehcEngelberg;
   private Player romanJosi;
   private Player martinGerber;
+  private PlayerModel romanJosiModel;
 
   @BeforeEach
   public void setup() {
     MockitoAnnotations.initMocks(this);
-    final PlayerRestController playerRestController = new PlayerRestController(playerService);
+    final PlayerRestController playerRestController =
+        new PlayerRestController(playerService, teamService);
     this.restPlayerMockMvc = MockMvcBuilders.standaloneSetup(playerRestController)
         .setCustomArgumentResolvers(pageableArgumentResolver)
         .setConversionService(createFormattingConversionService())
-        .setMessageConverters(jacksonMessageConverter).setValidator(validator).build();
+        .setMessageConverters(jacksonMessageConverter)
+        .build();
   }
 
   @BeforeEach
   public void initTest() {
     Tournament ysg2019 = TournamentTemplates.ysg2019(em);
-    Team ehcEngelberg = TeamTemplates.ehcEngelberg(ysg2019, em);
+    ehcEngelberg = TeamTemplates.ehcEngelberg(ysg2019, em);
     romanJosi = PlayerTemplates.romanJosi(ehcEngelberg);
     martinGerber = PlayerTemplates.martinGerber(ehcEngelberg);
+    romanJosiModel = new PlayerModelAssembler().toModel(romanJosi);
   }
 
   @Test
@@ -88,8 +96,10 @@ public class PlayerRestControllerIT extends IntegrationTest {
     int databaseSizeBeforeCreate = playerRepository.findAll().size();
 
     // Create the Player
-    restPlayerMockMvc.perform(post("/api/players").contentType(TestUtil.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(romanJosi))).andExpect(status().isCreated());
+    restPlayerMockMvc.perform(post("/api/teams/{teamId}/players", ehcEngelberg.getId())
+        .contentType(TestUtils.APPLICATION_JSON)
+        .content(TestUtils.convertObjectToJsonBytes(romanJosiModel)))
+        .andExpect(status().isOk());
 
     // Validate the Player in the database
     List<Player> playerList = playerRepository.findAll();
@@ -99,39 +109,20 @@ public class PlayerRestControllerIT extends IntegrationTest {
     assertThat(testPlayer.getLastName()).isEqualTo(PlayerTemplates.JOSI);
     assertThat(testPlayer.getShirtNumber()).isEqualTo(PlayerTemplates.FIFITY_NINE);
     assertThat(testPlayer.getPosition()).isEqualTo(PlayerPosition.SKATER);
+    assertThat(testPlayer.getTeam()).isEqualTo(ehcEngelberg);
   }
-
-  @Test
-  @Transactional
-  public void createPlayerWithExistingId() throws Exception {
-    int databaseSizeBeforeCreate = playerRepository.findAll().size();
-
-    // Create the Player with an existing ID
-    romanJosi.setId(1L);
-
-    // An entity with an existing ID cannot be created, so this API call must fail
-    restPlayerMockMvc
-        .perform(post("/api/players").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(romanJosi)))
-        .andExpect(status().isBadRequest());
-
-    // Validate the Player in the database
-    List<Player> playerList = playerRepository.findAll();
-    assertThat(playerList).hasSize(databaseSizeBeforeCreate);
-  }
-
 
   @Test
   @Transactional
   public void checkShirtNumberIsRequired() throws Exception {
     int databaseSizeBeforeTest = playerRepository.findAll().size();
     // set the field null
-    romanJosi.setShirtNumber(null);
+    romanJosiModel.setShirtNumber(null);
 
     // Create the Player, which fails.
-    restPlayerMockMvc
-        .perform(post("/api/players").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(romanJosi)))
+    restPlayerMockMvc.perform(post("/api/teams/{teamId}/players", ehcEngelberg.getId())
+        .contentType(TestUtils.APPLICATION_JSON)
+        .content(TestUtils.convertObjectToJsonBytes(romanJosiModel)))
         .andExpect(status().isBadRequest());
 
     List<Player> playerList = playerRepository.findAll();
@@ -143,12 +134,12 @@ public class PlayerRestControllerIT extends IntegrationTest {
   public void checkPositionIsRequired() throws Exception {
     int databaseSizeBeforeTest = playerRepository.findAll().size();
     // set the field null
-    romanJosi.setPosition(null);
+    romanJosiModel.setPosition(null);
 
     // Create the Player, which fails.
-    restPlayerMockMvc
-        .perform(post("/api/players").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(romanJosi)))
+    restPlayerMockMvc.perform(post("/api/teams/{teamId}/players", ehcEngelberg.getId())
+        .contentType(TestUtils.APPLICATION_JSON)
+        .content(TestUtils.convertObjectToJsonBytes(romanJosiModel)))
         .andExpect(status().isBadRequest());
 
     List<Player> playerList = playerRepository.findAll();
@@ -157,25 +148,34 @@ public class PlayerRestControllerIT extends IntegrationTest {
 
   @Test
   @Transactional
-  public void getAllPlayers() throws Exception {
+  public void getPlayersOfTeam() throws Exception {
     // Initialize the database
     playerRepository.saveAndFlush(romanJosi);
     playerRepository.saveAndFlush(martinGerber);
 
-    // Get all the players
-    restPlayerMockMvc.perform(get("/api/players?sort=id,desc")).andExpect(status().isOk())
+    // Get all the players of a team
+    restPlayerMockMvc.perform(get("/api/teams/{teamId}/players", ehcEngelberg.getId()))
+        .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$", hasSize(2)))
-        .andExpect(jsonPath("$.[0].id").value(is(martinGerber.getId().intValue())))
-        .andExpect(jsonPath("$.[0].firstName").value(is(PlayerTemplates.MARTIN)))
-        .andExpect(jsonPath("$.[0].lastName").value(is(PlayerTemplates.GERBER)))
-        .andExpect(jsonPath("$.[0].shirtNumber").value(is(PlayerTemplates.TWENTY_NINE)))
-        .andExpect(jsonPath("$.[0].position").value(is(PlayerPosition.GOALTENDER.toString())))
-        .andExpect(jsonPath("$.[1].id").value(is(romanJosi.getId().intValue())))
-        .andExpect(jsonPath("$.[1].firstName").value(is(PlayerTemplates.ROMAN)))
-        .andExpect(jsonPath("$.[1].lastName").value(is(PlayerTemplates.JOSI)))
-        .andExpect(jsonPath("$.[1].shirtNumber").value(is(PlayerTemplates.FIFITY_NINE)))
-        .andExpect(jsonPath("$.[1].position").value(is(PlayerPosition.SKATER.toString())));
+        .andExpect(jsonPath("$.links", empty()))
+        .andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content.[0].firstName").value(is(PlayerTemplates.ROMAN)))
+        .andExpect(jsonPath("$.content.[0].lastName").value(is(PlayerTemplates.JOSI)))
+        .andExpect(jsonPath("$.content.[0].shirtNumber").value(is(PlayerTemplates.FIFITY_NINE)))
+        .andExpect(jsonPath("$.content.[0].position").value(is(PlayerPosition.SKATER.toString())))
+        .andExpect(jsonPath("$.content.[0].links", hasSize(2)))
+        .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
+        .andExpect(jsonPath("$.content.[0].links.[0].href",
+            endsWith("/players/" + romanJosi.getId())))
+        .andExpect(jsonPath("$.content.[1].firstName").value(is(PlayerTemplates.MARTIN)))
+        .andExpect(jsonPath("$.content.[1].lastName").value(is(PlayerTemplates.GERBER)))
+        .andExpect(jsonPath("$.content.[1].shirtNumber").value(is(PlayerTemplates.TWENTY_NINE)))
+        .andExpect(jsonPath("$.content.[1].position")
+            .value(is(PlayerPosition.GOALTENDER.toString())))
+        .andExpect(jsonPath("$.content.[1].links", hasSize(2)))
+        .andExpect(jsonPath("$.content.[1].links.[0].rel").value(is("self")))
+        .andExpect(jsonPath("$.content.[1].links.[0].href",
+            endsWith("/players/" + martinGerber.getId())));
   }
 
   @Test
@@ -188,11 +188,16 @@ public class PlayerRestControllerIT extends IntegrationTest {
     restPlayerMockMvc.perform(get("/api/players/{id}", romanJosi.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.id").value(romanJosi.getId().intValue()))
         .andExpect(jsonPath("$.firstName").value(PlayerTemplates.ROMAN))
         .andExpect(jsonPath("$.lastName").value(PlayerTemplates.JOSI))
         .andExpect(jsonPath("$.shirtNumber").value(PlayerTemplates.FIFITY_NINE))
-        .andExpect(jsonPath("$.position").value(is(PlayerPosition.SKATER.toString())));
+        .andExpect(jsonPath("$.position").value(is(PlayerPosition.SKATER.toString())))
+        .andExpect(jsonPath("$.links", hasSize(2)))
+        .andExpect(jsonPath("$.links.[0].rel").value(is("self")))
+        .andExpect(jsonPath("$.links.[0].href", endsWith("/players/" + romanJosi.getId())))
+        .andExpect(jsonPath("$.links.[1].rel").value(is("team")))
+        .andExpect(jsonPath("$.links.[1].href", endsWith("/teams/" + ehcEngelberg.getId())))
+    ;
   }
 
   @Test
@@ -212,11 +217,15 @@ public class PlayerRestControllerIT extends IntegrationTest {
     int databaseSizeBeforeUpdate = playerRepository.findAll().size();
 
     // Update the player
-    Player updatedPlayer = romanJosi.toBuilder().firstName("updatedFirstName")
-        .lastName("updatedLastName").shirtNumber(99).position(PlayerPosition.GOALTENDER).build();
+    romanJosiModel.setFirstName("updatedFirstName");
+    romanJosiModel.setLastName("updatedLastName");
+    romanJosiModel.setShirtNumber(99);
+    romanJosiModel.setPosition(PlayerPosition.GOALTENDER);
 
-    restPlayerMockMvc.perform(put("/api/players").contentType(TestUtil.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(updatedPlayer))).andExpect(status().isOk());
+    restPlayerMockMvc
+        .perform(put("/api/players/{id}", romanJosi.getId()).contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(romanJosiModel)))
+        .andExpect(status().isOk());
 
     // Validate the Player in the database
     List<Player> playerList = playerRepository.findAll();
@@ -230,24 +239,6 @@ public class PlayerRestControllerIT extends IntegrationTest {
 
   @Test
   @Transactional
-  public void updateNonExistingPlayer() throws Exception {
-    int databaseSizeBeforeUpdate = playerRepository.findAll().size();
-
-    // Create the Player
-
-    // If the entity doesn't have an ID, it will throw BadRequestAlertException
-    restPlayerMockMvc
-        .perform(put("/api/players").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(romanJosi)))
-        .andExpect(status().isBadRequest());
-
-    // Validate the Player in the database
-    List<Player> playerList = playerRepository.findAll();
-    assertThat(playerList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
   public void deletePlayer() throws Exception {
     // Initialize the database
     playerService.save(romanJosi);
@@ -256,7 +247,7 @@ public class PlayerRestControllerIT extends IntegrationTest {
 
     // Delete the player
     restPlayerMockMvc
-        .perform(delete("/api/players/{id}", romanJosi.getId()).accept(TestUtil.APPLICATION_JSON))
+        .perform(delete("/api/players/{id}", romanJosi.getId()).accept(TestUtils.APPLICATION_JSON))
         .andExpect(status().isNoContent());
 
     // Validate the database contains one less item

@@ -1,6 +1,6 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import static com.lukas99.ysgmanager.adapter.rest.TestUtil.createFormattingConversionService;
+import static com.lukas99.ysgmanager.adapter.rest.TestUtils.createFormattingConversionService;
 import static com.lukas99.ysgmanager.domain.TournamentTemplates.YSG_2019;
 import static com.lukas99.ysgmanager.domain.TournamentTemplates.YSG_2019_DATE_DESCRIPTION;
 import static com.lukas99.ysgmanager.domain.TournamentTemplates.YSG_2020;
@@ -8,6 +8,7 @@ import static com.lukas99.ysgmanager.domain.TournamentTemplates.YSG_2020_DATE_DE
 import static com.lukas99.ysgmanager.domain.TournamentTemplates.ysg2019;
 import static com.lukas99.ysgmanager.domain.TournamentTemplates.ysg2020;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -17,6 +18,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.lukas99.ysgmanager.domain.Tournament;
+import com.lukas99.ysgmanager.domain.TournamentRepository;
+import com.lukas99.ysgmanager.domain.TournamentService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,10 +34,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Validator;
-import com.lukas99.ysgmanager.domain.Tournament;
-import com.lukas99.ysgmanager.domain.TournamentRepository;
-import com.lukas99.ysgmanager.domain.TournamentService;
 
 /**
  * Integration tests for the {@link TournamentRestController}.
@@ -51,13 +52,12 @@ public class TournamentRestControllerIT extends IntegrationTest {
 
   @Autowired
   private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-  @Autowired
-  private Validator validator;
 
   private MockMvc restTournamentMockMvc;
 
   private Tournament ysg2019;
   private Tournament ysg2020;
+  private TournamentModel ysg2019Model;
 
   @BeforeEach
   public void setup() {
@@ -67,13 +67,15 @@ public class TournamentRestControllerIT extends IntegrationTest {
     this.restTournamentMockMvc = MockMvcBuilders.standaloneSetup(tournamentRestController)
         .setCustomArgumentResolvers(pageableArgumentResolver)
         .setConversionService(createFormattingConversionService())
-        .setMessageConverters(jacksonMessageConverter).setValidator(validator).build();
+        .setMessageConverters(jacksonMessageConverter)
+        .build();
   }
 
   @BeforeEach
   public void initTest() {
     ysg2019 = ysg2019();
     ysg2020 = ysg2020();
+    ysg2019Model = new TournamentModelAssembler().toModel(ysg2019);
   }
 
   @Test
@@ -82,8 +84,8 @@ public class TournamentRestControllerIT extends IntegrationTest {
     int databaseSizeBeforeCreate = tournamentRepository.findAll().size();
 
     // Create the Tournament
-    restTournamentMockMvc.perform(post("/api/tournaments").contentType(TestUtil.APPLICATION_JSON)
-        .content(TestUtil.convertObjectToJsonBytes(ysg2019))).andExpect(status().isCreated());
+    restTournamentMockMvc.perform(post("/api/tournaments").contentType(TestUtils.APPLICATION_JSON)
+        .content(TestUtils.convertObjectToJsonBytes(ysg2019Model))).andExpect(status().isOk());
 
     // Validate the Tournament in the database
     List<Tournament> tournamentList = tournamentRepository.findAll();
@@ -95,34 +97,15 @@ public class TournamentRestControllerIT extends IntegrationTest {
 
   @Test
   @Transactional
-  public void createTournamentWithExistingId() throws Exception {
-    int databaseSizeBeforeCreate = tournamentRepository.findAll().size();
-
-    // Create the Tournament with an existing ID
-    ysg2019.setId(1L);
-
-    // An entity with an existing ID cannot be created, so this API call must fail
-    restTournamentMockMvc
-        .perform(post("/api/tournaments").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(ysg2019)))
-        .andExpect(status().isBadRequest());
-
-    // Validate the Tournament in the database
-    List<Tournament> tournamentList = tournamentRepository.findAll();
-    assertThat(tournamentList).hasSize(databaseSizeBeforeCreate);
-  }
-
-  @Test
-  @Transactional
   public void checkNameIsRequired() throws Exception {
     int databaseSizeBeforeTest = tournamentRepository.findAll().size();
     // set the field null
-    ysg2019.setName(null);
+    ysg2019Model.setName(null);
 
     // Create the Tournament, which fails.
     restTournamentMockMvc
-        .perform(post("/api/tournaments").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(ysg2019)))
+        .perform(post("/api/tournaments").contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(ysg2019Model)))
         .andExpect(status().isBadRequest());
 
     List<Tournament> tournamentList = tournamentRepository.findAll();
@@ -137,15 +120,20 @@ public class TournamentRestControllerIT extends IntegrationTest {
     tournamentRepository.saveAndFlush(ysg2020);
 
     // Get all the tournaments
-    restTournamentMockMvc.perform(get("/api/tournaments?sort=id,desc")).andExpect(status().isOk())
+    restTournamentMockMvc.perform(get("/api/tournaments")).andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$", hasSize(2)))
-        .andExpect(jsonPath("$.[0].id").value(is(ysg2019.getId().intValue())))
-        .andExpect(jsonPath("$.[0].name").value(is(YSG_2019)))
-        .andExpect(jsonPath("$.[0].dateDescription").value(is(YSG_2019_DATE_DESCRIPTION)))
-        .andExpect(jsonPath("$.[1].id").value(is(ysg2020.getId().intValue())))
-        .andExpect(jsonPath("$.[1].name").value(is(YSG_2020)))
-        .andExpect(jsonPath("$.[1].dateDescription").value(is(YSG_2020_DATE_DESCRIPTION)));
+        .andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content.[0].name").value(is(YSG_2019)))
+        .andExpect(jsonPath("$.content.[0].dateDescription").value(is(YSG_2019_DATE_DESCRIPTION)))
+        .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
+        .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
+        .andExpect(
+            jsonPath("$.content.[0].links.[0].href").value(endsWith(ysg2019.getId().toString())))
+        .andExpect(jsonPath("$.content.[1].name").value(is(YSG_2020)))
+        .andExpect(jsonPath("$.content.[1].dateDescription").value(is(YSG_2020_DATE_DESCRIPTION)))
+        .andExpect(jsonPath("$.content.[1].links", hasSize(3)))
+        .andExpect(jsonPath("$.content.[1].links.[0].rel").value(is("self"))).andExpect(
+        jsonPath("$.content.[1].links.[0].href").value(endsWith(ysg2020.getId().toString())));
   }
 
   @Test
@@ -158,9 +146,13 @@ public class TournamentRestControllerIT extends IntegrationTest {
     restTournamentMockMvc.perform(get("/api/tournaments/{id}", ysg2019.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.id").value(ysg2019.getId().intValue()))
         .andExpect(jsonPath("$.name").value(YSG_2019))
-        .andExpect(jsonPath("$.dateDescription").value(YSG_2019_DATE_DESCRIPTION));
+        .andExpect(jsonPath("$.dateDescription").value(YSG_2019_DATE_DESCRIPTION))
+        .andExpect(jsonPath("$.links", hasSize(3)))
+        .andExpect(jsonPath("$.links.[0].rel").value(is("self")))
+        .andExpect(jsonPath("$.links.[0].href").value(endsWith(ysg2019.getId().toString())))
+        .andExpect(jsonPath("$.links.[1].rel").value(is("teams")))
+        .andExpect(jsonPath("$.links.[2].rel").value(is("skills")));
   }
 
   @Test
@@ -180,12 +172,13 @@ public class TournamentRestControllerIT extends IntegrationTest {
     int databaseSizeBeforeUpdate = tournamentRepository.findAll().size();
 
     // Update the tournament
-    Tournament updatedTournament = ysg2019().toBuilder().id(ysg2019.getId()).name("updatedName")
-        .dateDescription("updatedDateDescription").build();
+    ysg2019Model.setName("updatedName");
+    ysg2019Model.setDateDescription("updatedDateDescription");
 
     restTournamentMockMvc
-        .perform(put("/api/tournaments").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(updatedTournament)))
+        .perform(
+            put("/api/tournaments/{id}", ysg2019.getId()).contentType(TestUtils.APPLICATION_JSON)
+                .content(TestUtils.convertObjectToJsonBytes(ysg2019Model)))
         .andExpect(status().isOk());
 
     // Validate the Tournament in the database
@@ -198,24 +191,6 @@ public class TournamentRestControllerIT extends IntegrationTest {
 
   @Test
   @Transactional
-  public void updateNonExistingTournament() throws Exception {
-    int databaseSizeBeforeUpdate = tournamentRepository.findAll().size();
-
-    // Create the Tournament
-
-    // If the entity doesn't have an ID, it will throw BadRequestAlertException
-    restTournamentMockMvc
-        .perform(put("/api/tournaments").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(ysg2019)))
-        .andExpect(status().isBadRequest());
-
-    // Validate the Tournament in the database
-    List<Tournament> tournamentList = tournamentRepository.findAll();
-    assertThat(tournamentList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
   public void deleteTournament() throws Exception {
     // Initialize the database
     tournamentService.save(ysg2019);
@@ -224,7 +199,7 @@ public class TournamentRestControllerIT extends IntegrationTest {
 
     // Delete the tournament
     restTournamentMockMvc
-        .perform(delete("/api/tournaments/{id}", ysg2019.getId()).accept(TestUtil.APPLICATION_JSON))
+        .perform(delete("/api/tournaments/{id}", ysg2019.getId()).accept(TestUtils.APPLICATION_JSON))
         .andExpect(status().isNoContent());
 
     // Validate the database contains one less item

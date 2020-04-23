@@ -1,15 +1,16 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.lukas99.ysgmanager.domain.Player;
+import com.lukas99.ysgmanager.domain.PlayerService;
+import com.lukas99.ysgmanager.domain.Skill;
+import com.lukas99.ysgmanager.domain.SkillResult;
+import com.lukas99.ysgmanager.domain.SkillResultService;
+import com.lukas99.ysgmanager.domain.SkillService;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
+import javax.validation.Valid;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,13 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestException;
-import com.lukas99.ysgmanager.domain.SkillResult;
-import com.lukas99.ysgmanager.domain.SkillResultService;
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.PaginationUtil;
-import io.github.jhipster.web.util.ResponseUtil;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * REST controller for managing {@link com.lukas99.ysgmanager.domain.SkillResult}.
@@ -34,112 +29,113 @@ import io.github.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class SkillResultRestController {
 
-  private final Logger log = LoggerFactory.getLogger(SkillResultRestController.class);
-
-  private static final String ENTITY_NAME = "skillResult";
-
-  @Value("${jhipster.clientApp.name}")
-  private String applicationName;
-
   private final SkillResultService skillResultService;
+  private final PlayerService playerService;
+  private final SkillService skillService;
 
-  public SkillResultRestController(SkillResultService skillResultService) {
+  public SkillResultRestController(SkillResultService skillResultService,
+      PlayerService playerService, SkillService skillService) {
     this.skillResultService = skillResultService;
+    this.playerService = playerService;
+    this.skillService = skillService;
   }
 
   /**
-   * {@code POST  /skill-results} : Create a new skillResult.
+   * Create a new skillResult.
    *
-   * @param skillResult the skillResult to create.
-   * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new
-   *         skillResult, or with status {@code 400 (Bad Request)} if the skillResult has already an
-   *         ID.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
+   * @param playerId         the id of the player for which the result should be created.
+   * @param skillResultModel the skillResult to create.
+   * @return the created skillResult.
    */
-  @PostMapping("/skill-results")
-  public ResponseEntity<SkillResult> createSkillResult(@RequestBody SkillResult skillResult)
-      throws URISyntaxException {
-    log.debug("REST request to save SkillResult : {}", skillResult);
-    if (skillResult.getId() != null) {
-      throw new BadRequestException("A new skillResult cannot already have an ID");
+  @PostMapping("/players/{playerId}/skill-results")
+  public ResponseEntity<SkillResultModel> createSkillResult(
+      @PathVariable Long playerId, @Valid @RequestBody SkillResultModel skillResultModel) {
+    Optional<Player> player = playerService.findOne(playerId);
+    Optional<Skill> skill = skillResultModel.getLink("skill")
+        .map(skillLink -> RestUtils.getLastPathSegment(skillLink))
+        .flatMap(skillId -> skillService.findOne(skillId));
+    if (player.isPresent() && skill.isPresent()) {
+      SkillResult skillResult = skillResultModel.toEntity(player.get(), skill.get());
+      skillResult = skillResultService.save(skillResult);
+      return ResponseEntity.ok(new SkillResultModelAssembler().toModel(skillResult));
+    } else {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
-    SkillResult result = skillResultService.save(skillResult);
-    return ResponseEntity.created(new URI("/api/skill-results/" + result.getId()))
-        .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME,
-            result.getId().toString()))
-        .body(result);
   }
 
   /**
-   * {@code PUT  /skill-results} : Updates an existing skillResult.
+   * Updates an existing skillResult.
    *
+   * @param id          the id of the skillResult to update.
    * @param skillResult the skillResult to update.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated
-   *         skillResult, or with status {@code 400 (Bad Request)} if the skillResult is not valid,
-   *         or with status {@code 500 (Internal Server Error)} if the skillResult couldn't be
-   *         updated.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
+   * @return the updated skillResult.
    */
-  @PutMapping("/skill-results")
-  public ResponseEntity<SkillResult> updateSkillResult(@RequestBody SkillResult skillResult)
-      throws URISyntaxException {
-    log.debug("REST request to update SkillResult : {}", skillResult);
-    if (skillResult.getId() == null) {
-      throw new BadRequestException("Invalid id. It is null.");
-    }
-
-    SkillResult existingSkillResult = skillResultService.findOne(skillResult.getId()).get();
-    existingSkillResult.update(skillResult);
-
+  @PutMapping("/skill-results/{id}")
+  public ResponseEntity<SkillResultModel> updateSkillResult(
+      @PathVariable Long id, @Valid @RequestBody SkillResultModel skillResult) {
+    SkillResult existingSkillResult = skillResultService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    existingSkillResult.update(
+        skillResult.toEntity(existingSkillResult.getPlayer(), existingSkillResult.getSkill()));
     SkillResult result = skillResultService.save(existingSkillResult);
-    return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
-        ENTITY_NAME, skillResult.getId().toString())).body(result);
+    return ResponseEntity.ok(new SkillResultModelAssembler().toModel(result));
   }
 
   /**
-   * {@code GET  /skill-results} : get all the skillResults.
+   * Get all skillResults of the given skill.
    *
-   * @param pageable the pagination information.
-   * 
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of skillResults in
-   *         body.
+   * @param skillId the id of the skill for which the results should be retrieved
+   * @return the list of results.
    */
-  @GetMapping("/skill-results")
-  public ResponseEntity<List<SkillResult>> getAllSkillResults(Pageable pageable) {
-    log.debug("REST request to get all SkillResults");
-    Page<SkillResult> page = skillResultService.findAll(pageable);
-    HttpHeaders headers = PaginationUtil
-        .generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-    return ResponseEntity.ok().headers(headers).body(page.getContent());
+  @GetMapping("/skills/{skillId}/skill-results")
+  public ResponseEntity<CollectionModel<SkillResultModel>> getSkillResultsBySkill(
+      @PathVariable Long skillId) {
+    Optional<Skill> skill = skillService.findOne(skillId);
+    List<SkillResult> skillResults = skill.map(sr -> skillResultService.findBySkill(sr))
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    return ResponseEntity.ok(new SkillResultModelAssembler().toCollectionModel(skillResults));
   }
 
   /**
-   * {@code GET  /skill-results/:id} : get the "id" skillResult.
+   * Get all skillResults of the given player.
+   *
+   * @param playerId the id of the player for which the results should be retrieved
+   * @return the list of results.
+   */
+  @GetMapping("/players/{playerId}/skill-results")
+  public ResponseEntity<CollectionModel<SkillResultModel>> getSkillResultsByPlayer(
+      @PathVariable Long playerId) {
+    Optional<Player> player = playerService.findOne(playerId);
+    List<SkillResult> skillResults = player.map(sr -> skillResultService.findByPlayer(sr))
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    return ResponseEntity.ok(new SkillResultModelAssembler().toCollectionModel(skillResults));
+  }
+
+  /**
+   * Get the skillResult with the given id.
    *
    * @param id the id of the skillResult to retrieve.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the skillResult,
-   *         or with status {@code 404 (Not Found)}.
+   * @return the skillResult.
    */
   @GetMapping("/skill-results/{id}")
-  public ResponseEntity<SkillResult> getSkillResult(@PathVariable Long id) {
-    log.debug("REST request to get SkillResult : {}", id);
-    Optional<SkillResult> skillResult = skillResultService.findOne(id);
-    return ResponseUtil.wrapOrNotFound(skillResult);
+  public ResponseEntity<SkillResultModel> getSkillResult(@PathVariable Long id) {
+    SkillResult skillResult = skillResultService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    return ResponseEntity.ok(new SkillResultModelAssembler().toModel(skillResult));
   }
 
   /**
-   * {@code DELETE  /skill-results/:id} : delete the "id" skillResult.
+   * Delete the skillResult with the given id.
    *
    * @param id the id of the skillResult to delete.
-   * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+   * @return no content.
    */
   @DeleteMapping("/skill-results/{id}")
   public ResponseEntity<Void> deleteSkillResult(@PathVariable Long id) {
-    log.debug("REST request to delete SkillResult : {}", id);
-    skillResultService.delete(id);
-    return ResponseEntity.noContent()
-        .headers(
-            HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-        .build();
+    SkillResult skillResult = skillResultService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    skillResultService.delete(skillResult.getId());
+    return ResponseEntity.noContent().build();
   }
+
 }

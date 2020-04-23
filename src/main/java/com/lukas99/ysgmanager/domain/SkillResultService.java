@@ -1,5 +1,6 @@
 package com.lukas99.ysgmanager.domain;
 
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,6 @@ public class SkillResultService {
    * @return the persisted entity.
    */
   public SkillResult save(SkillResult skillResult) {
-    log.debug("Request to save SkillResult : {}", skillResult);
     return skillResultRepository.save(skillResult);
   }
 
@@ -42,7 +42,6 @@ public class SkillResultService {
    */
   @Transactional(readOnly = true)
   public Page<SkillResult> findAll(Pageable pageable) {
-    log.debug("Request to get all SkillResults");
     return skillResultRepository.findAll(pageable);
   }
 
@@ -55,7 +54,6 @@ public class SkillResultService {
    */
   @Transactional(readOnly = true)
   public Optional<SkillResult> findOne(Long id) {
-    log.debug("Request to get SkillResult : {}", id);
     return skillResultRepository.findById(id);
   }
 
@@ -65,7 +63,23 @@ public class SkillResultService {
    * @param id the id of the entity.
    */
   public void delete(Long id) {
-    log.debug("Request to delete SkillResult : {}", id);
     skillResultRepository.deleteById(id);
   }
+
+  /**
+   * @param skill The skill for which the results should be retrieved.
+   * @return The results of the given skill.
+   */
+  public List<SkillResult> findBySkill(Skill skill) {
+    return skillResultRepository.findBySkill(skill);
+  }
+
+  /**
+   * @param player The skill for which the results should be retrieved.
+   * @return The results of the given player.
+   */
+  public List<SkillResult> findByPlayer(Player player) {
+    return skillResultRepository.findByPlayer(player);
+  }
+
 }

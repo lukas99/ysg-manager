@@ -1,13 +1,14 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.lukas99.ysgmanager.domain.Skill;
+import com.lukas99.ysgmanager.domain.SkillService;
+import com.lukas99.ysgmanager.domain.Tournament;
+import com.lukas99.ysgmanager.domain.TournamentService;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestException;
-import com.lukas99.ysgmanager.domain.Skill;
-import com.lukas99.ysgmanager.domain.SkillService;
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.ResponseUtil;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * REST controller for managing {@link com.lukas99.ysgmanager.domain.Skill}.
@@ -30,103 +27,87 @@ import io.github.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class SkillRestController {
 
-  private final Logger log = LoggerFactory.getLogger(SkillRestController.class);
-
-  private static final String ENTITY_NAME = "skill";
-
-  @Value("${jhipster.clientApp.name}")
-  private String applicationName;
-
   private final SkillService skillService;
+  private final TournamentService tournamentService;
 
-  public SkillRestController(SkillService skillService) {
+  public SkillRestController(SkillService skillService, TournamentService tournamentService) {
     this.skillService = skillService;
+    this.tournamentService = tournamentService;
   }
 
   /**
-   * {@code POST  /skills} : Create a new skill.
+   * Create a new skill.
    *
-   * @param skill the skill to create.
-   * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new
-   *         skill, or with status {@code 400 (Bad Request)} if the skill has already an ID.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
+   * @param tournamentId the id of the tournament for which the skill should be created
+   * @param skillModel   the skill to create.
+   * @return the created skill
    */
-  @PostMapping("/skills")
-  public ResponseEntity<Skill> createSkill(@Valid @RequestBody Skill skill)
-      throws URISyntaxException {
-    log.debug("REST request to save Skill : {}", skill);
-    if (skill.getId() != null) {
-      throw new BadRequestException("A new skill cannot already have an ID");
-    }
-    Skill result = skillService.save(skill);
-    return ResponseEntity.created(new URI("/api/skills/" + result.getId())).headers(HeaderUtil
-        .createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-        .body(result);
+  @PostMapping("/tournaments/{tournamentId}/skills")
+  public ResponseEntity<SkillModel> createSkill(
+      @PathVariable Long tournamentId, @Valid @RequestBody SkillModel skillModel) {
+    Optional<Tournament> tournament = tournamentService.findOne(tournamentId);
+    Skill skill = tournament.map(t -> skillModel.toEntity(t))
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    skill = skillService.save(skill);
+    return ResponseEntity.ok(new SkillModelAssembler().toModel(skill));
   }
 
   /**
-   * {@code PUT  /skills} : Updates an existing skill.
+   * Updates an existing skill.
    *
+   * @param id    the id of the skill to update.
    * @param skill the skill to update.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated
-   *         skill, or with status {@code 400 (Bad Request)} if the skill is not valid, or with
-   *         status {@code 500 (Internal Server Error)} if the skill couldn't be updated.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
+   * @return the the updated skill.
    */
-  @PutMapping("/skills")
-  public ResponseEntity<Skill> updateSkill(@Valid @RequestBody Skill skill)
-      throws URISyntaxException {
-    log.debug("REST request to update Skill : {}", skill);
-    if (skill.getId() == null) {
-      throw new BadRequestException("Invalid id. It is null.");
-    }
-
-    Skill existingSkill = skillService.findOne(skill.getId()).get();
-    existingSkill.update(skill);
-
+  @PutMapping("/skills/{id}")
+  public ResponseEntity<SkillModel> updateSkill(
+      @PathVariable Long id, @Valid @RequestBody SkillModel skill) {
+    Skill existingSkill = skillService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    existingSkill.update(skill.toEntity(existingSkill.getTournament()));
     Skill result = skillService.save(existingSkill);
-    return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
-        ENTITY_NAME, skill.getId().toString())).body(result);
+    return ResponseEntity.ok(new SkillModelAssembler().toModel(result));
   }
 
   /**
-   * {@code GET  /skills} : get all the skills.
+   * Get all skills of the given tournament
    *
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of skills in body.
+   * @param tournamentId the id of the tournament for which the skills should be retrieved
+   * @return the list of skills.
    */
-  @GetMapping("/skills")
-  public List<Skill> getAllSkills() {
-    log.debug("REST request to get all Skills");
-    return skillService.findAll();
+  @GetMapping("/tournaments/{tournamentId}/skills")
+  public ResponseEntity<CollectionModel<SkillModel>> getSkills(@PathVariable Long tournamentId) {
+    Optional<Tournament> tournament = tournamentService.findOne(tournamentId);
+    List<Skill> skills = tournament.map(t -> skillService.findByTournament(t))
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    return ResponseEntity.ok(new SkillModelAssembler().toCollectionModel(skills));
   }
 
   /**
-   * {@code GET  /skills/:id} : get the "id" skill.
+   * Get the skill with the given id.
    *
    * @param id the id of the skill to retrieve.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the skill, or
-   *         with status {@code 404 (Not Found)}.
+   * @return the skill.
    */
   @GetMapping("/skills/{id}")
-  public ResponseEntity<Skill> getSkill(@PathVariable Long id) {
-    log.debug("REST request to get Skill : {}", id);
-    Optional<Skill> skill = skillService.findOne(id);
-    return ResponseUtil.wrapOrNotFound(skill);
+  public ResponseEntity<SkillModel> getSkill(@PathVariable Long id) {
+    Skill skill = skillService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    return ResponseEntity.ok(new SkillModelAssembler().toModel(skill));
   }
 
   /**
-   * {@code DELETE  /skills/:id} : delete the "id" skill.
+   * Delete the skill with the given id.
    *
    * @param id the id of the skill to delete.
-   * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+   * @return no content.
    */
   @DeleteMapping("/skills/{id}")
   public ResponseEntity<Void> deleteSkill(@PathVariable Long id) {
-    log.debug("REST request to delete Skill : {}", id);
-    skillService.delete(id);
-    return ResponseEntity.noContent()
-        .headers(
-            HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-        .build();
+    Skill skill = skillService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    skillService.delete(skill.getId());
+    return ResponseEntity.noContent().build();
   }
+
 }

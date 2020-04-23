@@ -1,13 +1,14 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.lukas99.ysgmanager.domain.Team;
+import com.lukas99.ysgmanager.domain.TeamService;
+import com.lukas99.ysgmanager.domain.Tournament;
+import com.lukas99.ysgmanager.domain.TournamentService;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestException;
-import com.lukas99.ysgmanager.domain.Team;
-import com.lukas99.ysgmanager.domain.TeamService;
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.ResponseUtil;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * REST controller for managing {@link com.lukas99.ysgmanager.domain.Team}.
@@ -30,101 +27,87 @@ import io.github.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class TeamRestController {
 
-  private final Logger log = LoggerFactory.getLogger(TeamRestController.class);
-
-  private static final String ENTITY_NAME = "team";
-
-  @Value("${jhipster.clientApp.name}")
-  private String applicationName;
-
   private final TeamService teamService;
+  private final TournamentService tournamentService;
 
-  public TeamRestController(TeamService teamService) {
+  public TeamRestController(TeamService teamService, TournamentService tournamentService) {
     this.teamService = teamService;
+    this.tournamentService = tournamentService;
   }
 
   /**
-   * {@code POST  /teams} : Create a new team.
+   * Create a new team.
    *
-   * @param team the team to create.
-   * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new
-   *         team, or with status {@code 400 (Bad Request)} if the team has already an ID.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
+   * @param tournamentId the id of the tournament for which the team should be created
+   * @param teamModel    the team to create.
+   * @return the created team.
    */
-  @PostMapping("/teams")
-  public ResponseEntity<Team> createTeam(@Valid @RequestBody Team team) throws URISyntaxException {
-    log.debug("REST request to save Team : {}", team);
-    if (team.getId() != null) {
-      throw new BadRequestException("A new team cannot already have an ID");
-    }
-    Team result = teamService.save(team);
-    return ResponseEntity.created(new URI("/api/teams/" + result.getId())).headers(HeaderUtil
-        .createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-        .body(result);
+  @PostMapping("/tournaments/{tournamentId}/teams")
+  public ResponseEntity<TeamModel> createTeam(
+      @PathVariable Long tournamentId, @Valid @RequestBody TeamModel teamModel) {
+    Optional<Tournament> tournament = tournamentService.findOne(tournamentId);
+    Team team = tournament.map(t -> teamModel.toEntity(t))
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    team = teamService.save(team);
+    return ResponseEntity.ok(new TeamModelAssembler().toModel(team));
   }
 
   /**
-   * {@code PUT  /teams} : Updates an existing team.
+   * Updates an existing team.
    *
+   * @param id the id of the team to update.
    * @param team the team to update.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated team,
-   *         or with status {@code 400 (Bad Request)} if the team is not valid, or with status
-   *         {@code 500 (Internal Server Error)} if the team couldn't be updated.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
+   * @return the the updated team.
    */
-  @PutMapping("/teams")
-  public ResponseEntity<Team> updateTeam(@Valid @RequestBody Team team) throws URISyntaxException {
-    log.debug("REST request to update Team : {}", team);
-    if (team.getId() == null) {
-      throw new BadRequestException("Invalid id. It is null.");
-    }
-
-    Team existingTeam = teamService.findOne(team.getId()).get();
-    existingTeam.update(team);
-
+  @PutMapping("/teams/{id}")
+  public ResponseEntity<TeamModel> updateTeam(
+      @PathVariable Long id, @Valid @RequestBody TeamModel team) {
+    Team existingTeam = teamService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    existingTeam.update(team.toEntity(existingTeam.getTournament()));
     Team result = teamService.save(existingTeam);
-    return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
-        ENTITY_NAME, team.getId().toString())).body(result);
+    return ResponseEntity.ok(new TeamModelAssembler().toModel(result));
   }
 
   /**
-   * {@code GET  /teams} : get all the teams.
+   * Get all teams of the given tournament
    *
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of teams in body.
+   * @param tournamentId the id of the tournament for which the teams should be retrieved
+   * @return the list of teams.
    */
-  @GetMapping("/teams")
-  public List<Team> getAllTeams() {
-    log.debug("REST request to get all Teams");
-    return teamService.findAll();
+  @GetMapping("/tournaments/{tournamentId}/teams")
+  public ResponseEntity<CollectionModel<TeamModel>> getTeams(@PathVariable Long tournamentId) {
+    Optional<Tournament> tournament = tournamentService.findOne(tournamentId);
+    List<Team> teams = tournament.map(t -> teamService.findByTournament(t))
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    return ResponseEntity.ok(new TeamModelAssembler().toCollectionModel(teams));
   }
 
   /**
-   * {@code GET  /teams/:id} : get the "id" team.
+   * Get the team with the given id.
    *
    * @param id the id of the team to retrieve.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the team, or with
-   *         status {@code 404 (Not Found)}.
+   * @return the team.
    */
   @GetMapping("/teams/{id}")
-  public ResponseEntity<Team> getTeam(@PathVariable Long id) {
-    log.debug("REST request to get Team : {}", id);
-    Optional<Team> team = teamService.findOne(id);
-    return ResponseUtil.wrapOrNotFound(team);
+  public ResponseEntity<TeamModel> getTeam(@PathVariable Long id) {
+    Team team = teamService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    return ResponseEntity.ok(new TeamModelAssembler().toModel(team));
   }
 
   /**
-   * {@code DELETE  /teams/:id} : delete the "id" team.
+   * Delete the team with the given id.
    *
    * @param id the id of the team to delete.
-   * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+   * @return no content.
    */
   @DeleteMapping("/teams/{id}")
   public ResponseEntity<Void> deleteTeam(@PathVariable Long id) {
-    log.debug("REST request to delete Team : {}", id);
-    teamService.delete(id);
-    return ResponseEntity.noContent()
-        .headers(
-            HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-        .build();
+    Team team = teamService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    teamService.delete(team.getId());
+    return ResponseEntity.noContent().build();
   }
+
 }

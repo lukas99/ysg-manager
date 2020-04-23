@@ -29,7 +29,6 @@ public class TeamService {
    * @return the persisted entity.
    */
   public Team save(Team team) {
-    log.debug("Request to save Team : {}", team);
     return teamRepository.save(team);
   }
 
@@ -40,7 +39,6 @@ public class TeamService {
    */
   @Transactional(readOnly = true)
   public List<Team> findAll() {
-    log.debug("Request to get all Teams");
     return teamRepository.findAll();
   }
 
@@ -53,7 +51,6 @@ public class TeamService {
    */
   @Transactional(readOnly = true)
   public Optional<Team> findOne(Long id) {
-    log.debug("Request to get Team : {}", id);
     return teamRepository.findById(id);
   }
 
@@ -63,7 +60,15 @@ public class TeamService {
    * @param id the id of the entity.
    */
   public void delete(Long id) {
-    log.debug("Request to delete Team : {}", id);
     teamRepository.deleteById(id);
   }
+
+  /**
+   * @param tournament The tournament for which the teams should be retrieved.
+   * @return The teams of the given tournament.
+   */
+  public List<Team> findByTournament(Tournament tournament){
+    return teamRepository.findByTournament(tournament);
+  }
+
 }

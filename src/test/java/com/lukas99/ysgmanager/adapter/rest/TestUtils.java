@@ -23,7 +23,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 /**
  * Utility class for testing REST controllers.
  */
-public final class TestUtil {
+public final class TestUtils {
 
   private static final ObjectMapper mapper = createObjectMapper();
 
@@ -157,5 +157,5 @@ public final class TestUtil {
     return allQuery.getResultList();
   }
 
-  private TestUtil() {}
+  private TestUtils() {}
 }

@@ -1,5 +1,6 @@
 package com.lukas99.ysgmanager.domain;
 
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,6 @@ public class SkillRatingService {
    * @return the persisted entity.
    */
   public SkillRating save(SkillRating skillRating) {
-    log.debug("Request to save SkillRating : {}", skillRating);
     return skillRatingRepository.save(skillRating);
   }
 
@@ -42,7 +42,6 @@ public class SkillRatingService {
    */
   @Transactional(readOnly = true)
   public Page<SkillRating> findAll(Pageable pageable) {
-    log.debug("Request to get all SkillRatings");
     return skillRatingRepository.findAll(pageable);
   }
 
@@ -55,7 +54,6 @@ public class SkillRatingService {
    */
   @Transactional(readOnly = true)
   public Optional<SkillRating> findOne(Long id) {
-    log.debug("Request to get SkillRating : {}", id);
     return skillRatingRepository.findById(id);
   }
 
@@ -65,7 +63,23 @@ public class SkillRatingService {
    * @param id the id of the entity.
    */
   public void delete(Long id) {
-    log.debug("Request to delete SkillRating : {}", id);
     skillRatingRepository.deleteById(id);
   }
+
+  /**
+   * @param skill The skill for which the ratings should be retrieved.
+   * @return The ratings of the given skill.
+   */
+  public List<SkillRating> findBySkill(Skill skill) {
+    return skillRatingRepository.findBySkill(skill);
+  }
+
+  /**
+   * @param player The player for which the ratings should be retrieved.
+   * @return The ratings of the given player.
+   */
+  public List<SkillRating> findByPlayer(Player player) {
+    return skillRatingRepository.findByPlayer(player);
+  }
+
 }

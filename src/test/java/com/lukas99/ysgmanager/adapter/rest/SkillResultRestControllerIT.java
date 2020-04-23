@@ -1,12 +1,14 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import static com.lukas99.ysgmanager.adapter.rest.TestUtil.createFormattingConversionService;
+import static com.lukas99.ysgmanager.adapter.rest.TestUtils.createFormattingConversionService;
 import static com.lukas99.ysgmanager.domain.SkillResultTemplates.bestShotResult;
 import static com.lukas99.ysgmanager.domain.SkillResultTemplates.magicTransitionsResult;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -14,6 +16,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.lukas99.ysgmanager.domain.Player;
+import com.lukas99.ysgmanager.domain.PlayerService;
+import com.lukas99.ysgmanager.domain.PlayerTemplates;
+import com.lukas99.ysgmanager.domain.Skill;
+import com.lukas99.ysgmanager.domain.SkillResult;
+import com.lukas99.ysgmanager.domain.SkillResultRepository;
+import com.lukas99.ysgmanager.domain.SkillResultService;
+import com.lukas99.ysgmanager.domain.SkillResultTemplates;
+import com.lukas99.ysgmanager.domain.SkillService;
+import com.lukas99.ysgmanager.domain.SkillTemplates;
+import com.lukas99.ysgmanager.domain.Team;
+import com.lukas99.ysgmanager.domain.TeamTemplates;
+import com.lukas99.ysgmanager.domain.Tournament;
+import com.lukas99.ysgmanager.domain.TournamentTemplates;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,19 +44,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Validator;
-import com.lukas99.ysgmanager.domain.Player;
-import com.lukas99.ysgmanager.domain.PlayerTemplates;
-import com.lukas99.ysgmanager.domain.Skill;
-import com.lukas99.ysgmanager.domain.SkillResult;
-import com.lukas99.ysgmanager.domain.SkillResultRepository;
-import com.lukas99.ysgmanager.domain.SkillResultService;
-import com.lukas99.ysgmanager.domain.SkillResultTemplates;
-import com.lukas99.ysgmanager.domain.SkillTemplates;
-import com.lukas99.ysgmanager.domain.Team;
-import com.lukas99.ysgmanager.domain.TeamTemplates;
-import com.lukas99.ysgmanager.domain.Tournament;
-import com.lukas99.ysgmanager.domain.TournamentTemplates;
 
 /**
  * Integration tests for the {@link SkillResultRestController}.
@@ -54,6 +58,12 @@ public class SkillResultRestControllerIT extends IntegrationTest {
   private SkillResultService skillResultService;
 
   @Autowired
+  private PlayerService playerService;
+
+  @Autowired
+  private SkillService skillService;
+
+  @Autowired
   private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
   @Autowired
@@ -62,34 +72,38 @@ public class SkillResultRestControllerIT extends IntegrationTest {
   @Autowired
   private EntityManager em;
 
-  @Autowired
-  private Validator validator;
-
   private MockMvc restSkillResultMockMvc;
 
+  private Player romanJosi;
+  private Player martinGerber;
+  private Skill magicTransitions;
   private SkillResult magicTransitionsResult;
   private SkillResult bestShotResult;
+  private SkillResultModel magicTransitionsResultModel;
 
   @BeforeEach
   public void setup() {
     MockitoAnnotations.initMocks(this);
-    final SkillResultRestController skillResultRestService =
-        new SkillResultRestController(skillResultService);
-    this.restSkillResultMockMvc = MockMvcBuilders.standaloneSetup(skillResultRestService)
+    final SkillResultRestController skillResultResource =
+        new SkillResultRestController(skillResultService, playerService, skillService);
+    this.restSkillResultMockMvc = MockMvcBuilders.standaloneSetup(skillResultResource)
         .setCustomArgumentResolvers(pageableArgumentResolver)
         .setConversionService(createFormattingConversionService())
-        .setMessageConverters(jacksonMessageConverter).setValidator(validator).build();
+        .setMessageConverters(jacksonMessageConverter)
+        .build();
   }
 
   @BeforeEach
   public void initTest() {
     Tournament ysg2019 = TournamentTemplates.ysg2019(em);
     Team ehcEngelberg = TeamTemplates.ehcEngelberg(ysg2019, em);
-    Player romanJosi = PlayerTemplates.romanJosi(ehcEngelberg, em);
-    Skill magicTransitions = SkillTemplates.magicTransitions(ysg2019, em);
+    romanJosi = PlayerTemplates.romanJosi(ehcEngelberg, em);
+    martinGerber = PlayerTemplates.martinGerber(ehcEngelberg, em);
+    magicTransitions = SkillTemplates.magicTransitions(ysg2019, em);
     Skill bestShot = SkillTemplates.bestShot(ysg2019, em);
     magicTransitionsResult = magicTransitionsResult(magicTransitions, romanJosi);
-    bestShotResult = bestShotResult(bestShot, romanJosi);
+    bestShotResult = bestShotResult(bestShot, martinGerber);
+    magicTransitionsResultModel = new SkillResultModelAssembler().toModel(magicTransitionsResult);
   }
 
   @Test
@@ -98,15 +112,17 @@ public class SkillResultRestControllerIT extends IntegrationTest {
     int databaseSizeBeforeCreate = skillResultRepository.findAll().size();
 
     // Create the SkillResult
-    restSkillResultMockMvc
-        .perform(post("/api/skill-results").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(magicTransitionsResult)))
-        .andExpect(status().isCreated());
+    restSkillResultMockMvc.perform(post("/api/players/{playerId}/skill-results", romanJosi.getId())
+        .contentType(TestUtils.APPLICATION_JSON)
+        .content(TestUtils.convertObjectToJsonBytes(magicTransitionsResultModel)))
+        .andExpect(status().isOk());
 
     // Validate the SkillResult in the database
     List<SkillResult> skillResultList = skillResultRepository.findAll();
     assertThat(skillResultList).hasSize(databaseSizeBeforeCreate + 1);
     SkillResult testSkillResult = skillResultList.get(skillResultList.size() - 1);
+    assertThat(testSkillResult.getPlayer()).isEqualTo(romanJosi);
+    assertThat(testSkillResult.getSkill()).isEqualTo(magicTransitions);
     assertThat(testSkillResult.getTime()).isEqualTo(SkillResultTemplates.THIRTY_SECONDS);
     assertThat(testSkillResult.getFailures()).isEqualTo(SkillResultTemplates.ONE);
     assertThat(testSkillResult.getPoints()).isNull();
@@ -114,44 +130,48 @@ public class SkillResultRestControllerIT extends IntegrationTest {
 
   @Test
   @Transactional
-  public void createSkillResultWithExistingId() throws Exception {
-    int databaseSizeBeforeCreate = skillResultRepository.findAll().size();
-
-    // Create the SkillResult with an existing ID
-    magicTransitionsResult.setId(1L);
-
-    // An entity with an existing ID cannot be created, so this API call must fail
-    restSkillResultMockMvc
-        .perform(post("/api/skill-results").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(magicTransitionsResult)))
-        .andExpect(status().isBadRequest());
-
-    // Validate the SkillResult in the database
-    List<SkillResult> skillResultList = skillResultRepository.findAll();
-    assertThat(skillResultList).hasSize(databaseSizeBeforeCreate);
-  }
-
-
-  @Test
-  @Transactional
-  public void getAllSkillResults() throws Exception {
+  public void getSkillResultsOfSkill() throws Exception {
     // Initialize the database
     skillResultRepository.saveAndFlush(magicTransitionsResult);
     skillResultRepository.saveAndFlush(bestShotResult);
 
-    // Get all the skillResultList
-    restSkillResultMockMvc.perform(get("/api/skill-results?sort=id,desc"))
+    // Get all the skillResults of a skill
+    restSkillResultMockMvc
+        .perform(get("/api/skills/{skillId}/skill-results", magicTransitions.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$", hasSize(2)))
-        .andExpect(jsonPath("$.[0].id").value(is(bestShotResult.getId().intValue())))
-        .andExpect(jsonPath("$.[0].time").value(nullValue()))
-        .andExpect(jsonPath("$.[0].failures").value(nullValue()))
-        .andExpect(jsonPath("$.[0].points").value(is(SkillResultTemplates.SIX)))
-        .andExpect(jsonPath("$.[1].id").value(is(magicTransitionsResult.getId().intValue())))
-        .andExpect(jsonPath("$.[1].time").value(is(SkillResultTemplates.THIRTY_SECONDS)))
-        .andExpect(jsonPath("$.[1].failures").value(is(SkillResultTemplates.ONE)))
-        .andExpect(jsonPath("$.[1].points").value(nullValue()));
+        .andExpect(jsonPath("$.links", empty()))
+        .andExpect(jsonPath("$.content", hasSize(1)))
+        .andExpect(jsonPath("$.content.[0].time").value(is(SkillResultTemplates.THIRTY_SECONDS)))
+        .andExpect(jsonPath("$.content.[0].failures").value(is(SkillResultTemplates.ONE)))
+        .andExpect(jsonPath("$.content.[0].points").value(is(nullValue())))
+        .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
+        .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
+        .andExpect(jsonPath("$.content.[0].links.[0].href",
+            endsWith("/skill-results/" + magicTransitionsResult.getId())));
+  }
+
+  @Test
+  @Transactional
+  public void getSkillResultsOfPlayer() throws Exception {
+    // Initialize the database
+    skillResultRepository.saveAndFlush(magicTransitionsResult);
+    skillResultRepository.saveAndFlush(bestShotResult);
+
+    // Get all the skillResults of a player
+    restSkillResultMockMvc
+        .perform(get("/api/players/{playerId}/skill-results", martinGerber.getId()))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.links", empty()))
+        .andExpect(jsonPath("$.content", hasSize(1)))
+        .andExpect(jsonPath("$.content.[0].time").value(is(nullValue())))
+        .andExpect(jsonPath("$.content.[0].failures").value(nullValue()))
+        .andExpect(jsonPath("$.content.[0].points").value(SkillResultTemplates.SIX))
+        .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
+        .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
+        .andExpect(jsonPath("$.content.[0].links.[0].href",
+            endsWith("/skill-results/" + bestShotResult.getId())));
   }
 
   @Test
@@ -164,10 +184,17 @@ public class SkillResultRestControllerIT extends IntegrationTest {
     restSkillResultMockMvc.perform(get("/api/skill-results/{id}", magicTransitionsResult.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.id").value(magicTransitionsResult.getId().intValue()))
-        .andExpect(jsonPath("$.time").value(SkillResultTemplates.THIRTY_SECONDS))
-        .andExpect(jsonPath("$.failures").value(SkillResultTemplates.ONE))
-        .andExpect(jsonPath("$.points").value(nullValue()));
+        .andExpect(jsonPath("$.time").value(is(SkillResultTemplates.THIRTY_SECONDS)))
+        .andExpect(jsonPath("$.failures").value(is(SkillResultTemplates.ONE)))
+        .andExpect(jsonPath("$.points").value(is(nullValue())))
+        .andExpect(jsonPath("$.links", hasSize(3)))
+        .andExpect(jsonPath("$.links.[0].rel").value(is("self")))
+        .andExpect(jsonPath("$.links.[0].href",
+            endsWith("/skill-results/" + magicTransitionsResult.getId())))
+        .andExpect(jsonPath("$.links.[1].rel").value(is("player")))
+        .andExpect(jsonPath("$.links.[1].href", endsWith("/players/" + romanJosi.getId())))
+        .andExpect(jsonPath("$.links.[2].rel").value(is("skill")))
+        .andExpect(jsonPath("$.links.[2].href", endsWith("/skills/" + magicTransitions.getId())));
   }
 
   @Test
@@ -187,12 +214,14 @@ public class SkillResultRestControllerIT extends IntegrationTest {
     int databaseSizeBeforeUpdate = skillResultRepository.findAll().size();
 
     // Update the skillResult
-    SkillResult updatedSkillResult =
-        magicTransitionsResult.toBuilder().time(31_000).failures(2).points(3).build();
+    magicTransitionsResultModel.setTime(31_000);
+    magicTransitionsResultModel.setFailures(2);
+    magicTransitionsResultModel.setPoints(3);
 
-    restSkillResultMockMvc
-        .perform(put("/api/skill-results").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(updatedSkillResult)))
+    restSkillResultMockMvc.perform(
+        put("/api/skill-results/{id}", magicTransitionsResult.getId())
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsResultModel)))
         .andExpect(status().isOk());
 
     // Validate the SkillResult in the database
@@ -206,24 +235,6 @@ public class SkillResultRestControllerIT extends IntegrationTest {
 
   @Test
   @Transactional
-  public void updateNonExistingSkillResult() throws Exception {
-    int databaseSizeBeforeUpdate = skillResultRepository.findAll().size();
-
-    // Create the SkillResult
-
-    // If the entity doesn't have an ID, it will throw BadRequestAlertException
-    restSkillResultMockMvc
-        .perform(put("/api/skill-results").contentType(TestUtil.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(magicTransitionsResult)))
-        .andExpect(status().isBadRequest());
-
-    // Validate the SkillResult in the database
-    List<SkillResult> skillResultList = skillResultRepository.findAll();
-    assertThat(skillResultList).hasSize(databaseSizeBeforeUpdate);
-  }
-
-  @Test
-  @Transactional
   public void deleteSkillResult() throws Exception {
     // Initialize the database
     skillResultService.save(magicTransitionsResult);
@@ -231,11 +242,14 @@ public class SkillResultRestControllerIT extends IntegrationTest {
     int databaseSizeBeforeDelete = skillResultRepository.findAll().size();
 
     // Delete the skillResult
-    restSkillResultMockMvc.perform(delete("/api/skill-results/{id}", magicTransitionsResult.getId())
-        .accept(TestUtil.APPLICATION_JSON)).andExpect(status().isNoContent());
+    restSkillResultMockMvc
+        .perform(delete("/api/skill-results/{id}", magicTransitionsResult.getId())
+            .accept(TestUtils.APPLICATION_JSON))
+        .andExpect(status().isNoContent());
 
     // Validate the database contains one less item
     List<SkillResult> skillResultList = skillResultRepository.findAll();
     assertThat(skillResultList).hasSize(databaseSizeBeforeDelete - 1);
   }
+
 }

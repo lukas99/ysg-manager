@@ -1,13 +1,11 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.lukas99.ysgmanager.domain.Tournament;
+import com.lukas99.ysgmanager.domain.TournamentService;
 import java.util.List;
-import java.util.Optional;
 import javax.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lukas99.ysgmanager.adapter.rest.errors.BadRequestException;
-import com.lukas99.ysgmanager.domain.Tournament;
-import com.lukas99.ysgmanager.domain.TournamentService;
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.ResponseUtil;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * REST controller for managing {@link com.lukas99.ysgmanager.domain.Tournament}.
@@ -30,13 +24,6 @@ import io.github.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class TournamentRestController {
 
-  private final Logger log = LoggerFactory.getLogger(TournamentRestController.class);
-
-  private static final String ENTITY_NAME = "tournament";
-
-  @Value("${jhipster.clientApp.name}")
-  private String applicationName;
-
   private final TournamentService tournamentService;
 
   public TournamentRestController(TournamentService tournamentService) {
@@ -44,91 +31,71 @@ public class TournamentRestController {
   }
 
   /**
-   * {@code POST  /tournaments} : Create a new tournament.
+   * Create a new tournament.
    *
    * @param tournament the tournament to create.
-   * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new
-   *         tournament, or with status {@code 400 (Bad Request)} if the tournament has already an
-   *         ID.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
+   * @return the created tournament.
    */
   @PostMapping("/tournaments")
-  public ResponseEntity<Tournament> createTournament(@Valid @RequestBody Tournament tournament)
-      throws URISyntaxException {
-    log.debug("REST request to save Tournament : {}", tournament);
-    if (tournament.getId() != null) {
-      throw new BadRequestException("A new tournament cannot already have an ID");
-    }
-    Tournament result = tournamentService.save(tournament);
-    return ResponseEntity.created(new URI("/api/tournaments/" + result.getId())).headers(HeaderUtil
-        .createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-        .body(result);
+  public ResponseEntity<TournamentModel> createTournament(
+      @Valid @RequestBody TournamentModel tournament) {
+    Tournament result = tournamentService.save(tournament.toEntity());
+    return ResponseEntity.ok(new TournamentModelAssembler().toModel(result));
   }
 
   /**
-   * {@code PUT  /tournaments} : Updates an existing tournament.
+   * Updates an existing tournament.
    *
+   * @param id         the id of the tournament to update.
    * @param tournament the tournament to update.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated
-   *         tournament, or with status {@code 400 (Bad Request)} if the tournament is not valid, or
-   *         with status {@code 500 (Internal Server Error)} if the tournament couldn't be updated.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
+   * @return the updated tournament
    */
-  @PutMapping("/tournaments")
-  public ResponseEntity<Tournament> updateTournament(@Valid @RequestBody Tournament tournament)
-      throws URISyntaxException {
-    log.debug("REST request to update Tournament : {}", tournament);
-    if (tournament.getId() == null) {
-      throw new BadRequestException("Invalid id. It is null.");
-    }
-
-    Tournament existingTournament = tournamentService.findOne(tournament.getId()).get();
-    existingTournament.update(tournament);
-
+  @PutMapping("/tournaments/{id}")
+  public ResponseEntity<TournamentModel> updateTournament(@PathVariable Long id,
+      @Valid @RequestBody TournamentModel tournament) {
+    Tournament existingTournament = tournamentService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    existingTournament.update(tournament.toEntity());
     Tournament result = tournamentService.save(existingTournament);
-    return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true,
-        ENTITY_NAME, tournament.getId().toString())).body(result);
+    return ResponseEntity.ok(new TournamentModelAssembler().toModel(result));
   }
 
   /**
-   * {@code GET  /tournaments} : get all the tournaments.
+   * Get all tournaments.
    *
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tournaments in
-   *         body.
+   * @return list of tournaments.
    */
   @GetMapping("/tournaments")
-  public List<Tournament> getAllTournaments() {
-    log.debug("REST request to get all Tournaments");
-    return tournamentService.findAll();
+  public ResponseEntity<CollectionModel<TournamentModel>> getAllTournaments() {
+    List<Tournament> tournaments = tournamentService.findAll();
+    return ResponseEntity.ok(new TournamentModelAssembler().toCollectionModel(tournaments));
   }
 
   /**
-   * {@code GET  /tournaments/:id} : get the "id" tournament.
+   * Get the tournament with the given id.
    *
    * @param id the id of the tournament to retrieve.
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tournament,
-   *         or with status {@code 404 (Not Found)}.
+   * @return the tournament.
    */
   @GetMapping("/tournaments/{id}")
-  public ResponseEntity<Tournament> getTournament(@PathVariable Long id) {
-    log.debug("REST request to get Tournament : {}", id);
-    Optional<Tournament> tournament = tournamentService.findOne(id);
-    return ResponseUtil.wrapOrNotFound(tournament);
+  public ResponseEntity<TournamentModel> getTournament(@PathVariable Long id) {
+    Tournament tournament = tournamentService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    return ResponseEntity.ok(new TournamentModelAssembler().toModel(tournament));
   }
 
   /**
-   * {@code DELETE  /tournaments/:id} : delete the "id" tournament.
+   * Delete the tournament with the given id.
    *
    * @param id the id of the tournament to delete.
-   * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+   * @return no content.
    */
   @DeleteMapping("/tournaments/{id}")
   public ResponseEntity<Void> deleteTournament(@PathVariable Long id) {
-    log.debug("REST request to delete Tournament : {}", id);
-    tournamentService.delete(id);
-    return ResponseEntity.noContent()
-        .headers(
-            HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-        .build();
+    Tournament tournament = tournamentService.findOne(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    tournamentService.delete(tournament.getId());
+    return ResponseEntity.noContent().build();
   }
+
 }

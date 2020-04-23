@@ -6,9 +6,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * The rating of a player for a skill provided by a skill expert.
@@ -16,6 +18,8 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "skillrating")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
 @EqualsAndHashCode(callSuper = false)
 public class SkillRating extends Auditable {

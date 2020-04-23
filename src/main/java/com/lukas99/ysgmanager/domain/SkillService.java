@@ -29,7 +29,6 @@ public class SkillService {
    * @return the persisted entity.
    */
   public Skill save(Skill skill) {
-    log.debug("Request to save Skill : {}", skill);
     return skillRepository.save(skill);
   }
 
@@ -40,7 +39,6 @@ public class SkillService {
    */
   @Transactional(readOnly = true)
   public List<Skill> findAll() {
-    log.debug("Request to get all Skills");
     return skillRepository.findAll();
   }
 
@@ -53,7 +51,6 @@ public class SkillService {
    */
   @Transactional(readOnly = true)
   public Optional<Skill> findOne(Long id) {
-    log.debug("Request to get Skill : {}", id);
     return skillRepository.findById(id);
   }
 
@@ -63,7 +60,15 @@ public class SkillService {
    * @param id the id of the entity.
    */
   public void delete(Long id) {
-    log.debug("Request to delete Skill : {}", id);
     skillRepository.deleteById(id);
   }
+
+  /**
+   * @param tournament The tournament for which the skills should be retrieved.
+   * @return The skills of the given tournament.
+   */
+  public List<Skill> findByTournament(Tournament tournament) {
+    return skillRepository.findByTournament(tournament);
+  }
+
 }
