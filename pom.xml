@@ -19,7 +19,7 @@
   <description>YSG Manager</description>
 
   <modules>
-    <module>server</module>
+    <module>ysg-manager-server</module>
   </modules>
 
   <dependencies>
