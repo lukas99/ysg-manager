@@ -26,14 +26,15 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     super.configure(http);
-    http.authorizeRequests() //
-        .antMatchers("/api/v1/application").permitAll() //
-        .antMatchers("/api/v1/secure").hasRole("YSG_ADMIN") //
+    http.authorizeRequests()
+        .antMatchers("/", "/index.html", "/**.js", "/**.css").permitAll()
+        .antMatchers("/api/v1/application").permitAll()
+        .antMatchers("/api/v1/secure").hasRole("YSG_ADMIN")
         .anyRequest().authenticated();
   }
 
   @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  public void configureGlobal(AuthenticationManagerBuilder auth) {
     // use SimpleAuthorityMapper to allow roles in Keycloak to be defined without prefix "ROLE_"
     KeycloakAuthenticationProvider keycloakAuthProvider = keycloakAuthenticationProvider();
     keycloakAuthProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
@@ -64,7 +65,7 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
     // Keycloak filters from being registered twice.
     // http://www.keycloak.org/docs/latest/securing_apps/index.html#avoid-double-filter-bean-registration
     FilterRegistrationBean<KeycloakAuthenticationProcessingFilter> registrationBean =
-        new FilterRegistrationBean<KeycloakAuthenticationProcessingFilter>(filter);
+        new FilterRegistrationBean<>(filter);
     registrationBean.setEnabled(false);
     return registrationBean;
   }
