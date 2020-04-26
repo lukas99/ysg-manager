@@ -20,6 +20,7 @@
 
   <modules>
     <module>ysg-manager-server</module>
+    <module>ysg-manager-web</module>
   </modules>
 
   <dependencies>

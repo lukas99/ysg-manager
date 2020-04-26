@@ -7,4 +7,8 @@ Hint: [Markdown cheat sheet]().
 
 # ysg-manager server
 
-Look at the [server documentation](./server/readme.md).
+Look at the [server documentation](./ysg-manager-server/readme.md).
+
+# ysg-manager web
+
+Look at the [web documentation](./ysg-manager-web/readme.md).
