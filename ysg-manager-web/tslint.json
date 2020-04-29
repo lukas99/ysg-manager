@@ -22,13 +22,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "app",
+      "ysg",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "app",
+      "ysg",
       "kebab-case"
     ],
     "eofline": true,
