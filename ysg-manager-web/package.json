@@ -10,7 +10,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "lint": "ng lint",
-    "format:test": "prettier \"src/**/*.{ts,html,md,scss,json}\" --list-differnt",
+    "format:test": "prettier \"src/**/*.{ts,html,md,scss,json}\" --list-different",
     "format:write": "prettier \"src/**/*.{ts,html,md,scss,json}\" --write",
     "e2e": "ng e2e"
   },
