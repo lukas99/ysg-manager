@@ -1,6 +1,6 @@
-import {NgModule} from '@angular/core';
-import {BrowserModule} from "@angular/platform-browser";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /**
  * Core module with basic layout and all the core singleton services which will
@@ -8,10 +8,6 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
  */
 @NgModule({
   declarations: [],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule
-  ]
+  imports: [BrowserModule, BrowserAnimationsModule]
 })
-export class CoreModule {
-}
+export class CoreModule {}
