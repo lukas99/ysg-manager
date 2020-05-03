@@ -1,0 +1,24 @@
+<mat-toolbar color="primary">
+  YSG Manager
+  <span class="spacer"></span>
+  <button
+    routerLink="home"
+    mat-flat-button
+    color="primary"
+    routerLinkActive="active"
+  >
+    Home
+  </button>
+  <button
+    routerLink="admin"
+    mat-flat-button
+    color="primary"
+    routerLinkActive="active"
+  >
+    Admin
+  </button>
+</mat-toolbar>
+
+<main>
+  <router-outlet></router-outlet>
+</main>

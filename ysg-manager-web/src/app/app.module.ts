@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { AppRoutingModule } from './app-routing.module';
+import { SharedModule } from './shared/shared.module';
 
 /**
  * The AppModule which will stay virtually empty for the whole life-time of the project,
@@ -9,7 +10,14 @@ import { AppRoutingModule } from './app-routing.module';
  */
 @NgModule({
   declarations: [AppComponent],
-  imports: [CoreModule, AppRoutingModule],
+  imports: [
+    // core & shared
+    CoreModule,
+    SharedModule,
+
+    // app
+    AppRoutingModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
