@@ -4,6 +4,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 
 /**
+ * Contains reusable components, pipes and directives (declarables) that will be used by lazy
+ * features.
+ *
  * Shared module will be imported by many lazy loaded features and because of that it should
  * NEVER implement any services (providers: [ ]) and only contain declarables (components,
  * directives and pipes) and modules (which only contain declarables).
