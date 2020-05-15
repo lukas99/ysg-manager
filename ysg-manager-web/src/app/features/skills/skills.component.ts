@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'ysg-admin',
+  selector: 'ysg-skills',
   template: `
     <p>
-      admin works!
+      skills works!
     </p>
   `,
-  styleUrls: ['./admin.component.css']
+  styleUrls: ['./skills.component.css']
 })
-export class AdminComponent implements OnInit {
+export class SkillsComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}

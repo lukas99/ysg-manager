@@ -1,5 +1,21 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import {
+  OKTA_CONFIG,
+  OktaAuthModule,
+  OktaCallbackComponent
+} from '@okta/okta-angular';
+import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from './core/authentication/auth.interceptor';
+
+const oktaConfig = {
+  clientId: '0oaavzvotnqkm2vUe4x6',
+  issuer: 'https://dev-280604.okta.com/oauth2/default',
+  redirectUri: window.location.origin + '/implicit/callback',
+  scopes: ['openid', 'profile'],
+  pkce: true
+};
 
 /**
  * The available routes of this app.
@@ -12,14 +28,25 @@ export const routes: Routes = [
     redirectTo: 'home'
   },
   {
-    path: 'home',
-    loadChildren: () =>
-      import('./feature/home/home.module').then((m) => m.HomeModule)
+    path: 'implicit/callback',
+    component: OktaCallbackComponent
   },
   {
-    path: 'admin',
+    path: 'home',
     loadChildren: () =>
-      import('./feature/admin/admin.module').then((m) => m.AdminModule)
+      import('./features/home/home.module').then((m) => m.HomeModule)
+  },
+  {
+    path: 'masterdata',
+    loadChildren: () =>
+      import('./features/masterdata/masterdata.module').then(
+        (m) => m.MasterdataModule
+      )
+  },
+  {
+    path: 'skills',
+    loadChildren: () =>
+      import('./features/skills/skills.module').then((m) => m.SkillsModule)
   },
   {
     // redirect to home when a route doesn't exist (or or redirect to dedicated "not found" route)
@@ -32,7 +59,17 @@ export const routes: Routes = [
  * The routing module of this app.
  */
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  declarations: [],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    OktaAuthModule,
+    RouterModule.forRoot(routes)
+  ],
+  providers: [
+    { provide: OKTA_CONFIG, useValue: oktaConfig },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

@@ -1,22 +1,32 @@
 <mat-toolbar color="primary">
-  YSG Manager
-  <span class="spacer"></span>
   <button
     routerLink="home"
     mat-flat-button
     color="primary"
     routerLinkActive="active"
   >
-    Home
+    YSG Manager
   </button>
   <button
-    routerLink="admin"
+    *ngIf="isAuthenticated"
+    routerLink="masterdata"
     mat-flat-button
     color="primary"
     routerLinkActive="active"
   >
-    Admin
+    Masterdata
   </button>
+  <button
+    *ngIf="isAuthenticated"
+    routerLink="skills"
+    mat-flat-button
+    color="primary"
+    routerLinkActive="active"
+  >
+    Skills
+  </button>
+  <span class="spacer"></span>
+  <ysg-login></ysg-login>
 </mat-toolbar>
 
 <main>

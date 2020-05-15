@@ -1,17 +1,14 @@
-import { Component } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OktaAuthService } from '@okta/okta-angular';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-/**
- * The main component of this app which contains the basic layout structure.
- */
 @Component({
-  selector: 'ysg-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.css']
+  selector: 'ysg-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
-export class AppComponent {
+export class LoginComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
   private destroy = new Subject<void>();
 

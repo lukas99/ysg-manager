@@ -1,85 +1,59 @@
 package com.lukas99.ysgmanager;
 
-import org.keycloak.adapters.KeycloakConfigResolver;
-import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
-import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
-import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
-import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
-import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter;
-import org.keycloak.adapters.springsecurity.management.HttpSessionManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
-import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 /**
- * Keycloak configuration. Adjust configure method to define permissions.
+ * Configure application to be an OAuth 2.0 resource server which looks for an Authorization header
+ * with an access token in it.
  */
-@KeycloakConfiguration
-public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
+@Configuration
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    super.configure(http);
     http.authorizeRequests()
         .antMatchers("/", "/index.html", "/**.js", "/**.css").permitAll()
         .antMatchers("/api/v1/application").permitAll()
-        .antMatchers("/api/v1/secure").hasRole("YSG_ADMIN")
-        .anyRequest().authenticated();
+        /**
+         * In Okta, add 2 'groups' claims (Access Token & ID Token) and add the applications to
+         * the corresponding groups. See:
+         * https://developer.okta.com/blog/2019/06/20/spring-preauthorize
+         * Use @EnableGlobalMethodSecurity(prePostEnabled = true) in case @PreAuthorize
+         * should be used on REST controller methods.
+         */
+        .antMatchers("/api/v1/secure").hasAuthority("ysg-admins")
+        .anyRequest().authenticated()
+        // enable OAuth2/OIDC
+        .and().oauth2Login()
+        .and().oauth2ResourceServer().jwt();
   }
 
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) {
-    // use SimpleAuthorityMapper to allow roles in Keycloak to be defined without prefix "ROLE_"
-    KeycloakAuthenticationProvider keycloakAuthProvider = keycloakAuthenticationProvider();
-    keycloakAuthProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
-    auth.authenticationProvider(keycloakAuthProvider);
-  }
-
+  /**
+   * In order for your Angular app (on port 4200) to communicate with your Spring Boot app (on port
+   * 8080), we have to enable CORS (cross-origin resource sharing).
+   *
+   * @return The CORS filter registration bean.
+   */
   @Bean
-  @Override
-  protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-    // no session
-    return new NullAuthenticatedSessionStrategy();
-  }
-
-  @Bean
-  public KeycloakConfigResolver KeycloakConfigResolver() {
-    // By Default, the Spring Security Adapter looks for a keycloak.json configuration file. You can
-    // make sure it looks at the configuration provided by the Spring Boot Adapter by adding this
-    // bean
-    return new KeycloakSpringBootConfigResolver();
-  }
-
-  @Bean
-  public FilterRegistrationBean<KeycloakAuthenticationProcessingFilter> keycloakAuthenticationProcessingFilterRegistrationBean(
-      KeycloakAuthenticationProcessingFilter filter) {
-    // Spring Boot attempts to eagerly register filter beans with the web application context.
-    // Therefore, when running the Keycloak Spring Security adapter in a Spring Boot environment, it
-    // may be necessary to add FilterRegistrationBeans to your security configuration to prevent the
-    // Keycloak filters from being registered twice.
-    // http://www.keycloak.org/docs/latest/securing_apps/index.html#avoid-double-filter-bean-registration
-    FilterRegistrationBean<KeycloakAuthenticationProcessingFilter> registrationBean =
-        new FilterRegistrationBean<>(filter);
-    registrationBean.setEnabled(false);
-    return registrationBean;
-  }
-
-  @Bean
-  @Override
-  @ConditionalOnMissingBean(HttpSessionManager.class)
-  protected HttpSessionManager httpSessionManager() {
-    // Spring Boot 2.1 also disables spring.main.allow-bean-definition-overriding by default. This
-    // can mean that an BeanDefinitionOverrideException will be encountered if a Configuration class
-    // extending KeycloakWebSecurityConfigurerAdapter registers a bean that is already detected by a
-    // @ComponentScan. This can be avoided by overriding the registration to use the Boot-specific
-    // @ConditionalOnMissingBean annotation, as with HttpSessionManager below.
-    return new HttpSessionManager();
+  public FilterRegistrationBean<CorsFilter> simpleCorsFilter() {
+    var source = new UrlBasedCorsConfigurationSource();
+    var config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOrigin("http://localhost:4200");
+    config.addAllowedMethod("*");
+    config.addAllowedHeader("*");
+    source.registerCorsConfiguration("/**", config);
+    var bean = new FilterRegistrationBean(new CorsFilter(source));
+    bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    return bean;
   }
 
 }

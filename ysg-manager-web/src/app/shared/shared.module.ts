@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -22,18 +25,24 @@ import { MatButtonModule } from '@angular/material/button';
 @NgModule({
   declarations: [],
   imports: [
+    // angular
     CommonModule,
 
     // material
     MatToolbarModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule
   ],
   exports: [
+    // angular
     CommonModule,
 
     // material
     MatToolbarModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule
   ],
   providers: [] // should stay empty
 })

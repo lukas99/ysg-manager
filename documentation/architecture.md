@@ -67,13 +67,20 @@ Which technology should be used for the application which is used to collect the
 **Desicion**: PWA. Features of PWAs are sufficient for requirements. Installation of the app is very easy, no installation of an artifact needed. App doesn't need to be pushed to app stores. I currently don't have a mac computer.
 
 ### Identity Management
-How should identity management be solved?
+How to solve identity management?
 
 **Keycloak**
-* (+) state of the art identity and access management system with components and features (like login form or forgot password feature) which can be used out of the box
+* (+) state-of-the-art identity and access management system with components and features (like login form or forgot password feature) which can be used out of the box
 * (+) existing know-how
 * (-) increased complexity because it needs to be run as separate container
 * (-) higher costs because multiple containers need to be run
+
+**Okta**
+* (+) popular, state-of-the-art identity and access management cloud service
+* (+) free for small projects
+* (+) well documented
+* (+) decreases complexity because only one container needs to be run
+* (-) non-existing know-how
 
 **Self made with Spring Security**
 * (-) error prone because it's self made
@@ -81,7 +88,7 @@ How should identity management be solved?
 * (+) simple, quick to build
 * (+) ysg-manager can still be run as single container, no container orchestration needed -> cheap
 
-**Decision**: Keycloak. Powerful. Provides components and features to be used out of the box. When costs are calculated for the few days around the young star games tournament, they are quite low.
+**Decision**: Okta. Popular and well documented. No additional container needed because it's a cloud service.
 
 ## Quality Requirements
 Quality Tree

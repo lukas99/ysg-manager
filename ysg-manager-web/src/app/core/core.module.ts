@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
+import { LoginComponent } from './login/login.component';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /**
  * Core module with all the core application wide singleton services which will be loaded eagerly
@@ -8,12 +10,13 @@ import { BrowserModule } from '@angular/platform-browser';
  * application.
  */
 @NgModule({
-  declarations: [],
+  declarations: [LoginComponent],
   imports: [
     // angular
     BrowserAnimationsModule,
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
-  exports: []
+  exports: [LoginComponent]
 })
 export class CoreModule {}
