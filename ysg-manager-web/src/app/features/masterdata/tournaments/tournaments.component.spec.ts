@@ -1,27 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TournamentsComponent } from './tournaments.component';
-import { SharedModule } from '../../../shared/shared.module';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TournamentsService } from '../../../core/services/tournaments.service';
+import { Tournament } from '../../../types';
+import { of } from 'rxjs';
 
 describe('TournamentsComponent', () => {
+  let tournamentService: TournamentsService;
   let component: TournamentsComponent;
-  let fixture: ComponentFixture<TournamentsComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [TournamentsComponent],
-      imports: [SharedModule, HttpClientTestingModule]
-    }).compileComponents();
-  }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TournamentsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    tournamentService = <any>{ getTournaments: jest.fn() };
+    component = new TournamentsComponent(tournamentService);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('ngOnInit', () => {
+    it('loads the tournaments', () => {
+      const tournaments = [
+        <Tournament>{ name: 'YSG 2019', dateDescription: '2019' },
+        <Tournament>{ name: 'YSG 2020', dateDescription: '2020' }
+      ];
+      tournamentService.getTournaments = () => of(tournaments);
+
+      component.ngOnInit();
+
+      expect(component.tournaments).toBe(tournaments);
+    });
   });
 });

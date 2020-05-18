@@ -5,7 +5,7 @@
     color="primary"
     routerLinkActive="active"
   >
-    YSG Manager
+    {{ 'APP_TITLE' | translate }}
   </button>
   <button
     *ngIf="isAuthenticated"
@@ -14,7 +14,7 @@
     color="primary"
     routerLinkActive="active"
   >
-    Masterdata
+    {{ 'NAVIGATION_MASTERDATA' | translate }}
   </button>
   <button
     *ngIf="isAuthenticated"
@@ -23,9 +23,10 @@
     color="primary"
     routerLinkActive="active"
   >
-    Skills
+    {{ 'NAVIGATION_SKILLS' | translate }}
   </button>
   <span class="spacer"></span>
+  <ysg-language-picker></ysg-language-picker>
   <ysg-login></ysg-login>
 </mat-toolbar>
 

@@ -4,7 +4,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -28,21 +30,31 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     // angular
     CommonModule,
 
-    // material
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule
-  ],
-  exports: [
-    // angular
-    CommonModule,
+    // ngx-translate
+    TranslateModule,
 
     // material
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    MatMenuModule,
+    MatIconModule
+  ],
+  exports: [
+    // angular
+    CommonModule,
+
+    // ngx-translate
+    TranslateModule,
+
+    // material
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatMenuModule,
+    MatIconModule
   ],
   providers: [] // should stay empty
 })
