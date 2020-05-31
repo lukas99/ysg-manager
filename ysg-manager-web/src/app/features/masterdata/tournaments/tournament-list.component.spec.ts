@@ -1,17 +1,17 @@
-import { TournamentsComponent } from './tournaments.component';
+import { TournamentListComponent } from './tournament-list.component';
 import { TournamentsService } from '../../../core/services/tournaments.service';
 import { Tournament } from '../../../types';
 import { of } from 'rxjs';
 import { fakeAsync, tick } from '@angular/core/testing';
 import DoneCallback = jest.DoneCallback;
 
-describe('TournamentsComponent', () => {
+describe('TournamentListComponent', () => {
   let tournamentService: TournamentsService;
-  let component: TournamentsComponent;
+  let component: TournamentListComponent;
 
   beforeEach(() => {
     tournamentService = <any>{ getTournaments: jest.fn() };
-    component = new TournamentsComponent(tournamentService);
+    component = new TournamentListComponent(tournamentService);
   });
 
   describe('ngOnInit', () => {

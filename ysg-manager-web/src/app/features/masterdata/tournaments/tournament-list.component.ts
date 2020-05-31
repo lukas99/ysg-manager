@@ -4,11 +4,11 @@ import { EMPTY, Observable } from 'rxjs';
 import { Tournament } from '../../../types';
 
 @Component({
-  selector: 'ysg-tournaments',
-  templateUrl: 'tournaments.component.html',
-  styleUrls: ['tournaments.component.css']
+  selector: 'ysg-tournament-list',
+  templateUrl: 'tournament-list.component.html',
+  styleUrls: ['tournament-list.component.css']
 })
-export class TournamentsComponent implements OnInit {
+export class TournamentListComponent implements OnInit {
   tournaments: Observable<Tournament[]> = EMPTY;
   displayedColumns: string[] = ['name', 'dateDescription', 'actions'];
 
