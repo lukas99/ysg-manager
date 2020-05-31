@@ -7,6 +7,7 @@ import { MatListModule } from '@angular/material/list';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -39,7 +40,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatSidenavModule,
     MatListModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    MatTableModule
   ],
   exports: [
     // angular
@@ -54,7 +56,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatSidenavModule,
     MatListModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    MatTableModule
   ],
   providers: [] // should stay empty
 })

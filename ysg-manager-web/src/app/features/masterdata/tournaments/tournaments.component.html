@@ -1,6 +1,24 @@
-<p>
-  {{ 'TOURNAMENTS_PAGE_TITLE' | translate }}
-</p>
-<ul>
-  <li *ngFor="let t of tournaments">{{ t.name }}</li>
-</ul>
+<h1>{{ 'TOURNAMENTS_PAGE_TITLE' | translate }}</h1>
+<table mat-table [dataSource]="tournaments" class="mat-elevation-z8">
+  <!-- column templates -->
+  <mat-text-column
+    name="name"
+    headerText="{{ 'TOURNAMENT_NAME' | translate }}"
+  ></mat-text-column>
+  <mat-text-column
+    name="dateDescription"
+    headerText="{{ 'TOURNAMENT_DATE_DESCRIPTION' | translate }}"
+  ></mat-text-column>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>
+      <button mat-icon-button color="primary"><mat-icon>add</mat-icon></button>
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button><mat-icon>edit</mat-icon></button>
+      <button mat-icon-button><mat-icon>delete</mat-icon></button>
+    </td>
+  </ng-container>
+  <!-- row templates -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

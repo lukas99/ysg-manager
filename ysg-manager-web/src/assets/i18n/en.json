@@ -1,8 +1,14 @@
 {
   "APP_TITLE": "YSG Manager",
+
+  "TOURNAMENT_NAME": "Name",
+  "TOURNAMENT_DATE_DESCRIPTION": "Date description",
+
   "NAVIGATION_MASTERDATA": "Masterdata",
   "NAVIGATION_SKILLS": "Skills",
   "NAVIGATION_TOURNAMENTS": "Tournaments",
   "NAVIGATION_TEAMS": "Teams",
-  "TOURNAMENTS_PAGE_TITLE": "Tournaments"
+
+  "TOURNAMENTS_PAGE_TITLE": "Tournaments",
+  "TEAMS_PAGE_TITLE": "Teams"
 }

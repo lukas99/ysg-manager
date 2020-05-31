@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TournamentsService } from '../../../core/services/tournaments.service';
-import { Subject } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { Tournament } from '../../../types';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ysg-tournaments',
@@ -10,20 +9,12 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['tournaments.component.css']
 })
 export class TournamentsComponent implements OnInit {
-  tournaments: Tournament[] = [];
-  private destroy = new Subject<void>();
+  tournaments: Observable<Tournament[]> = EMPTY;
+  displayedColumns: string[] = ['name', 'dateDescription', 'actions'];
 
   constructor(private tournamentsService: TournamentsService) {}
 
   ngOnInit(): void {
-    this.tournamentsService
-      .getTournaments()
-      .pipe(takeUntil(this.destroy))
-      .subscribe((touraments) => (this.tournaments = touraments));
-  }
-
-  ngOnDestroy(): void {
-    this.destroy.next();
-    this.destroy.complete();
+    this.tournaments = this.tournamentsService.getTournaments();
   }
 }
