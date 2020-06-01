@@ -14,7 +14,7 @@ describe('TournamentDetailComponent', () => {
   beforeEach(() => {
     tournament = { name: 'YSG 2019', dateDescription: '2019' };
 
-    tournamentService = <any>{ getSelectedTournament: jest.fn() };
+    tournamentService = <any>{};
     tournamentService.getSelectedTournament = () => of(tournament);
 
     component = new TournamentDetailComponent(tournamentService);
