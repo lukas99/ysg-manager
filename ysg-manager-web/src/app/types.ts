@@ -1,6 +1,6 @@
 export interface Tournament {
   name: string;
-  dateDescription?: string;
+  dateDescription: string;
 }
 
 export interface TournamentList {
