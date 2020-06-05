@@ -132,6 +132,7 @@
         "check-type"
       ]
     },
+    "no-angle-bracket-type-assertion": false,
     "no-conflicting-lifecycle": true,
     "no-host-metadata-property": true,
     "no-input-rename": true,
@@ -143,10 +144,15 @@
     "template-banana-in-box": true,
     "template-no-negated-async": true,
     "use-lifecycle-interface": true,
-    "use-pipe-transform-interface": true,
-    "prettier": true
+    "use-pipe-transform-interface": true
   },
   "rulesDirectory": [
     "codelyzer"
-  ]
+  ],
+  "linterOptions": {
+    "exclude": [
+      "**/*.spec.ts",
+      "**/*.e2e-spec.ts"
+    ]
+  }
 }
