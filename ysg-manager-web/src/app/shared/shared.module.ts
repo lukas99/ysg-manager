@@ -8,6 +8,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -30,6 +34,8 @@ import { MatTableModule } from '@angular/material/table';
   imports: [
     // angular
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
 
     // ngx-translate
     TranslateModule,
@@ -41,11 +47,16 @@ import { MatTableModule } from '@angular/material/table';
     MatListModule,
     MatMenuModule,
     MatIconModule,
-    MatTableModule
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule
   ],
   exports: [
     // angular
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
 
     // ngx-translate
     TranslateModule,
@@ -57,7 +68,10 @@ import { MatTableModule } from '@angular/material/table';
     MatListModule,
     MatMenuModule,
     MatIconModule,
-    MatTableModule
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule
   ],
   providers: [] // should stay empty
 })

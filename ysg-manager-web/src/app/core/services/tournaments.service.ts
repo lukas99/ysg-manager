@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Tournament, TournamentList } from '../../types';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -10,7 +10,6 @@ import { environment } from '../../../environments/environment';
 })
 export class TournamentsService {
   private tournamentsUrl: string;
-  private selectedTournament$ = new BehaviorSubject<Tournament>(<Tournament>{});
 
   constructor(private http: HttpClient) {
     this.tournamentsUrl = environment.apiUrl + '/api/tournaments';
@@ -22,11 +21,10 @@ export class TournamentsService {
       .pipe(map((list) => list._embedded.tournamentModelList));
   }
 
-  setSelectedTournament(tournament: Tournament) {
-    this.selectedTournament$.next(tournament);
-  }
-
-  getSelectedTournament(): Observable<Tournament> {
-    return this.selectedTournament$;
+  saveTournament(tournament: Tournament): Observable<Tournament> {
+    const selfLink = tournament._links.self;
+    return this.http
+      .put(selfLink.href, tournament)
+      .pipe(map((tournament) => <Tournament>tournament));
   }
 }

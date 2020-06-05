@@ -45,4 +45,23 @@ describe('TournamentsService', () => {
       }
     });
   });
+
+  it('should save a given tournament', () => {
+    let tournament = <Tournament>{
+      name: 'YSG 2019',
+      _links: { self: { href: 'tournaments/1' } }
+    };
+    let updatedTournament = <Tournament>{
+      name: 'YSG 2020',
+      _links: { self: { href: 'tournaments/1' } }
+    };
+
+    service.saveTournament(tournament).subscribe((result) => {
+      expect(result).toBe(updatedTournament);
+    });
+
+    const testRequest = httpMock.expectOne(tournament._links.self.href);
+    expect(testRequest.request.method).toBe('PUT');
+    testRequest.flush(updatedTournament);
+  });
 });

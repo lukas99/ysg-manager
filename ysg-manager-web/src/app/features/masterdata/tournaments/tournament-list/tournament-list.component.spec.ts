@@ -4,6 +4,7 @@ import { Tournament } from '../../../../types';
 import { of } from 'rxjs';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { TournamentsModuleService } from '../tournaments-module.service';
 import DoneCallback = jest.DoneCallback;
 
 describe('TournamentListComponent', () => {
@@ -11,26 +12,41 @@ describe('TournamentListComponent', () => {
 
   let component: TournamentListComponent;
 
-  let tournamentService: TournamentsService;
+  let tournamentsService: TournamentsService;
+  let tournamentsModuleService: TournamentsModuleService;
   let router: Router;
 
   beforeEach(() => {
     tournaments = [
-      { name: 'YSG 2019', dateDescription: '2019' },
-      { name: 'YSG 2020', dateDescription: '2020' }
+      {
+        name: 'YSG 2019',
+        dateDescription: '2019',
+        _links: { self: { href: '' } }
+      },
+      {
+        name: 'YSG 2020',
+        dateDescription: '2020',
+        _links: { self: { href: '' } }
+      }
     ];
 
-    tournamentService = <any>{
-      getTournaments: jest.fn(),
+    tournamentsService = <any>{
+      getTournaments: jest.fn()
+    };
+    tournamentsModuleService = <any>{
       setSelectedTournament: jest.fn()
     };
     router = <any>{ navigateByUrl: jest.fn() };
-    component = new TournamentListComponent(tournamentService, router);
+    component = new TournamentListComponent(
+      tournamentsService,
+      tournamentsModuleService,
+      router
+    );
   });
 
   describe('ngOnInit', () => {
     it('loads the tournaments', fakeAsync((done: DoneCallback) => {
-      tournamentService.getTournaments = () => of(tournaments);
+      tournamentsService.getTournaments = () => of(tournaments);
 
       component.tournaments.subscribe((t) => {
         expect(t).toBe(tournaments);
@@ -46,7 +62,7 @@ describe('TournamentListComponent', () => {
 
     component.edit(tournament);
 
-    expect(tournamentService.setSelectedTournament).toHaveBeenCalledWith(
+    expect(tournamentsModuleService.setSelectedTournament).toHaveBeenCalledWith(
       tournament
     );
     expect(router.navigateByUrl).toHaveBeenCalledWith(

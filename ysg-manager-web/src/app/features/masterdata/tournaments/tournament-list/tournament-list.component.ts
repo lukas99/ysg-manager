@@ -3,6 +3,7 @@ import { TournamentsService } from '../../../../core/services/tournaments.servic
 import { EMPTY, Observable } from 'rxjs';
 import { Tournament } from '../../../../types';
 import { Router } from '@angular/router';
+import { TournamentsModuleService } from '../tournaments-module.service';
 
 @Component({
   selector: 'ysg-tournament-list',
@@ -15,6 +16,7 @@ export class TournamentListComponent implements OnInit {
 
   constructor(
     private tournamentsService: TournamentsService,
+    private tournamentsModuleService: TournamentsModuleService,
     private router: Router
   ) {}
 
@@ -23,7 +25,7 @@ export class TournamentListComponent implements OnInit {
   }
 
   edit(element: Tournament) {
-    this.tournamentsService.setSelectedTournament(element);
+    this.tournamentsModuleService.setSelectedTournament(element);
     this.router.navigateByUrl('/masterdata/tournaments/detail');
   }
 }
