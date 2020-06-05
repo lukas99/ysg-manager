@@ -25,6 +25,6 @@ export class TournamentsService {
     const selfLink = tournament._links.self;
     return this.http
       .put(selfLink.href, tournament)
-      .pipe(map((tournament) => <Tournament>tournament));
+      .pipe(map((savedTournament) => <Tournament>savedTournament));
   }
 }
