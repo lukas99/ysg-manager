@@ -2,12 +2,14 @@ import { TournamentListComponent } from './tournament-list.component';
 import { TournamentsService } from '../../../../core/services/tournaments.service';
 import { Tournament } from '../../../../types';
 import { of } from 'rxjs';
-import { fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { TournamentsModuleService } from '../tournaments-module.service';
+import { skip } from 'rxjs/operators';
 import DoneCallback = jest.DoneCallback;
 
 describe('TournamentListComponent', () => {
+  let tournament1: Tournament;
+  let tournament2: Tournament;
   let tournaments: Tournament[];
 
   let component: TournamentListComponent;
@@ -17,24 +19,28 @@ describe('TournamentListComponent', () => {
   let router: Router;
 
   beforeEach(() => {
-    tournaments = [
-      {
-        name: 'YSG 2019',
-        dateDescription: '2019',
-        _links: { self: { href: '' } }
-      },
-      {
-        name: 'YSG 2020',
-        dateDescription: '2020',
-        _links: { self: { href: '' } }
-      }
-    ];
+    tournament1 = {
+      name: 'YSG 2019',
+      dateDescription: '2019',
+      _links: { self: { href: '' } }
+    };
+    tournament2 = {
+      name: 'YSG 2020',
+      dateDescription: '2020',
+      _links: { self: { href: '' } }
+    };
+    tournaments = [tournament1, tournament2];
 
     tournamentsService = <any>{
-      getTournaments: jest.fn()
+      getTournaments: jest
+        .fn()
+        .mockImplementationOnce(() => of([tournament1, tournament2]))
+        .mockImplementationOnce(() => of([tournament1])), // tournament2 deleted,
+      deleteTournament: jest.fn((deletedTournament) => of(deletedTournament))
     };
     tournamentsModuleService = <any>{
-      setSelectedTournament: jest.fn()
+      setSelectedTournament: jest.fn(),
+      setEmptyTournament: jest.fn()
     };
     router = <any>{ navigateByUrl: jest.fn() };
     component = new TournamentListComponent(
@@ -45,28 +51,49 @@ describe('TournamentListComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    it('loads the tournaments', fakeAsync((done: DoneCallback) => {
-      tournamentsService.getTournaments = () => of(tournaments);
-
-      component.tournaments.subscribe((t) => {
-        expect(t).toBe(tournaments);
+    it('loads the tournaments', (done: DoneCallback) => {
+      component.ngOnInit();
+      component.tournaments$.subscribe((t) => {
+        expect(t).toEqual(tournaments);
         done();
       });
-      component.ngOnInit();
-      tick();
-    }));
+    });
   });
 
   it('handles the edit event', () => {
-    const tournament = tournaments[0];
-
-    component.edit(tournament);
+    component.edit(tournament1);
 
     expect(tournamentsModuleService.setSelectedTournament).toHaveBeenCalledWith(
-      tournament
+      tournament1
     );
     expect(router.navigateByUrl).toHaveBeenCalledWith(
       '/masterdata/tournaments/detail'
     );
+  });
+
+  it('handles the create event', () => {
+    component.create();
+
+    expect(tournamentsModuleService.setEmptyTournament).toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith(
+      '/masterdata/tournaments/detail'
+    );
+  });
+
+  it('handles the delete event', (done: DoneCallback) => {
+    component.ngOnInit();
+
+    component.tournaments$
+      .pipe(skip(1)) // skip call from ngOnInit
+      .subscribe((t) => {
+        expect(t).toEqual([tournament1]);
+        expect(tournamentsService.deleteTournament).toHaveBeenCalledWith(
+          tournament2
+        );
+        expect(tournamentsService.getTournaments).toHaveBeenCalledTimes(2);
+        done();
+      });
+
+    component.delete(tournament2);
   });
 });

@@ -12,6 +12,10 @@ export class TournamentsModuleService {
     this.selectedTournament$.next(tournament);
   }
 
+  setEmptyTournament() {
+    this.selectedTournament$.next(<Tournament>{});
+  }
+
   getSelectedTournament(): Observable<Tournament> {
     return this.selectedTournament$;
   }

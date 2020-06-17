@@ -46,7 +46,25 @@ describe('TournamentsService', () => {
     });
   });
 
-  it('should save a given tournament', () => {
+  it('should create a new tournament', () => {
+    let tournament = <Tournament>{
+      name: 'YSG 2019'
+    };
+    let createdTournament = <Tournament>{
+      name: 'YSG 2019 created',
+      _links: { self: { href: 'tournaments/1' } }
+    };
+
+    service.createTournament(tournament).subscribe((result) => {
+      expect(result).toBe(createdTournament);
+    });
+
+    const testRequest = httpMock.expectOne(service['tournamentsUrl']);
+    expect(testRequest.request.method).toBe('POST');
+    testRequest.flush(createdTournament);
+  });
+
+  it('should update a given tournament', () => {
     let tournament = <Tournament>{
       name: 'YSG 2019',
       _links: { self: { href: 'tournaments/1' } }
@@ -56,12 +74,31 @@ describe('TournamentsService', () => {
       _links: { self: { href: 'tournaments/1' } }
     };
 
-    service.saveTournament(tournament).subscribe((result) => {
+    service.updateTournament(tournament).subscribe((result) => {
       expect(result).toBe(updatedTournament);
     });
 
     const testRequest = httpMock.expectOne(tournament._links.self.href);
     expect(testRequest.request.method).toBe('PUT');
     testRequest.flush(updatedTournament);
+  });
+
+  it('should delete a given tournament', () => {
+    let tournament = <Tournament>{
+      name: 'YSG 2019',
+      _links: { self: { href: 'tournaments/1' } }
+    };
+    let deletedTournament = <Tournament>{
+      name: 'YSG 2019 deleted',
+      _links: { self: { href: 'tournaments/1' } }
+    };
+
+    service.deleteTournament(tournament).subscribe((result) => {
+      expect(result).toBe(deletedTournament);
+    });
+
+    const testRequest = httpMock.expectOne(tournament._links.self.href);
+    expect(testRequest.request.method).toBe('DELETE');
+    testRequest.flush(deletedTournament);
   });
 });

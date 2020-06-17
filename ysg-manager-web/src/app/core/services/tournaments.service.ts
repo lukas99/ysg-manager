@@ -21,10 +21,23 @@ export class TournamentsService {
       .pipe(map((list) => list._embedded.tournamentModelList));
   }
 
-  saveTournament(tournament: Tournament): Observable<Tournament> {
+  createTournament(tournament: Tournament): Observable<Tournament> {
+    return this.http
+      .post(this.tournamentsUrl, tournament)
+      .pipe(map((createdTournamenent) => <Tournament>createdTournamenent));
+  }
+
+  updateTournament(tournament: Tournament): Observable<Tournament> {
     const selfLink = tournament._links.self;
     return this.http
       .put(selfLink.href, tournament)
       .pipe(map((savedTournament) => <Tournament>savedTournament));
+  }
+
+  deleteTournament(tournament: Tournament): Observable<Tournament> {
+    const selfLink = tournament._links.self;
+    return this.http
+      .delete(selfLink.href)
+      .pipe(map((deletedTournament) => <Tournament>deletedTournament));
   }
 }

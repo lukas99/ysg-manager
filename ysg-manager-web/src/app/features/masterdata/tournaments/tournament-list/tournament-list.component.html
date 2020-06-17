@@ -1,5 +1,5 @@
 <h1>{{ 'TOURNAMENTS_PAGE_TITLE' | translate }}</h1>
-<table mat-table [dataSource]="tournaments" class="mat-elevation-z8">
+<table mat-table [dataSource]="tournaments$" class="mat-elevation-z8">
   <!-- column templates -->
   <mat-text-column
     name="name"
@@ -11,7 +11,7 @@
   ></mat-text-column>
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>
-      <button mat-icon-button color="primary">
+      <button mat-icon-button color="primary" (click)="create()">
         <mat-icon>add</mat-icon>
       </button>
     </th>
@@ -19,7 +19,7 @@
       <button mat-icon-button (click)="edit(element)">
         <mat-icon>edit</mat-icon>
       </button>
-      <button mat-icon-button>
+      <button mat-icon-button (click)="delete(element)">
         <mat-icon>delete</mat-icon>
       </button>
     </td>

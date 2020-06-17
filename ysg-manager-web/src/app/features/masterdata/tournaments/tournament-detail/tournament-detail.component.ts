@@ -31,12 +31,29 @@ export class TournamentDetailComponent implements OnInit {
     });
     this.tournament$ = this.tournamentsModuleService
       .getSelectedTournament()
-      .pipe(tap((tourament) => this.form?.patchValue(tourament)));
+      .pipe(tap((tournament) => this.form?.patchValue(tournament)));
   }
 
   save() {
+    const tournament: Tournament = this.form?.value;
+    this.shouldUpdate(tournament)
+      ? this.update(tournament)
+      : this.create(tournament);
+  }
+
+  private shouldUpdate(tournament: Tournament) {
+    return tournament._links && tournament._links.self;
+  }
+
+  private update(tournament: Tournament) {
     this.tournamentsService
-      .saveTournament(this.form?.value)
+      .updateTournament(tournament)
+      .subscribe(() => this.navigateToOverview());
+  }
+
+  private create(tournament: Tournament) {
+    this.tournamentsService
+      .createTournament(tournament)
       .subscribe(() => this.navigateToOverview());
   }
 

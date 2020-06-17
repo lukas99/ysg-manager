@@ -1,5 +1,3 @@
-import { fakeAsync, tick } from '@angular/core/testing';
-
 import { TournamentsModuleService } from './tournaments-module.service';
 import { Tournament } from '../../../types';
 import { skip, take, tap } from 'rxjs/operators';
@@ -14,18 +12,45 @@ describe('TournamentsModuleService', () => {
     service = new TournamentsModuleService();
   });
 
-  it('can select and get a tournament', fakeAsync((done: DoneCallback) => {
-    service.getSelectedTournament().pipe(
-      take(1),
-      tap((t) => expect(t).toBe({}))
-    );
-    service.getSelectedTournament().pipe(
-      skip(1),
-      tap((t) => expect(t).toBe(tournament)),
-      tap((t) => done())
-    );
+  it('can select and get a tournament', (done: DoneCallback) => {
+    service
+      .getSelectedTournament()
+      .pipe(
+        take(1), // initial value
+        tap((t) => expect(t).toEqual({}))
+      )
+      .subscribe();
+
+    service
+      .getSelectedTournament()
+      .pipe(
+        skip(1), // set value
+        tap((t) => expect(t).toEqual(tournament)),
+        tap((t) => done())
+      )
+      .subscribe();
 
     service.setSelectedTournament(tournament);
-    tick();
-  }));
+  });
+
+  it('can select and get an empty tournament', (done: DoneCallback) => {
+    service
+      .getSelectedTournament()
+      .pipe(
+        take(1), // initial value
+        tap((t) => expect(t).toEqual({}))
+      )
+      .subscribe();
+
+    service
+      .getSelectedTournament()
+      .pipe(
+        skip(1), // set value
+        tap((t) => expect(t).toEqual({})),
+        tap((t) => done())
+      )
+      .subscribe();
+
+    service.setEmptyTournament();
+  });
 });

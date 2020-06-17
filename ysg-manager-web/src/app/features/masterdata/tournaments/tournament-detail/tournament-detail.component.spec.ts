@@ -15,22 +15,25 @@ describe('TournamentDetailComponent', () => {
   let router: Router;
   let formBuilder: FormBuilder;
 
-  let tournament: Tournament;
+  let existingTournament: Tournament;
 
   beforeEach(() => {
-    tournament = {
+    existingTournament = {
       name: 'YSG 2019',
       dateDescription: '2019',
       _links: { self: { href: 'tournaments/1' } }
     };
 
     tournamentService = <any>{};
-    tournamentService.saveTournament = jest.fn((savedTournament) =>
+    tournamentService.updateTournament = jest.fn((savedTournament) =>
       of(savedTournament)
+    );
+    tournamentService.createTournament = jest.fn((createdTournament) =>
+      of(createdTournament)
     );
     tournamentsModuleService = <any>{};
     tournamentsModuleService.getSelectedTournament = jest.fn(() =>
-      of(tournament)
+      of(existingTournament)
     );
 
     router = <any>{ navigateByUrl: jest.fn() };
@@ -47,7 +50,7 @@ describe('TournamentDetailComponent', () => {
   describe('ngOnInit', () => {
     it('loads the selected tournament', fakeAsync((done: DoneCallback) => {
       component.tournament$.subscribe((t) => {
-        expect(t).toBe(tournament);
+        expect(t).toBe(existingTournament);
         done();
       });
 
@@ -69,9 +72,11 @@ describe('TournamentDetailComponent', () => {
     ) => {
       component.tournament$.subscribe((t) => {
         let formValue: Tournament = component.form?.value;
-        expect(formValue.name).toBe(tournament.name);
-        expect(formValue.dateDescription).toBe(tournament.dateDescription);
-        expect(formValue._links).toBe(tournament._links);
+        expect(formValue.name).toBe(existingTournament.name);
+        expect(formValue.dateDescription).toBe(
+          existingTournament.dateDescription
+        );
+        expect(formValue._links).toBe(existingTournament._links);
         done();
       });
 
@@ -88,10 +93,64 @@ describe('TournamentDetailComponent', () => {
       tick();
     }));
 
-    it('saves a tournament', fakeAsync(() => {
+    it('updates a tournament', fakeAsync(() => {
       component.save();
       tick();
-      expect(tournamentService.saveTournament).toHaveBeenCalledWith(tournament);
+      expect(tournamentService.updateTournament).toHaveBeenCalledWith(
+        existingTournament
+      );
+    }));
+
+    it('navigates to the overview page', fakeAsync(() => {
+      component.save();
+      tick();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        '/masterdata/tournaments'
+      );
+    }));
+  });
+
+  describe('save with tournament update', () => {
+    beforeEach(fakeAsync(() => {
+      // load tournament to the form
+      component.ngOnInit();
+      component.tournament$.subscribe();
+      tick();
+    }));
+
+    it('updates a tournament', fakeAsync(() => {
+      component.save();
+      tick();
+      expect(tournamentService.updateTournament).toHaveBeenCalledWith(
+        existingTournament
+      );
+    }));
+
+    it('navigates to the overview page', fakeAsync(() => {
+      component.save();
+      tick();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        '/masterdata/tournaments'
+      );
+    }));
+  });
+
+  describe('save with tournament creation', () => {
+    beforeEach(fakeAsync(() => {
+      tournamentsModuleService.getSelectedTournament = jest.fn(() =>
+        of(<Tournament>{})
+      );
+
+      // load empty tournament to the form
+      component.ngOnInit();
+      component.tournament$.subscribe();
+      tick();
+    }));
+
+    it('creates a tournament', fakeAsync(() => {
+      component.save();
+      tick();
+      expect(tournamentService.createTournament).toHaveBeenCalled();
     }));
 
     it('navigates to the overview page', fakeAsync(() => {
