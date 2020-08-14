@@ -1,6 +1,9 @@
 {
   "APP_TITLE": "YSG Manager",
 
+  "SAVE": "Save",
+  "CANCEL": "Cancel",
+
   "TOURNAMENT_NAME": "Name",
   "TOURNAMENT_DATE_DESCRIPTION": "Date description",
 
