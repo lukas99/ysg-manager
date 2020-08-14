@@ -40,7 +40,6 @@ export class TournamentListComponent implements OnInit {
 
   private navigateToDetailView() {
     this.router.navigateByUrl('/masterdata/tournaments/detail');
-    console.log('test');
   }
 
   delete(element: Tournament) {
