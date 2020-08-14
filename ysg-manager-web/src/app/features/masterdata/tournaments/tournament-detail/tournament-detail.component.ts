@@ -4,7 +4,7 @@ import { TournamentsService } from '../../../../core/services/tournaments.servic
 import { EMPTY, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TournamentsModuleService } from '../tournaments-module.service';
 
 @Component({
@@ -13,7 +13,7 @@ import { TournamentsModuleService } from '../tournaments-module.service';
   styleUrls: ['tournament-detail.component.css']
 })
 export class TournamentDetailComponent implements OnInit {
-  form: FormGroup | undefined;
+  form!: FormGroup;
   tournament$: Observable<Tournament> = EMPTY;
 
   constructor(
@@ -25,20 +25,26 @@ export class TournamentDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      name: [''],
+      name: ['', Validators.required],
       dateDescription: [''],
       _links: ['']
     });
     this.tournament$ = this.tournamentsModuleService
       .getSelectedTournament()
-      .pipe(tap((tournament) => this.form?.patchValue(tournament)));
+      .pipe(tap((tournament) => this.form.patchValue(tournament)));
   }
 
   save() {
-    const tournament: Tournament = this.form?.value;
-    this.shouldUpdate(tournament)
-      ? this.update(tournament)
-      : this.create(tournament);
+    if (this.isFormValid()) {
+      const tournament: Tournament = this.form.value;
+      this.shouldUpdate(tournament)
+        ? this.update(tournament)
+        : this.create(tournament);
+    }
+  }
+
+  private isFormValid() {
+    return this.form.dirty && this.form.valid;
   }
 
   private shouldUpdate(tournament: Tournament) {

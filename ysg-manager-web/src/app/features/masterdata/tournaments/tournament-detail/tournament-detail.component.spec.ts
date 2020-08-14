@@ -61,7 +61,7 @@ describe('TournamentDetailComponent', () => {
     it('creates the empty form', () => {
       component.ngOnInit();
 
-      let formValue: Tournament = component.form?.value;
+      let formValue: Tournament = component.form.value;
       expect(formValue.name).toBe('');
       expect(formValue.dateDescription).toBe('');
       expect(formValue._links).toBe('');
@@ -71,7 +71,7 @@ describe('TournamentDetailComponent', () => {
       done: DoneCallback
     ) => {
       component.tournament$.subscribe((t) => {
-        let formValue: Tournament = component.form?.value;
+        let formValue: Tournament = component.form.value;
         expect(formValue.name).toBe(existingTournament.name);
         expect(formValue.dateDescription).toBe(
           existingTournament.dateDescription
@@ -94,16 +94,22 @@ describe('TournamentDetailComponent', () => {
     }));
 
     it('updates a tournament', fakeAsync(() => {
+      component.form.markAsDirty();
+
       component.save();
       tick();
+
       expect(tournamentService.updateTournament).toHaveBeenCalledWith(
         existingTournament
       );
     }));
 
     it('navigates to the overview page', fakeAsync(() => {
+      component.form.markAsDirty();
+
       component.save();
       tick();
+
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         '/masterdata/tournaments'
       );
@@ -119,16 +125,22 @@ describe('TournamentDetailComponent', () => {
     }));
 
     it('updates a tournament', fakeAsync(() => {
+      component.form.markAsDirty();
+
       component.save();
       tick();
+
       expect(tournamentService.updateTournament).toHaveBeenCalledWith(
         existingTournament
       );
     }));
 
     it('navigates to the overview page', fakeAsync(() => {
+      component.form.markAsDirty();
+
       component.save();
       tick();
+
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         '/masterdata/tournaments'
       );
@@ -138,7 +150,7 @@ describe('TournamentDetailComponent', () => {
   describe('save with tournament creation', () => {
     beforeEach(fakeAsync(() => {
       tournamentsModuleService.getSelectedTournament = jest.fn(() =>
-        of(<Tournament>{})
+        of(<Tournament>{ name: 'new tournament' })
       );
 
       // load empty tournament to the form
@@ -148,14 +160,20 @@ describe('TournamentDetailComponent', () => {
     }));
 
     it('creates a tournament', fakeAsync(() => {
+      component.form.markAsDirty();
+
       component.save();
       tick();
+
       expect(tournamentService.createTournament).toHaveBeenCalled();
     }));
 
     it('navigates to the overview page', fakeAsync(() => {
+      component.form.markAsDirty();
+
       component.save();
       tick();
+
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         '/masterdata/tournaments'
       );
