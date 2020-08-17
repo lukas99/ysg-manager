@@ -1,20 +1,20 @@
-import { TournamentsModuleService } from './tournaments-module.service';
-import { Tournament } from '../../../types';
+import { Tournament } from '../../types';
+import { CrudListService } from './crud-list.service';
 import { skip, take, tap } from 'rxjs/operators';
 import DoneCallback = jest.DoneCallback;
 
-describe('TournamentsModuleService', () => {
+describe('CrudService', () => {
   let tournament: Tournament;
-  let service: TournamentsModuleService;
+  let service: CrudListService;
 
   beforeEach(() => {
     tournament = <Tournament>{ name: 'YSG 2020' };
-    service = new TournamentsModuleService();
+    service = new CrudListService();
   });
 
-  it('can select and get a tournament', (done: DoneCallback) => {
+  it('can select and get an item', (done: DoneCallback) => {
     service
-      .getSelectedTournament()
+      .getSelectedItem()
       .pipe(
         take(1), // initial value
         tap((t) => expect(t).toEqual({}))
@@ -22,7 +22,7 @@ describe('TournamentsModuleService', () => {
       .subscribe();
 
     service
-      .getSelectedTournament()
+      .getSelectedItem()
       .pipe(
         skip(1), // set value
         tap((t) => expect(t).toEqual(tournament)),
@@ -30,12 +30,12 @@ describe('TournamentsModuleService', () => {
       )
       .subscribe();
 
-    service.setSelectedTournament(tournament);
+    service.setSelectedItem(tournament);
   });
 
-  it('can select and get an empty tournament', (done: DoneCallback) => {
+  it('can select and get an empty item', (done: DoneCallback) => {
     service
-      .getSelectedTournament()
+      .getSelectedItem()
       .pipe(
         take(1), // initial value
         tap((t) => expect(t).toEqual({}))
@@ -43,7 +43,7 @@ describe('TournamentsModuleService', () => {
       .subscribe();
 
     service
-      .getSelectedTournament()
+      .getSelectedItem()
       .pipe(
         skip(1), // set value
         tap((t) => expect(t).toEqual({})),
@@ -51,6 +51,6 @@ describe('TournamentsModuleService', () => {
       )
       .subscribe();
 
-    service.setEmptyTournament();
+    service.setEmptyItem();
   });
 });

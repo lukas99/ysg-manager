@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CrudListComponent } from './crud/crud-list/crud-list.component';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -30,7 +31,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
  * in providers: [ ] of any module
  */
 @NgModule({
-  declarations: [],
+  declarations: [
+    CrudListComponent
+  ],
   imports: [
     // angular
     CommonModule,
@@ -71,7 +74,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatTableModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCardModule
+    MatCardModule,
+
+    // declared components
+    CrudListComponent
   ],
   providers: [] // should stay empty
 })

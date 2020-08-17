@@ -5,7 +5,7 @@ import { EMPTY, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TournamentsModuleService } from '../tournaments-module.service';
+import { CrudListService } from '../../../../core/services/crud-list.service';
 
 @Component({
   selector: 'ysg-tournament-detail',
@@ -18,7 +18,7 @@ export class TournamentDetailComponent implements OnInit {
 
   constructor(
     private tournamentsService: TournamentsService,
-    private tournamentsModuleService: TournamentsModuleService,
+    private crudListService: CrudListService,
     private router: Router,
     private formBuilder: FormBuilder
   ) {}
@@ -29,8 +29,8 @@ export class TournamentDetailComponent implements OnInit {
       dateDescription: [''],
       _links: ['']
     });
-    this.tournament$ = this.tournamentsModuleService
-      .getSelectedTournament()
+    this.tournament$ = this.crudListService
+      .getSelectedItem()
       .pipe(tap((tournament) => this.form.patchValue(tournament)));
   }
 

@@ -4,11 +4,12 @@ import { Observable } from 'rxjs';
 import { Tournament, TournamentList } from '../../types';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TournamentsService {
+export class TournamentsService implements CrudService {
   private tournamentsUrl: string;
 
   constructor(private http: HttpClient) {
@@ -39,5 +40,13 @@ export class TournamentsService {
     return this.http
       .delete(selfLink.href)
       .pipe(map((deletedTournament) => <Tournament>deletedTournament));
+  }
+
+  getItems(): Observable<any[]> {
+    return this.getTournaments();
+  }
+
+  deleteItem(item: any): Observable<any> {
+    return this.deleteTournament(item);
   }
 }

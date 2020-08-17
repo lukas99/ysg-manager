@@ -5,13 +5,13 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
-import { TournamentsModuleService } from '../tournaments-module.service';
+import { CrudListService } from '../../../../core/services/crud-list.service';
 import DoneCallback = jest.DoneCallback;
 
 describe('TournamentDetailComponent', () => {
   let component: TournamentDetailComponent;
   let tournamentService: TournamentsService;
-  let tournamentsModuleService: TournamentsModuleService;
+  let crudListService: CrudListService;
   let router: Router;
   let formBuilder: FormBuilder;
 
@@ -31,17 +31,15 @@ describe('TournamentDetailComponent', () => {
     tournamentService.createTournament = jest.fn((createdTournament) =>
       of(createdTournament)
     );
-    tournamentsModuleService = <any>{};
-    tournamentsModuleService.getSelectedTournament = jest.fn(() =>
-      of(existingTournament)
-    );
+    crudListService = <any>{};
+    crudListService.getSelectedItem = jest.fn(() => of(existingTournament));
 
     router = <any>{ navigateByUrl: jest.fn() };
     formBuilder = new FormBuilder();
 
     component = new TournamentDetailComponent(
       tournamentService,
-      tournamentsModuleService,
+      crudListService,
       router,
       formBuilder
     );
@@ -149,7 +147,7 @@ describe('TournamentDetailComponent', () => {
 
   describe('save with tournament creation', () => {
     beforeEach(fakeAsync(() => {
-      tournamentsModuleService.getSelectedTournament = jest.fn(() =>
+      crudListService.getSelectedItem = jest.fn(() =>
         of(<Tournament>{ name: 'new tournament' })
       );
 
