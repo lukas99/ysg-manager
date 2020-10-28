@@ -1,0 +1,17 @@
+<mat-card>
+  <form *ngIf="item$ | async; let item" [formGroup]="form">
+    <h1>{{ item.name }}</h1>
+
+    <!-- holds the form fields -->
+    <ng-container *ngTemplateOutlet="fieldsTemplate"></ng-container>
+
+    <div class="button-container">
+      <button mat-stroked-button color="primary" (click)="save()">
+        {{ 'SAVE' | translate }}
+      </button>
+      <button mat-stroked-button color="warn" (click)="cancel()">
+        {{ 'CANCEL' | translate }}
+      </button>
+    </div>
+  </form>
+</mat-card>

@@ -4,9 +4,15 @@ import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { CrudListService } from '../../../core/services/crud-list.service';
 
+/**
+ * The options to pass to the CrudListComponent.
+ */
 export interface CrudListOptions {
   headers: CrudListHeader[];
   crudService: CrudService;
+  /**
+   * The url to the detail page.
+   */
   routerDetailUrl: string;
 }
 
@@ -19,10 +25,12 @@ export interface CrudListHeader {
 }
 
 /**
- * Provides the data for the CRUD list component.
+ * Provides the CRUD operations for the CRUD list and detail components.
  */
 export interface CrudService {
   getItems(): Observable<any[]>;
+  createItem(item: any): Observable<any>;
+  updateItem(item: any): Observable<any>;
   deleteItem(item: any): Observable<any>;
 }
 

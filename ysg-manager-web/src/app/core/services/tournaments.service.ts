@@ -46,6 +46,14 @@ export class TournamentsService implements CrudService {
     return this.getTournaments();
   }
 
+  createItem(item: any): Observable<any> {
+    return this.createTournament(item);
+  }
+
+  updateItem(item: any): Observable<any> {
+    return this.updateTournament(item);
+  }
+
   deleteItem(item: any): Observable<any> {
     return this.deleteTournament(item);
   }

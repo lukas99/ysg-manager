@@ -1,7 +1,5 @@
-<mat-card>
-  <form *ngIf="tournament$ | async; let tournament" [formGroup]="form">
-    <h1>{{ tournament.name }}</h1>
-
+<ng-template #fields>
+  <ng-container [formGroup]="crudDetailOptions.form">
     <div>
       <mat-form-field appearance="fill">
         <mat-label>{{ 'TOURNAMENT_NAME' | translate }}</mat-label>
@@ -14,14 +12,9 @@
         <input matInput formControlName="dateDescription" />
       </mat-form-field>
     </div>
-
-    <div class="button-container">
-      <button mat-stroked-button color="primary" (click)="save()">
-        {{ 'SAVE' | translate }}
-      </button>
-      <button mat-stroked-button color="warn" (click)="cancel()">
-        {{ 'CANCEL' | translate }}
-      </button>
-    </div>
-  </form>
-</mat-card>
+  </ng-container>
+</ng-template>
+<ysg-crud-detail
+  [options]="crudDetailOptions"
+  [fieldsTemplate]="fields"
+></ysg-crud-detail>
