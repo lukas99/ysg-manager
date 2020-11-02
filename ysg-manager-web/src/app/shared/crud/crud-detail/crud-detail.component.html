@@ -1,6 +1,6 @@
 <mat-card>
   <form *ngIf="item$ | async; let item" [formGroup]="form">
-    <h1>{{ item.name }}</h1>
+    <h1>{{ getTitle(item) }}</h1>
 
     <!-- holds the form fields -->
     <ng-container *ngTemplateOutlet="fieldsTemplate"></ng-container>

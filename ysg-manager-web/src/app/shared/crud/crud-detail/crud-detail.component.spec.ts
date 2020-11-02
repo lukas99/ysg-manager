@@ -36,6 +36,7 @@ describe('CrudDetailComponent', () => {
     tournamentService.createItem = jest.fn((createdTournament) =>
       of(createdTournament)
     );
+    tournamentService.getItemTitle = jest.fn(() => 'item title');
     crudListService = <any>{};
     crudListService.getSelectedItem = jest.fn(() => of(existingTournament));
 
@@ -86,6 +87,25 @@ describe('CrudDetailComponent', () => {
       );
       expect(formValue._links).toBe(existingTournament._links);
     }));
+  });
+
+  describe('getTitle', () => {
+    it('loads and returns the title in case it is not yet loaded', () => {
+      const title = component.getTitle(existingTournament);
+
+      expect(title).toBe('item title');
+      expect(tournamentService.getItemTitle).toHaveBeenCalledWith(
+        existingTournament
+      );
+    });
+
+    it('returns the title in case it is already loaded', () => {
+      component['title'] = 'existing title';
+      const title = component.getTitle(existingTournament);
+
+      expect(title).toBe('existing title');
+      expect(tournamentService.getItemTitle).not.toHaveBeenCalled();
+    });
   });
 
   describe('save', () => {

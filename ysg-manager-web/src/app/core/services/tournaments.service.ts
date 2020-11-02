@@ -42,6 +42,10 @@ export class TournamentsService implements CrudService {
       .pipe(map((deletedTournament) => <Tournament>deletedTournament));
   }
 
+  getTournamentTitle(tournament: Tournament): string {
+    return tournament.name;
+  }
+
   getItems(): Observable<any[]> {
     return this.getTournaments();
   }
@@ -56,5 +60,9 @@ export class TournamentsService implements CrudService {
 
   deleteItem(item: any): Observable<any> {
     return this.deleteTournament(item);
+  }
+
+  getItemTitle(item: any): string {
+    return this.getTournamentTitle(item);
   }
 }

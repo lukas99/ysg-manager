@@ -32,6 +32,7 @@ export interface CrudService {
   createItem(item: any): Observable<any>;
   updateItem(item: any): Observable<any>;
   deleteItem(item: any): Observable<any>;
+  getItemTitle(item: any): string;
 }
 
 /**

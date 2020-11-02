@@ -37,6 +37,7 @@ export class CrudDetailComponent implements OnInit, AfterContentInit {
   @Input() options!: CrudDetailOptions;
   @Input() fieldsTemplate!: TemplateRef<any>;
 
+  private title = '';
   form = new FormGroup({});
   item$: Observable<any> = EMPTY;
 
@@ -53,6 +54,13 @@ export class CrudDetailComponent implements OnInit, AfterContentInit {
 
   ngAfterContentInit(): void {
     this.form = this.options.form;
+  }
+
+  getTitle(item: any): string {
+    if (!this.title) {
+      this.title = this.options.crudService.getItemTitle(item);
+    }
+    return this.title;
   }
 
   save() {

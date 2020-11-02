@@ -101,4 +101,14 @@ describe('TournamentsService', () => {
     expect(testRequest.request.method).toBe('DELETE');
     testRequest.flush(deletedTournament);
   });
+
+  it('should get a tournaments title', () => {
+    let tournament = <Tournament>{
+      name: 'YSG 2019'
+    };
+
+    const title = service.getTournamentTitle(tournament);
+
+    expect(title).toBe('YSG 2019');
+  });
 });
