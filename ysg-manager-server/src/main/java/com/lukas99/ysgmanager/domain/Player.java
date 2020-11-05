@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * A hockey player.
@@ -45,9 +46,11 @@ public class Player extends Auditable {
   private Team team;
 
   @OneToMany(mappedBy = "player")
+  @ToString.Exclude
   private List<SkillRating> skillRatings;
 
   @OneToMany(mappedBy = "player")
+  @ToString.Exclude
   private List<SkillResult> skillResults;
 
   public void update(Player player) {
