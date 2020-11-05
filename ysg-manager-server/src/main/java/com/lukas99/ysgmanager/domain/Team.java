@@ -39,7 +39,7 @@ public class Team extends Auditable {
   @ManyToOne
   private Tournament tournament;
 
-  @OneToMany
+  @OneToMany(mappedBy = "team")
   private List<Player> players;
 
   public void update(Team team) {
