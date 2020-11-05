@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * A team which participates at a tournament.
@@ -40,6 +41,7 @@ public class Team extends Auditable {
   private Tournament tournament;
 
   @OneToMany(mappedBy = "team")
+  @ToString.Exclude
   private List<Player> players;
 
   public void update(Team team) {

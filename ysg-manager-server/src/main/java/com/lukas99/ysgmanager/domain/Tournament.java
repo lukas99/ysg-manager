@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * A hockey tournament.
@@ -35,9 +36,11 @@ public class Tournament extends Auditable {
   private String dateDescription;
 
   @OneToMany(mappedBy = "tournament")
+  @ToString.Exclude
   private List<Team> teams;
 
   @OneToMany(mappedBy = "tournament")
+  @ToString.Exclude
   private List<Skill> skills;
 
   /**

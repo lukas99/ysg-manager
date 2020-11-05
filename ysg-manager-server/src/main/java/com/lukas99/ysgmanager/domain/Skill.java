@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * A skill.
@@ -48,9 +49,11 @@ public class Skill extends Auditable {
   private Tournament tournament;
 
   @OneToMany(mappedBy = "skill")
+  @ToString.Exclude
   private List<SkillRating> ratings;
 
   @OneToMany(mappedBy = "skill")
+  @ToString.Exclude
   private List<SkillResult> results;
 
   public void update(Skill skill) {
