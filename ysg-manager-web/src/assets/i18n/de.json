@@ -7,6 +7,8 @@
   "TOURNAMENT_NAME": "Name",
   "TOURNAMENT_DATE_DESCRIPTION": "Datumsbezeichnung",
 
+  "TEAM_NAME": "Name",
+
   "NAVIGATION_MASTERDATA": "Stammdaten",
   "NAVIGATION_SKILLS": "Skills",
   "NAVIGATION_TOURNAMENTS": "Turniere",

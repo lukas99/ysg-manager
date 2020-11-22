@@ -22,12 +22,12 @@ describe('CrudListComponent', () => {
     tournament1 = {
       name: 'YSG 2019',
       dateDescription: '2019',
-      _links: { self: { href: '' } }
+      _links: { self: { href: '' }, teams: { href: '' } }
     };
     tournament2 = {
       name: 'YSG 2020',
       dateDescription: '2020',
-      _links: { self: { href: '' } }
+      _links: { self: { href: '' }, teams: { href: '' } }
     };
     tournaments = [tournament1, tournament2];
 

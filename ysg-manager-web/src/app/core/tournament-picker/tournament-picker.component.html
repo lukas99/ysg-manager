@@ -1,0 +1,20 @@
+<span *ngIf="!isEditable">
+  <button mat-button>
+    {{ selectedTournamentName }}
+  </button>
+</span>
+<span *ngIf="isEditable">
+  <button mat-button [matMenuTriggerFor]="tournamentPicker">
+    {{ selectedTournamentName }}
+    <mat-icon>arrow_drop_down</mat-icon>
+  </button>
+  <mat-menu #tournamentPicker="matMenu">
+    <button
+      mat-menu-item
+      *ngFor="let tournament of tournaments"
+      (click)="useTournament(tournament)"
+    >
+      {{ tournament.name }}
+    </button>
+  </mat-menu>
+</span>

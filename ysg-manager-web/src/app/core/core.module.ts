@@ -7,6 +7,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { LanguagePickerComponent } from './language-picker/language-picker.component';
 import { SharedModule } from '../shared/shared.module';
+import { TournamentPickerComponent } from './tournament-picker/tournament-picker.component';
 
 /**
  * Import HttpClient with TranslateHttpLoader to load translation files using this factory method.
@@ -21,7 +22,11 @@ export function TranslationLoaderFactory(http: HttpClient) {
  * application.
  */
 @NgModule({
-  declarations: [LoginComponent, LanguagePickerComponent],
+  declarations: [
+    LoginComponent,
+    LanguagePickerComponent,
+    TournamentPickerComponent
+  ],
   imports: [
     SharedModule,
 
@@ -39,6 +44,6 @@ export function TranslationLoaderFactory(http: HttpClient) {
       }
     })
   ],
-  exports: [LoginComponent, LanguagePickerComponent]
+  exports: [LoginComponent, LanguagePickerComponent, TournamentPickerComponent]
 })
 export class CoreModule {}

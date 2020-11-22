@@ -6,7 +6,6 @@ import { TournamentDetailComponent } from './tournament-detail/tournament-detail
 
 @NgModule({
   declarations: [TournamentListComponent, TournamentDetailComponent],
-  imports: [SharedModule, TournamentsRoutingModule],
-  providers: []
+  imports: [SharedModule, TournamentsRoutingModule]
 })
 export class TournamentsModule {}

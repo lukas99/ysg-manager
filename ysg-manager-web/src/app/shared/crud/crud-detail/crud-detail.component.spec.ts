@@ -26,7 +26,10 @@ describe('CrudDetailComponent', () => {
     existingTournament = {
       name: 'YSG 2019',
       dateDescription: '2019',
-      _links: { self: { href: 'tournaments/1' } }
+      _links: {
+        self: { href: 'tournaments/1' },
+        teams: { href: 'tournaments/1/teams' }
+      }
     };
 
     tournamentService = <any>{};
