@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
       skills works!
     </p>
   `,
-  styleUrls: ['./skills.component.css']
+  styleUrls: []
 })
 export class SkillsComponent implements OnInit {
   constructor() {}

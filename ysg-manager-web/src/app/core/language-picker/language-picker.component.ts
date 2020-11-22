@@ -12,7 +12,7 @@ interface AppLanguage {
 @Component({
   selector: 'ysg-language-picker',
   templateUrl: 'language-picker.component.html',
-  styleUrls: ['language-picker.component.css']
+  styleUrls: []
 })
 export class LanguagePickerComponent implements OnInit {
   languages: AppLanguage[] = [

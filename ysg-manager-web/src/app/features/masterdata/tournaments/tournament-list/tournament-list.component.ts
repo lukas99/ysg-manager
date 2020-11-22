@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'ysg-tournament-list',
   templateUrl: 'tournament-list.component.html',
-  styleUrls: ['tournament-list.component.css']
+  styleUrls: []
 })
 export class TournamentListComponent {
   crudListOptions: CrudListOptions;

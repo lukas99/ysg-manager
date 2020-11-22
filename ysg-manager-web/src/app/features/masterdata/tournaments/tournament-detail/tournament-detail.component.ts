@@ -6,7 +6,7 @@ import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-deta
 @Component({
   selector: 'ysg-tournament-detail',
   templateUrl: 'tournament-detail.component.html',
-  styleUrls: ['tournament-detail.component.css']
+  styleUrls: []
 })
 export class TournamentDetailComponent {
   crudDetailOptions: CrudDetailOptions;

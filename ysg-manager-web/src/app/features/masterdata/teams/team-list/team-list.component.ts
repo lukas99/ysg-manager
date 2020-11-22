@@ -6,7 +6,7 @@ import { TeamsService } from '../../../../core/services/teams.service';
 @Component({
   selector: 'ysg-team-list',
   templateUrl: 'team-list.component.html',
-  styleUrls: ['team-list.component.css']
+  styleUrls: []
 })
 export class TeamListComponent {
   crudListOptions: CrudListOptions;

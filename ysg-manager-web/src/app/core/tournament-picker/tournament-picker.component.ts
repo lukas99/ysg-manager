@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'ysg-tournament-picker',
   templateUrl: 'tournament-picker.component.html',
-  styleUrls: ['tournament-picker.component.css']
+  styleUrls: []
 })
 export class TournamentPickerComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();

@@ -5,8 +5,8 @@ import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ysg-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  templateUrl: 'login.component.html',
+  styleUrls: []
 })
 export class LoginComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
