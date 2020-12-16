@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CrudListComponent } from './crud/crud-list/crud-list.component';
 import { CrudDetailComponent } from './crud/crud-detail/crud-detail.component';
+import { MatSelectModule } from '@angular/material/select';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -72,6 +73,7 @@ import { CrudDetailComponent } from './crud/crud-detail/crud-detail.component';
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
+    MatSelectModule,
 
     // declared components
     CrudListComponent,

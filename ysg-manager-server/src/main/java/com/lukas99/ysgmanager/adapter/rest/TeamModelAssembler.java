@@ -28,6 +28,9 @@ public class TeamModelAssembler extends RepresentationModelAssemblerSupport<Team
     model.add(
         linkTo(methodOn(TournamentRestController.class).getTournament(team.getTournament().getId()))
             .withRel("tournament"));
+    model.add(
+        linkTo(methodOn(PlayerRestController.class).getAllPlayers(team.getId()))
+            .withRel("players"));
 
     return model;
   }

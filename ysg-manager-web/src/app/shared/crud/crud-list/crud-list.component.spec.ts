@@ -4,7 +4,6 @@ import { TournamentsService } from '../../../core/services/tournaments.service';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { skip } from 'rxjs/operators';
-import { CrudListService } from '../../../core/services/crud-list.service';
 import DoneCallback = jest.DoneCallback;
 
 describe('CrudListComponent', () => {
@@ -15,7 +14,6 @@ describe('CrudListComponent', () => {
   let component: CrudListComponent;
 
   let tournamentsService: TournamentsService;
-  let crudListService: CrudListService;
   let router: Router;
 
   beforeEach(() => {
@@ -36,14 +34,12 @@ describe('CrudListComponent', () => {
         .fn()
         .mockImplementationOnce(() => of([tournament1, tournament2]))
         .mockImplementationOnce(() => of([tournament1])), // tournament2 deleted
-      deleteItem: jest.fn((deletedTournament) => of(deletedTournament))
-    };
-    crudListService = <any>{
+      deleteItem: jest.fn((deletedTournament) => of(deletedTournament)),
       setSelectedItem: jest.fn(),
       setEmptyItem: jest.fn()
     };
     router = <any>{ navigateByUrl: jest.fn() };
-    component = new CrudListComponent(crudListService, router);
+    component = new CrudListComponent(router);
     component.options = {
       headers: [
         {
@@ -73,7 +69,9 @@ describe('CrudListComponent', () => {
   it('handles the edit event', () => {
     component.edit(tournament1);
 
-    expect(crudListService.setSelectedItem).toHaveBeenCalledWith(tournament1);
+    expect(tournamentsService.setSelectedItem).toHaveBeenCalledWith(
+      tournament1
+    );
     expect(router.navigateByUrl).toHaveBeenCalledWith(
       '/masterdata/tournaments/detail'
     );
@@ -82,7 +80,7 @@ describe('CrudListComponent', () => {
   it('handles the create event', () => {
     component.create();
 
-    expect(crudListService.setEmptyItem).toHaveBeenCalled();
+    expect(tournamentsService.setEmptyItem).toHaveBeenCalled();
     expect(router.navigateByUrl).toHaveBeenCalledWith(
       '/masterdata/tournaments/detail'
     );

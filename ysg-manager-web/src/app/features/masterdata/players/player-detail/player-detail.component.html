@@ -1,0 +1,33 @@
+<ng-template #fields>
+  <ng-container [formGroup]="crudDetailOptions.form">
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'PLAYER_FIRST_NAME' | translate }}</mat-label>
+        <input matInput formControlName="firstName" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'PLAYER_FIRST_NAME' | translate }}</mat-label>
+        <input matInput formControlName="lastName" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'PLAYER_SHIRT_NUMBER' | translate }}</mat-label>
+        <input matInput formControlName="shirtNumber" required />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'PLAYER_POSITION' | translate }}</mat-label>
+        <mat-select formControlName="position" required>
+          <mat-option
+            *ngFor="let position of positions"
+            [value]="position.value"
+          >
+            {{ position.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </ng-container>
+</ng-template>
+<ysg-crud-detail
+  [options]="crudDetailOptions"
+  [fieldsTemplate]="fields"
+></ysg-crud-detail>

@@ -5,17 +5,19 @@ import { Team, TeamList, Tournament } from '../../types';
 import { map } from 'rxjs/operators';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
 import { TournamentsService } from './tournaments.service';
+import { CrudStateService } from './crud-state.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TeamsService implements CrudService {
+export class TeamsService extends CrudStateService implements CrudService {
   private selectedTournament!: Tournament;
 
   constructor(
     private http: HttpClient,
     private tournamentService: TournamentsService
   ) {
+    super();
     this.tournamentService
       .getSelectedTournament()
       .subscribe((tournament) => (this.selectedTournament = tournament));

@@ -8,7 +8,6 @@ import {
 import { FormGroup } from '@angular/forms';
 import { EMPTY, Observable } from 'rxjs';
 import { Tournament } from '../../../types';
-import { CrudListService } from '../../../core/services/crud-list.service';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { CrudService } from '../crud-list/crud-list.component';
@@ -41,13 +40,10 @@ export class CrudDetailComponent implements OnInit, AfterContentInit {
   form = new FormGroup({});
   item$: Observable<any> = EMPTY;
 
-  constructor(
-    private crudListService: CrudListService,
-    private router: Router
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.item$ = this.crudListService
+    this.item$ = this.options.crudService
       .getSelectedItem()
       .pipe(tap((item) => this.form.patchValue(item)));
   }

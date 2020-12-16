@@ -1,15 +1,15 @@
 import { Tournament } from '../../types';
-import { CrudListService } from './crud-list.service';
+import { CrudStateService } from './crud-state.service';
 import { skip, take, tap } from 'rxjs/operators';
 import DoneCallback = jest.DoneCallback;
 
 describe('CrudService', () => {
   let tournament: Tournament;
-  let service: CrudListService;
+  let service: CrudStateService;
 
   beforeEach(() => {
     tournament = <Tournament>{ name: 'YSG 2020' };
-    service = new CrudListService();
+    service = new CrudStateService();
   });
 
   it('can select and get an item', (done: DoneCallback) => {

@@ -10,3 +10,7 @@ mat-sidenav-content {
 mat-form-field {
   width: 100%;
 }
+
+mat-card {
+  margin-bottom: 20px;
+}

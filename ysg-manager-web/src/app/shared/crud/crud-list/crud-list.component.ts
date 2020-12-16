@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { CrudListService } from '../../../core/services/crud-list.service';
 
 /**
  * The options to pass to the CrudListComponent.
@@ -33,6 +32,9 @@ export interface CrudService {
   updateItem(item: any): Observable<any>;
   deleteItem(item: any): Observable<any>;
   getItemTitle(item: any): string;
+  getSelectedItem(): Observable<any>;
+  setSelectedItem(item: any): void;
+  setEmptyItem(): void;
 }
 
 /**
@@ -50,10 +52,7 @@ export class CrudListComponent implements OnInit {
   refreshToken$ = new BehaviorSubject(undefined);
   items$: Observable<any[]> = EMPTY;
 
-  constructor(
-    private crudListService: CrudListService,
-    private router: Router
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.setDisplayedColumns();
@@ -70,12 +69,12 @@ export class CrudListComponent implements OnInit {
   }
 
   edit(element: any) {
-    this.crudListService.setSelectedItem(element);
+    this.options.crudService.setSelectedItem(element);
     this.navigateToDetailView();
   }
 
   create() {
-    this.crudListService.setEmptyItem();
+    this.options.crudService.setEmptyItem();
     this.router.navigateByUrl(this.options.routerDetailUrl);
   }
 

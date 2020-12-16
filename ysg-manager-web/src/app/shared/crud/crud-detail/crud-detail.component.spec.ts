@@ -2,7 +2,6 @@ import { fakeAsync, tick } from '@angular/core/testing';
 
 import { CrudDetailComponent } from './crud-detail.component';
 import { TournamentsService } from '../../../core/services/tournaments.service';
-import { CrudListService } from '../../../core/services/crud-list.service';
 import { Router } from '@angular/router';
 import {
   FormBuilder,
@@ -16,7 +15,6 @@ import { of } from 'rxjs';
 describe('CrudDetailComponent', () => {
   let component: CrudDetailComponent;
   let tournamentService: TournamentsService;
-  let crudListService: CrudListService;
   let router: Router;
   let formBuilder: FormBuilder;
 
@@ -40,13 +38,12 @@ describe('CrudDetailComponent', () => {
       of(createdTournament)
     );
     tournamentService.getItemTitle = jest.fn(() => 'item title');
-    crudListService = <any>{};
-    crudListService.getSelectedItem = jest.fn(() => of(existingTournament));
+    tournamentService.getSelectedItem = jest.fn(() => of(existingTournament));
 
     router = <any>{ navigateByUrl: jest.fn() };
     formBuilder = new FormBuilder();
 
-    component = new CrudDetailComponent(crudListService, router);
+    component = new CrudDetailComponent(router);
 
     component.options = {
       form: new FormGroup({
@@ -177,7 +174,7 @@ describe('CrudDetailComponent', () => {
 
   describe('save with item creation', () => {
     beforeEach(fakeAsync(() => {
-      crudListService.getSelectedItem = jest.fn(() =>
+      tournamentService.getSelectedItem = jest.fn(() =>
         of(<Tournament>{ name: 'new tournament' })
       );
 

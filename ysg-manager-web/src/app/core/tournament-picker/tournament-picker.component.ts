@@ -18,7 +18,7 @@ export class TournamentPickerComponent implements OnInit, OnDestroy {
 
   isEditable = false;
   tournaments: Tournament[] = [];
-  selectedTournamentName: string = '';
+  selectedTournamentName = '';
 
   constructor(
     private tournamentService: TournamentsService,

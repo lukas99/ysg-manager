@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
 import { FormBuilder, Validators } from '@angular/forms';
 import { TeamsService } from '../../../../core/services/teams.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ysg-team-detail',
@@ -13,7 +14,8 @@ export class TeamDetailComponent {
 
   constructor(
     private teamsService: TeamsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router
   ) {
     this.crudDetailOptions = {
       form: this.formBuilder.group({
@@ -23,5 +25,9 @@ export class TeamDetailComponent {
       crudService: teamsService,
       routerListUrl: '/masterdata/teams'
     };
+  }
+
+  navigateToPlayersOfTeam() {
+    this.router.navigateByUrl('/masterdata/players');
   }
 }

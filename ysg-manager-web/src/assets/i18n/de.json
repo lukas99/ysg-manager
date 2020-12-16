@@ -3,11 +3,7 @@
 
   "SAVE": "Speichern",
   "CANCEL": "Abbrechen",
-
-  "TOURNAMENT_NAME": "Name",
-  "TOURNAMENT_DATE_DESCRIPTION": "Datumsbezeichnung",
-
-  "TEAM_NAME": "Name",
+  "MORE_ACTIONS": "Weitere Aktionen",
 
   "NAVIGATION_MASTERDATA": "Stammdaten",
   "NAVIGATION_SKILLS": "Skills",
@@ -15,5 +11,18 @@
   "NAVIGATION_TEAMS": "Mannschaften",
 
   "TOURNAMENTS_PAGE_TITLE": "Turniere",
-  "TEAMS_PAGE_TITLE": "Mannschaften"
+  "TOURNAMENT_NAME": "Name",
+  "TOURNAMENT_DATE_DESCRIPTION": "Datumsbezeichnung",
+
+  "TEAMS_PAGE_TITLE": "Mannschaften",
+  "TEAM_NAME": "Name",
+
+  "PLAYERS_PAGE_TITLE": "Spieler",
+  "PLAYERS_PAGE_NAVIGATE_TO_PLAYERS_OF_TEAM": "Spieler bearbeiten",
+  "PLAYER_FIRST_NAME": "Vorname",
+  "PLAYER_LAST_NAME": "Nachname",
+  "PLAYER_SHIRT_NUMBER": "Nummer",
+  "PLAYER_POSITION": "Position",
+  "PLAYER_POSITION_SKATER": "Feldspieler",
+  "PLAYER_POSITION_GOALTENDER": "Torhüter"
 }

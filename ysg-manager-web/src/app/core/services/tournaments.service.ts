@@ -5,11 +5,13 @@ import { Tournament, TournamentList } from '../../types';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
+import { CrudStateService } from './crud-state.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TournamentsService implements CrudService {
+export class TournamentsService extends CrudStateService
+  implements CrudService {
   /**
    * Base URL of the application. All other requests are done by following the tournament links.
    */
@@ -23,6 +25,7 @@ export class TournamentsService implements CrudService {
   );
 
   constructor(private http: HttpClient) {
+    super();
     this.tournamentsUrl = environment.apiUrl + '/api/tournaments';
   }
 

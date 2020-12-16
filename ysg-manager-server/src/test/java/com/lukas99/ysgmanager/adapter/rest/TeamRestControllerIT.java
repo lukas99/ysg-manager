@@ -148,13 +148,13 @@ public class TeamRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content.[0].name").value(is(TeamTemplates.EHC_ENGELBERG)))
         .andExpect(jsonPath("$.content.[0].logo")
             .value(is(getBase64EncodedString(EHC_ENGELBERG_LOGO))))
-        .andExpect(jsonPath("$.content.[0].links", hasSize(2)))
+        .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
             endsWith("/teams/" + ehcEngelberg.getId())))
         .andExpect(jsonPath("$.content.[1].name").value(is(SC_BERN)))
         .andExpect(jsonPath("$.content.[1].logo").value(is(getBase64EncodedString(SC_BERN_LOGO))))
-        .andExpect(jsonPath("$.content.[1].links", hasSize(2)))
+        .andExpect(jsonPath("$.content.[1].links", hasSize(3)))
         .andExpect(jsonPath("$.content.[1].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[1].links.[0].href", endsWith("/teams/" + scBern.getId())));
   }
@@ -171,11 +171,14 @@ public class TeamRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.name").value(EHC_ENGELBERG))
         .andExpect(jsonPath("$.logo").value(getBase64EncodedString(EHC_ENGELBERG_LOGO)))
-        .andExpect(jsonPath("$.links", hasSize(2)))
+        .andExpect(jsonPath("$.links", hasSize(3)))
         .andExpect(jsonPath("$.links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.links.[0].href", endsWith("/teams/" + ehcEngelberg.getId())))
         .andExpect(jsonPath("$.links.[1].rel").value(is("tournament")))
-        .andExpect(jsonPath("$.links.[1].href", endsWith("/tournaments/" + ysg2019.getId())));
+        .andExpect(jsonPath("$.links.[1].href", endsWith("/tournaments/" + ysg2019.getId())))
+        .andExpect(jsonPath("$.links.[2].rel").value(is("players")))
+        .andExpect(jsonPath("$.links.[2].href",
+            endsWith("/teams/" + ehcEngelberg.getId() + "/players")));
   }
 
   private String getBase64EncodedString(byte[] object) throws UnsupportedEncodingException {
