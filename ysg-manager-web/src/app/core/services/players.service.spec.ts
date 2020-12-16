@@ -4,11 +4,7 @@ import {
   HttpClientTestingModule,
   HttpTestingController
 } from '@angular/common/http/testing';
-import {
-  Player,
-  PlayerList,
-  Team
-} from '../../types';
+import { Player, PlayerList, Team } from '../../types';
 import { TeamsService } from './teams.service';
 import DoneCallback = jest.DoneCallback;
 
