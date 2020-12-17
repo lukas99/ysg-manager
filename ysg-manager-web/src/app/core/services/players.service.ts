@@ -42,7 +42,8 @@ export class PlayersService extends CrudStateService implements CrudService {
   }
 
   getPlayerTitle(player: Player): string {
-    return player.firstName + ' ' + player.lastName;
+    const selectedTeam = <Team>this.teamsService.getSelectedItemValue();
+    return `${player.firstName} ${player.lastName} (${selectedTeam.name})`;
   }
 
   getItems(): Observable<any[]> {

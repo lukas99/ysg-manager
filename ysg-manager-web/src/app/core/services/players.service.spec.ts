@@ -22,9 +22,13 @@ describe('PlayersService', () => {
   };
 
   beforeEach(() => {
+    teamService = <any>{
+      getSelectedItemValue: jest.fn(() => team)
+    };
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [{ provide: TeamsService, useValue: <TeamsService>{} }]
+      providers: [{ provide: TeamsService, useValue: teamService }]
     });
     service = TestBed.inject(PlayersService);
     teamService = TestBed.inject(TeamsService);
@@ -140,6 +144,6 @@ describe('PlayersService', () => {
 
     const title = service.getPlayerTitle(player);
 
-    expect(title).toBe('Sven Meier');
+    expect(title).toBe('Sven Meier (EHC Engelberg)');
   });
 });
