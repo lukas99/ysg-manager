@@ -51,6 +51,6 @@ describe('CrudService', () => {
       )
       .subscribe();
 
-    service.setEmptyItem();
+    service.removeSelectedItem();
   });
 });

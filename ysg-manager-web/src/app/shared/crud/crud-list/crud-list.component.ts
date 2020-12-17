@@ -34,7 +34,7 @@ export interface CrudService {
   getItemTitle(item: any): string;
   getSelectedItem(): Observable<any>;
   setSelectedItem(item: any): void;
-  setEmptyItem(): void;
+  removeSelectedItem(): void;
 }
 
 /**
@@ -74,7 +74,7 @@ export class CrudListComponent implements OnInit {
   }
 
   create() {
-    this.options.crudService.setEmptyItem();
+    this.options.crudService.removeSelectedItem();
     this.router.navigateByUrl(this.options.routerDetailUrl);
   }
 

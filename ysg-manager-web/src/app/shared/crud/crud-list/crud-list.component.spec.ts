@@ -36,7 +36,7 @@ describe('CrudListComponent', () => {
         .mockImplementationOnce(() => of([tournament1])), // tournament2 deleted
       deleteItem: jest.fn((deletedTournament) => of(deletedTournament)),
       setSelectedItem: jest.fn(),
-      setEmptyItem: jest.fn()
+      removeSelectedItem: jest.fn()
     };
     router = <any>{ navigateByUrl: jest.fn() };
     component = new CrudListComponent(router);
@@ -80,7 +80,7 @@ describe('CrudListComponent', () => {
   it('handles the create event', () => {
     component.create();
 
-    expect(tournamentsService.setEmptyItem).toHaveBeenCalled();
+    expect(tournamentsService.removeSelectedItem).toHaveBeenCalled();
     expect(router.navigateByUrl).toHaveBeenCalledWith(
       '/masterdata/tournaments/detail'
     );

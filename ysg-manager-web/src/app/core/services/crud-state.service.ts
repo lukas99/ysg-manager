@@ -14,7 +14,7 @@ export class CrudStateService {
     this.selectedItem$.next(item);
   }
 
-  setEmptyItem() {
+  removeSelectedItem() {
     this.selectedItem$.next({});
   }
 
