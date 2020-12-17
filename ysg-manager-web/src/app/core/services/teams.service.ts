@@ -11,7 +11,7 @@ import { CrudStateService } from './crud-state.service';
   providedIn: 'root'
 })
 export class TeamsService extends CrudStateService implements CrudService {
-  private selectedTournament!: Tournament;
+  private applicationTournament!: Tournament;
 
   constructor(
     private http: HttpClient,
@@ -19,13 +19,13 @@ export class TeamsService extends CrudStateService implements CrudService {
   ) {
     super();
     this.tournamentService
-      .getSelectedTournament()
-      .subscribe((tournament) => (this.selectedTournament = tournament));
+      .getApplicationTournament()
+      .subscribe((tournament) => (this.applicationTournament = tournament));
   }
 
   getTeams(): Observable<Team[]> {
     return this.http
-      .get<TeamList>(this.selectedTournament._links.teams.href)
+      .get<TeamList>(this.applicationTournament._links.teams.href)
       .pipe(
         map((list) => {
           if (list && list._embedded && list._embedded.teamModelList) {
@@ -39,7 +39,7 @@ export class TeamsService extends CrudStateService implements CrudService {
 
   createTeam(team: Team): Observable<Team> {
     return this.http.post<Team>(
-      this.selectedTournament._links.teams.href,
+      this.applicationTournament._links.teams.href,
       team
     );
   }

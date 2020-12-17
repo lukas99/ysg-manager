@@ -42,7 +42,7 @@ export class TournamentPickerComponent implements OnInit, OnDestroy {
       .subscribe((tournaments) => (this.tournaments = tournaments));
 
     this.tournamentService
-      .getSelectedTournament()
+      .getApplicationTournament()
       .pipe(takeUntil(this.destroy))
       .subscribe((tournament) => {
         // first initial value is empty
@@ -55,7 +55,7 @@ export class TournamentPickerComponent implements OnInit, OnDestroy {
   }
 
   useTournament(tournament: Tournament) {
-    this.tournamentService.setSelectedTournament(tournament);
+    this.tournamentService.setApplicationTournament(tournament);
     this.selectedTournamentName = tournament.name;
   }
 

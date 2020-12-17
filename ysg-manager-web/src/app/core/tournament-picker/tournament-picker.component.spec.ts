@@ -22,8 +22,8 @@ describe('TournamentPickerComponent', () => {
 
     tournamentService = <any>{
       getTournaments: jest.fn(() => of(tournaments)),
-      getSelectedTournament: jest.fn(() => of(tournament2)),
-      setSelectedTournament: jest.fn()
+      getApplicationTournament: jest.fn(() => of(tournament2)),
+      setApplicationTournament: jest.fn()
     };
     router = <Router>{
       events: of(<RouterEvent>new NavigationEnd(1, '/skills', ''))
@@ -88,7 +88,7 @@ describe('TournamentPickerComponent', () => {
   it('can use a selected tournament', () => {
     component.useTournament(tournament1);
 
-    expect(tournamentService.setSelectedTournament).toHaveBeenCalledWith(
+    expect(tournamentService.setApplicationTournament).toHaveBeenCalledWith(
       tournament1
     );
     expect((component.selectedTournamentName = 'YSG 2019'));

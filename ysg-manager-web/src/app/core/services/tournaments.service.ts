@@ -20,7 +20,7 @@ export class TournamentsService extends CrudStateService
   /**
    * The tournament selected by the user to be used all over the application.
    */
-  private selectedTournament$ = new BehaviorSubject<Tournament>(
+  private applicationTournament$ = new BehaviorSubject<Tournament>(
     {} as Tournament
   );
 
@@ -30,25 +30,25 @@ export class TournamentsService extends CrudStateService
   }
 
   /**
-   * @param tournament The tournament selected by the user to be used all over the application.
+   * @param applicationTournament The tournament selected by the user to be used all over the application.
    */
-  setSelectedTournament(tournament: Tournament) {
-    this.selectedTournament$.next(tournament);
+  setApplicationTournament(applicationTournament: Tournament) {
+    this.applicationTournament$.next(applicationTournament);
   }
 
   /**
    * @return The tournament selected by the user to be used all over the application.
    * Initial respectively first value is empty. You can use skip(1) to skip it.
    */
-  getSelectedTournament(): Observable<Tournament> {
-    if (!this.selectedTournament$.value._links) {
+  getApplicationTournament(): Observable<Tournament> {
+    if (!this.applicationTournament$.value._links) {
       this.getTournaments().subscribe((tournaments) => {
         if (tournaments.length > 0) {
-          this.setSelectedTournament(tournaments[0]);
+          this.setApplicationTournament(tournaments[0]);
         }
       });
     }
-    return this.selectedTournament$;
+    return this.applicationTournament$;
   }
 
   getTournaments(): Observable<Tournament[]> {

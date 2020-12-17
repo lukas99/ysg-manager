@@ -28,14 +28,14 @@ describe('TournamentsService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('getSelectedTournament', () => {
+  describe('getApplicationTournament', () => {
     const tournament1 = <Tournament>{ name: 'YSG 2019' };
     const tournament2 = <Tournament>{ name: 'YSG 2020' };
     const tournaments = [tournament1, tournament2];
 
-    it('should set the first tournament when no tournament is selected', (done: DoneCallback) => {
+    it('should set the first tournament when no application tournament exists', (done: DoneCallback) => {
       service
-        .getSelectedTournament()
+        .getApplicationTournament()
         .pipe(skip(1)) // skip initial empty value
         .subscribe((result) => {
           expect(result).toBe(tournament1);
@@ -51,9 +51,9 @@ describe('TournamentsService', () => {
       });
     });
 
-    it('should get the selected tournament', (done: DoneCallback) => {
+    it('should get the application tournament', (done: DoneCallback) => {
       service
-        .getSelectedTournament()
+        .getApplicationTournament()
         .pipe(skip(2)) // skip initial empty value & first default value
         .subscribe((result) => {
           expect(result).toBe(tournament2);
@@ -68,7 +68,7 @@ describe('TournamentsService', () => {
         }
       });
 
-      service.setSelectedTournament(tournament2);
+      service.setApplicationTournament(tournament2);
     });
   });
 
