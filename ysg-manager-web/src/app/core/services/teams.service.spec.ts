@@ -18,7 +18,8 @@ describe('TeamsService', () => {
     dateDescription: '2019',
     _links: {
       self: { href: 'tournaments/1' },
-      teams: { href: 'tournaments/1/teams' }
+      teams: { href: 'tournaments/1/teams' },
+      skills: { href: 'tournaments/1/skills' }
     }
   };
 

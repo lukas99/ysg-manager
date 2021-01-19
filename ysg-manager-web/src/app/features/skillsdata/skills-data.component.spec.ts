@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SkillsDataComponent } from './skills-data.component';
+import { CoreModule } from '../../core/core.module';
+import { SharedModule } from '../../shared/shared.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('SkillsDataComponent', () => {
   let component: SkillsDataComponent;
@@ -8,7 +11,8 @@ describe('SkillsDataComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SkillsDataComponent]
+      declarations: [SkillsDataComponent],
+      imports: [CoreModule, SharedModule, RouterTestingModule]
     }).compileComponents();
   }));
 

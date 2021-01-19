@@ -3,6 +3,16 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+/* styles for side navigation */
+mat-sidenav-container {
+  position: fixed !important;
+  height: 100%;
+  min-height: 100%;
+  width: 100%;
+  min-width: 100%;
+}
+
+/* styles for side navigation content area */
 mat-sidenav-content {
   padding: 20px;
 }

@@ -8,6 +8,7 @@ export interface Tournament {
   _links: {
     self: Link;
     teams: Link;
+    skills: Link;
   };
 }
 
@@ -49,5 +50,28 @@ export enum PlayerPosition {
 export interface PlayerList {
   _embedded: {
     playerModelList: Player[];
+  };
+}
+
+export interface Skill {
+  skillType: SkillType;
+  name: string;
+  number: number;
+  _links: {
+    self: Link;
+    players: Link;
+  };
+}
+
+export enum SkillType {
+  TIME_WITH_RATING = 'TIME_WITH_RATING',
+  TIME_WITH_POINTS = 'TIME_WITH_POINTS',
+  TIME = 'TIME',
+  POINTS = 'POINTS'
+}
+
+export interface SkillList {
+  _embedded: {
+    skillModelList: Skill[];
   };
 }

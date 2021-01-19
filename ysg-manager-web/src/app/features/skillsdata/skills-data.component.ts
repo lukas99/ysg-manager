@@ -2,11 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'ysg-skills',
-  template: `
-    <p>
-      skills works!
-    </p>
-  `,
+  templateUrl: 'skills-data.component.html',
   styleUrls: []
 })
 export class SkillsDataComponent implements OnInit {

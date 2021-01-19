@@ -24,5 +24,14 @@
   "PLAYER_SHIRT_NUMBER": "Shirt number",
   "PLAYER_POSITION": "Position",
   "PLAYER_POSITION_SKATER": "Skater",
-  "PLAYER_POSITION_GOALTENDER": "Goaltender"
+  "PLAYER_POSITION_GOALTENDER": "Goaltender",
+
+  "SKILLS_PAGE_TITLE": "Skills",
+  "SKILL_NAME": "Name",
+  "SKILL_TYPE": "Type",
+  "SKILL_NUMBER": "Number",
+  "SKILL_TYPE_TIME_WITH_RATING": "Time with rating",
+  "SKILL_TYPE_TIME_WITH_POINTS": "Time with points",
+  "SKILL_TYPE_TIME": "Time",
+  "SKILL_TYPE_POINTS": "Points"
 }
