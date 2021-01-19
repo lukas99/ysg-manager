@@ -46,7 +46,9 @@ export const routes: Routes = [
   {
     path: 'skills',
     loadChildren: () =>
-      import('./features/skills/skills.module').then((m) => m.SkillsModule)
+      import('./features/skillsdata/skills-data.module').then(
+        (m) => m.SkillsDataModule
+      )
   },
   {
     // redirect to home when a route doesn't exist (or or redirect to dedicated "not found" route)
