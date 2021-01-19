@@ -31,7 +31,7 @@ export class SkillListComponent {
         }
       ],
       crudService: skillsService,
-      routerDetailUrl: '/skills/skills/detail'
+      routerDetailUrl: '/skillsdata/skills/detail'
     };
   }
 }

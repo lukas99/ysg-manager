@@ -44,7 +44,7 @@ export const routes: Routes = [
       )
   },
   {
-    path: 'skills',
+    path: 'skillsdata',
     loadChildren: () =>
       import('./features/skillsdata/skills-data.module').then(
         (m) => m.SkillsDataModule
