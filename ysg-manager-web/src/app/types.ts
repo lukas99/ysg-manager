@@ -59,7 +59,7 @@ export interface Skill {
   number: number;
   _links: {
     self: Link;
-    players: Link;
+    tournament: Link;
   };
 }
 
