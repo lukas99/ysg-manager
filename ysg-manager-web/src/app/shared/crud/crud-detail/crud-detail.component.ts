@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { EMPTY, Observable } from 'rxjs';
-import { Tournament } from '../../../types';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { CrudService } from '../crud-list/crud-list.component';
@@ -74,15 +73,15 @@ export class CrudDetailComponent implements OnInit, AfterContentInit {
     return item._links && item._links.self;
   }
 
-  private update(tournament: Tournament) {
+  private update(item: any) {
     this.options.crudService
-      .updateItem(tournament)
+      .updateItem(item)
       .subscribe(() => this.navigateToOverview());
   }
 
-  private create(tournament: Tournament) {
+  private create(item: any) {
     this.options.crudService
-      .createItem(tournament)
+      .createItem(item)
       .subscribe(() => this.navigateToOverview());
   }
 
