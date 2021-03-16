@@ -48,12 +48,27 @@ public class SkillResultRestController {
    * @return the created skillResult.
    */
   @PostMapping("/players/{playerId}/skill-results")
-  public ResponseEntity<SkillResultModel> createSkillResult(
+  public ResponseEntity<SkillResultModel> createSkillResultByPlayer(
       @PathVariable Long playerId, @Valid @RequestBody SkillResultModel skillResultModel) {
     Optional<Player> player = playerService.findOne(playerId);
     Optional<Skill> skill = skillResultModel.getLink("skill")
         .map(skillLink -> RestUtils.getLastPathSegment(skillLink))
         .flatMap(skillId -> skillService.findOne(skillId));
+    return createSkillResult(skillResultModel, skill, player);
+  }
+
+  @PostMapping("/skills/{skillId}/skill-results")
+  public ResponseEntity<SkillResultModel> createSkillResultBySkill(
+      @PathVariable Long skillId, @Valid @RequestBody SkillResultModel skillResultModel) {
+    Optional<Skill> skill = skillService.findOne(skillId);
+    Optional<Player> player = skillResultModel.getLink("player")
+        .map(playerLink -> RestUtils.getLastPathSegment(playerLink))
+        .flatMap(playerId -> playerService.findOne(playerId));
+    return createSkillResult(skillResultModel, skill, player);
+  }
+
+  private ResponseEntity<SkillResultModel> createSkillResult(SkillResultModel skillResultModel,
+      Optional<Skill> skill, Optional<Player> player) {
     if (player.isPresent() && skill.isPresent()) {
       SkillResult skillResult = skillResultModel.toEntity(player.get(), skill.get());
       skillResult = skillResultService.save(skillResult);

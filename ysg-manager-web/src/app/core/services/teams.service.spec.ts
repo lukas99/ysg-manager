@@ -10,7 +10,7 @@ import DoneCallback = jest.DoneCallback;
 
 describe('TeamsService', () => {
   let service: TeamsService;
-  let tournamentSerivce: TournamentsService;
+  let tournamentService: TournamentsService;
   let httpMock: HttpTestingController;
 
   let tournament: Tournament = {
@@ -29,11 +29,11 @@ describe('TeamsService', () => {
       providers: [TournamentsService]
     });
     service = TestBed.inject(TeamsService);
-    tournamentSerivce = TestBed.inject(TournamentsService);
+    tournamentService = TestBed.inject(TournamentsService);
     httpMock = TestBed.inject(HttpTestingController);
 
     const getDefaultTournament = httpMock.expectOne(
-      tournamentSerivce['tournamentsUrl']
+      tournamentService['tournamentsUrl']
     );
     expect(getDefaultTournament.request.method).toBe('GET');
     getDefaultTournament.flush(<TournamentList>{

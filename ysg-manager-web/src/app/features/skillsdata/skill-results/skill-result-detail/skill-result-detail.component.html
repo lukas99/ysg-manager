@@ -1,0 +1,47 @@
+<ng-template #fields>
+  <ng-container [formGroup]="crudDetailOptions.form">
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'SKILL_RESULT_PLAYER_TEAM' | translate }}</mat-label>
+        <mat-select
+          formControlName="team"
+          (selectionChange)="onTeamSelected($event.value)"
+          [compareWith]="compareObjects"
+        >
+          <mat-option *ngFor="let team of teams" [value]="team">
+            {{ team.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'SKILL_RESULT_PLAYER_NAME' | translate }}</mat-label>
+        <mat-select
+          formControlName="player"
+          (selectionChange)="onPlayerSelected($event.value)"
+          [compareWith]="compareObjects"
+        >
+          <mat-option *ngFor="let player of players" [value]="player">
+            {{ player.shirtNumber }} - {{ player.lastName }}
+            {{ player.firstName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'SKILL_RESULT_TIME' | translate }}</mat-label>
+        <input matInput formControlName="time" type="number" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'SKILL_RESULT_FAILURES' | translate }}</mat-label>
+        <input matInput formControlName="failures" type="number" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'SKILL_RESULT_POINTS' | translate }}</mat-label>
+        <input matInput formControlName="points" type="number" />
+      </mat-form-field>
+    </div>
+  </ng-container>
+</ng-template>
+<ysg-crud-detail
+  [options]="crudDetailOptions"
+  [fieldsTemplate]="fields"
+></ysg-crud-detail>

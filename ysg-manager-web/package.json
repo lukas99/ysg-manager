@@ -30,6 +30,8 @@
     "@ngx-translate/http-loader": "^4.0.0",
     "@okta/okta-angular": "2.0.0",
     "@oktadev/schematics": "^2.0.2",
+    "ag-grid-angular": "^25.1.0",
+    "ag-grid-community": "^25.1.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "tslint-plugin-prettier": "^2.3.0",

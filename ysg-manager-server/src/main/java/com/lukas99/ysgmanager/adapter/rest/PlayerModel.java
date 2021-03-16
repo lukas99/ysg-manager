@@ -25,6 +25,8 @@ public class PlayerModel extends RepresentationModel<PlayerModel> {
   @NotNull
   private PlayerPosition position;
 
+  private TeamModel team;
+
   /**
    * Creates an entity of this model.
    *

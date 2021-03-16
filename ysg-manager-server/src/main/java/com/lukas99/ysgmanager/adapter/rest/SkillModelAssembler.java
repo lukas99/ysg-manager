@@ -29,6 +29,9 @@ public class SkillModelAssembler extends RepresentationModelAssemblerSupport<Ski
     model.add(linkTo(
         methodOn(TournamentRestController.class).getTournament(skill.getTournament().getId()))
         .withRel("tournament"));
+    model.add(linkTo(
+        methodOn(SkillResultRestController.class).getSkillResultsBySkill(skill.getId()))
+        .withRel("skillresults"));
 
     return model;
   }

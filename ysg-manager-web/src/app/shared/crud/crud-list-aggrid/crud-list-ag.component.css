@@ -1,0 +1,16 @@
+.header {
+  display: flex;
+}
+
+.header-title {
+  flex-grow: 7;
+}
+
+.header-actions {
+  flex-grow: 3;
+  text-align: right;
+}
+
+ag-grid-angular {
+  height: 80%;
+}

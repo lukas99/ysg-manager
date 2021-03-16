@@ -108,13 +108,36 @@ public class SkillResultRestControllerIT extends IntegrationTest {
 
   @Test
   @Transactional
-  public void createSkillResult() throws Exception {
+  public void createSkillResultByPlayer() throws Exception {
     int databaseSizeBeforeCreate = skillResultRepository.findAll().size();
 
     // Create the SkillResult
     restSkillResultMockMvc.perform(post("/api/players/{playerId}/skill-results", romanJosi.getId())
         .contentType(TestUtils.APPLICATION_JSON)
         .content(TestUtils.convertObjectToJsonBytes(magicTransitionsResultModel)))
+        .andExpect(status().isOk());
+
+    // Validate the SkillResult in the database
+    List<SkillResult> skillResultList = skillResultRepository.findAll();
+    assertThat(skillResultList).hasSize(databaseSizeBeforeCreate + 1);
+    SkillResult testSkillResult = skillResultList.get(skillResultList.size() - 1);
+    assertThat(testSkillResult.getPlayer()).isEqualTo(romanJosi);
+    assertThat(testSkillResult.getSkill()).isEqualTo(magicTransitions);
+    assertThat(testSkillResult.getTime()).isEqualTo(SkillResultTemplates.THIRTY_SECONDS);
+    assertThat(testSkillResult.getFailures()).isEqualTo(SkillResultTemplates.ONE);
+    assertThat(testSkillResult.getPoints()).isNull();
+  }
+
+  @Test
+  @Transactional
+  public void createSkillResultBySkill() throws Exception {
+    int databaseSizeBeforeCreate = skillResultRepository.findAll().size();
+
+    // Create the SkillResult
+    restSkillResultMockMvc
+        .perform(post("/api/skills/{skillId}/skill-results", magicTransitions.getId())
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsResultModel)))
         .andExpect(status().isOk());
 
     // Validate the SkillResult in the database
@@ -145,6 +168,12 @@ public class SkillResultRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content.[0].time").value(is(SkillResultTemplates.THIRTY_SECONDS)))
         .andExpect(jsonPath("$.content.[0].failures").value(is(SkillResultTemplates.ONE)))
         .andExpect(jsonPath("$.content.[0].points").value(is(nullValue())))
+        .andExpect(jsonPath("$.content.[0].player.firstName")
+            .value(is(romanJosi.getFirstName())))
+        .andExpect(jsonPath("$.content.[0].player.lastName")
+            .value(is(romanJosi.getLastName())))
+        .andExpect(jsonPath("$.content.[0].player.team.name")
+            .value(is(romanJosi.getTeam().getName())))
         .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
@@ -168,6 +197,12 @@ public class SkillResultRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content.[0].time").value(is(nullValue())))
         .andExpect(jsonPath("$.content.[0].failures").value(nullValue()))
         .andExpect(jsonPath("$.content.[0].points").value(SkillResultTemplates.SIX))
+        .andExpect(jsonPath("$.content.[0].player.firstName")
+            .value(is(martinGerber.getFirstName())))
+        .andExpect(jsonPath("$.content.[0].player.lastName")
+            .value(is(martinGerber.getLastName())))
+        .andExpect(jsonPath("$.content.[0].player.team.name")
+            .value(is(martinGerber.getTeam().getName())))
         .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
@@ -187,6 +222,11 @@ public class SkillResultRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.time").value(is(SkillResultTemplates.THIRTY_SECONDS)))
         .andExpect(jsonPath("$.failures").value(is(SkillResultTemplates.ONE)))
         .andExpect(jsonPath("$.points").value(is(nullValue())))
+        .andExpect(jsonPath("$.player.firstName").value(is(romanJosi.getFirstName())))
+        .andExpect(jsonPath("$.player.lastName").value(is(romanJosi.getLastName())))
+        .andExpect(jsonPath("$.player.shirtNumber").value(is(romanJosi.getShirtNumber())))
+        .andExpect(jsonPath("$.player.position").value(is(romanJosi.getPosition().toString())))
+        .andExpect(jsonPath("$.player.team.name").value(is(romanJosi.getTeam().getName())))
         .andExpect(jsonPath("$.links", hasSize(3)))
         .andExpect(jsonPath("$.links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.links.[0].href",

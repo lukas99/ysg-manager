@@ -1,7 +1,6 @@
 import { SkillListComponent } from './skill-list.component';
 import { SkillsService } from '../../../../core/services/skills.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Team } from '../../../../types';
 
 describe('SkillListComponent', () => {
   let component: SkillListComponent;
@@ -9,11 +8,7 @@ describe('SkillListComponent', () => {
   let skillsService: SkillsService;
   let translateService: TranslateService;
 
-  let selectedTeam: Team;
-
   beforeEach(() => {
-    selectedTeam = <Team>{};
-
     skillsService = <SkillsService>{};
     translateService = <any>{
       instant: jest.fn().mockImplementation((translationKey) => translationKey)

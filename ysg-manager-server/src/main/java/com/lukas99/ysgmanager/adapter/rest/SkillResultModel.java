@@ -17,6 +17,7 @@ public class SkillResultModel extends RepresentationModel<SkillResultModel> {
   private Integer time;
   private Integer failures;
   private Integer points;
+  private PlayerModel player;
 
   /**
    * Creates an entity of this model.

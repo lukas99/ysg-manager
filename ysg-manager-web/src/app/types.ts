@@ -37,8 +37,10 @@ export interface Player {
   lastName: string;
   shirtNumber: number;
   position: PlayerPosition;
+  team: Team;
   _links: {
     self: Link;
+    team: Link;
   };
 }
 
@@ -60,6 +62,7 @@ export interface Skill {
   _links: {
     self: Link;
     tournament: Link;
+    skillresults: Link;
   };
 }
 
@@ -73,5 +76,23 @@ export enum SkillType {
 export interface SkillList {
   _embedded: {
     skillModelList: Skill[];
+  };
+}
+
+export interface SkillResult {
+  time: number;
+  failures: number;
+  points: number;
+  player: Player;
+  _links: {
+    self: Link;
+    player: Link;
+    skill: Link;
+  };
+}
+
+export interface SkillResultList {
+  _embedded: {
+    skillResultModelList: SkillResult[];
   };
 }

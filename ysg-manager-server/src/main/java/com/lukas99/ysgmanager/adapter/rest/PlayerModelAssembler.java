@@ -23,6 +23,7 @@ public class PlayerModelAssembler extends RepresentationModelAssemblerSupport<Pl
     model.setLastName(player.getLastName());
     model.setShirtNumber(player.getShirtNumber());
     model.setPosition(player.getPosition());
+    model.setTeam(new TeamModelAssembler().toModel(player.getTeam()));
 
     model.add(
         linkTo(methodOn(PlayerRestController.class).getPlayer(player.getId()))

@@ -23,6 +23,7 @@ public class SkillResultModelAssembler extends
     model.setTime(skillResult.getTime());
     model.setFailures(skillResult.getFailures());
     model.setPoints(skillResult.getPoints());
+    model.setPlayer(new PlayerModelAssembler().toModel(skillResult.getPlayer()));
 
     model.add(linkTo(
         methodOn(SkillResultRestController.class).getSkillResult(skillResult.getId()))

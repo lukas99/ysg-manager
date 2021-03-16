@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
-import { Player, PlayerList, Team } from '../../types';
+import { Link, Player, PlayerList, Team } from '../../types';
 import { CrudStateService } from './crud-state.service';
 import { TeamsService } from './teams.service';
 
@@ -13,6 +13,10 @@ import { TeamsService } from './teams.service';
 export class PlayersService extends CrudStateService implements CrudService {
   constructor(private http: HttpClient, private teamsService: TeamsService) {
     super();
+  }
+
+  getPlayer(playerLink: Link): Observable<Player> {
+    return this.http.get<Player>(playerLink.href);
   }
 
   getPlayers(team: Team): Observable<Player[]> {

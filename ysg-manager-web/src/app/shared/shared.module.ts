@@ -11,10 +11,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CrudListComponent } from './crud/crud-list/crud-list.component';
 import { CrudDetailComponent } from './crud/crud-detail/crud-detail.component';
 import { MatSelectModule } from '@angular/material/select';
+import { AgGridModule } from 'ag-grid-angular';
+import { CrudListAgComponent } from './crud/crud-list-aggrid/crud-list-ag.component';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -33,11 +35,12 @@ import { MatSelectModule } from '@angular/material/select';
  * in providers: [ ] of any module
  */
 @NgModule({
-  declarations: [CrudListComponent, CrudDetailComponent],
+  declarations: [CrudListComponent, CrudListAgComponent, CrudDetailComponent],
   imports: [
     // angular
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
 
     // ngx-translate
     TranslateModule,
@@ -52,12 +55,16 @@ import { MatSelectModule } from '@angular/material/select';
     MatTableModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCardModule
+    MatCardModule,
+
+    // agGrid
+    AgGridModule.withComponents([])
   ],
   exports: [
     // angular
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
 
     // ngx-translate
     TranslateModule,
@@ -75,8 +82,12 @@ import { MatSelectModule } from '@angular/material/select';
     MatCardModule,
     MatSelectModule,
 
+    // agGrid
+    AgGridModule,
+
     // declared components
     CrudListComponent,
+    CrudListAgComponent,
     CrudDetailComponent
   ],
   providers: [] // should stay empty

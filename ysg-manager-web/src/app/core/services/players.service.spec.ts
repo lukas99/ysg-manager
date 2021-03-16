@@ -43,6 +43,19 @@ describe('PlayersService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('should get a player', (done: DoneCallback) => {
+    const player = <Player>{ _links: { self: { href: 'players/1' } } };
+
+    service.getPlayer(player._links.self).subscribe((result) => {
+      expect(result).toEqual(player);
+      done();
+    });
+
+    const testRequest = httpMock.expectOne('players/1');
+    expect(testRequest.request.method).toBe('GET');
+    testRequest.flush(player);
+  });
+
   describe('getPlayers', () => {
     it('should get the players of a team', (done: DoneCallback) => {
       const players = [

@@ -163,6 +163,7 @@ public class PlayerRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content.[0].lastName").value(is(PlayerTemplates.JOSI)))
         .andExpect(jsonPath("$.content.[0].shirtNumber").value(is(PlayerTemplates.FIFITY_NINE)))
         .andExpect(jsonPath("$.content.[0].position").value(is(PlayerPosition.SKATER.toString())))
+        .andExpect(jsonPath("$.content.[0].team.name").value(is(ehcEngelberg.getName())))
         .andExpect(jsonPath("$.content.[0].links", hasSize(2)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
@@ -172,6 +173,7 @@ public class PlayerRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content.[1].shirtNumber").value(is(PlayerTemplates.TWENTY_NINE)))
         .andExpect(jsonPath("$.content.[1].position")
             .value(is(PlayerPosition.GOALTENDER.toString())))
+        .andExpect(jsonPath("$.content.[1].team.name").value(is(ehcEngelberg.getName())))
         .andExpect(jsonPath("$.content.[1].links", hasSize(2)))
         .andExpect(jsonPath("$.content.[1].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[1].links.[0].href",
@@ -192,6 +194,7 @@ public class PlayerRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.lastName").value(PlayerTemplates.JOSI))
         .andExpect(jsonPath("$.shirtNumber").value(PlayerTemplates.FIFITY_NINE))
         .andExpect(jsonPath("$.position").value(is(PlayerPosition.SKATER.toString())))
+        .andExpect(jsonPath("$.team.name").value(is(ehcEngelberg.getName())))
         .andExpect(jsonPath("$.links", hasSize(2)))
         .andExpect(jsonPath("$.links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.links.[0].href", endsWith("/players/" + romanJosi.getId())))

@@ -4,6 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { SkillsService } from '../../../../core/services/skills.service';
 import { SkillType } from '../../../../types';
 import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 interface Type {
   value: string;
@@ -40,7 +41,8 @@ export class SkillDetailComponent {
   constructor(
     private skillsService: SkillsService,
     private formBuilder: FormBuilder,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private router: Router
   ) {
     this.crudDetailOptions = {
       form: this.formBuilder.group({
@@ -52,5 +54,9 @@ export class SkillDetailComponent {
       crudService: skillsService,
       routerListUrl: '/skillsdata/skills'
     };
+  }
+
+  navigateToResultsOfSkill() {
+    this.router.navigateByUrl('/skillsdata/skillresults');
   }
 }

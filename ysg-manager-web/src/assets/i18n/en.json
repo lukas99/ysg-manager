@@ -6,6 +6,7 @@
   "MORE_ACTIONS": "More actions",
 
   "NAVIGATION_MASTERDATA": "Masterdata",
+  "NAVIGATION_SKILL_RESULTS": "Results",
   "NAVIGATION_SKILLS": "Skills",
   "NAVIGATION_TOURNAMENTS": "Tournaments",
   "NAVIGATION_TEAMS": "Teams",
@@ -27,11 +28,22 @@
   "PLAYER_POSITION_GOALTENDER": "Goaltender",
 
   "SKILLS_PAGE_TITLE": "Skills",
+  "SKILLS_PAGE_NAVIGATE_TO_RESULTS_OF_SKILL": "Edit results",
   "SKILL_NAME": "Name",
   "SKILL_TYPE": "Type",
   "SKILL_NUMBER": "Number",
   "SKILL_TYPE_TIME_WITH_RATING": "Time with rating",
   "SKILL_TYPE_TIME_WITH_POINTS": "Time with points",
   "SKILL_TYPE_TIME": "Time",
-  "SKILL_TYPE_POINTS": "Points"
+  "SKILL_TYPE_POINTS": "Points",
+
+  "SKILLS_RESULTS_PAGE_TITLE": "Results",
+  "SKILL_RESULT_PLAYER_TEAM": "Team",
+  "SKILL_RESULT_PLAYER_NAME": "Player",
+  "SKILL_RESULT_PLAYER_FIRST_NAME": "First name",
+  "SKILL_RESULT_PLAYER_LAST_NAME": "Last name",
+  "SKILL_RESULT_PLAYER_SHIRT_NUMBER": "Shirt number",
+  "SKILL_RESULT_TIME": "Time",
+  "SKILL_RESULT_FAILURES": "Failures",
+  "SKILL_RESULT_POINTS": "Points"
 }

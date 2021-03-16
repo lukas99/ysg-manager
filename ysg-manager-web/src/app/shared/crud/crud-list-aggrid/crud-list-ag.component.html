@@ -1,0 +1,35 @@
+<div class="header">
+  <h1 class="header-title">
+    <ng-content></ng-content>
+  </h1>
+  <span class="header-actions">
+    <button mat-icon-button (click)="createItem()">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      [disabled]="!isItemSelected"
+      (click)="editSelectedItem()"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      [disabled]="!isItemSelected"
+      (click)="deleteSelectedItem()"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </span>
+</div>
+<ag-grid-angular
+  class="ag-theme-alpine"
+  [rowData]="items$ | async"
+  [defaultColDef]="defaultColDef"
+  [columnDefs]="options.columnDefs"
+  (gridReady)="onGridReady($event)"
+  (rowDoubleClicked)="edit($event)"
+  (rowSelected)="onRowSelected($event)"
+  rowSelection="single"
+>
+</ag-grid-angular>
