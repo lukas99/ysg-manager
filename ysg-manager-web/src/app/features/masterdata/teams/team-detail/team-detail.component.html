@@ -12,9 +12,7 @@
   [options]="crudDetailOptions"
   [fieldsTemplate]="fields"
 ></ysg-crud-detail>
-<mat-card>
-  <mat-card-subtitle>{{ 'MORE_ACTIONS' | translate }}</mat-card-subtitle>
-  <button mat-stroked-button (click)="navigateToPlayersOfTeam()">
-    {{ 'PLAYERS_PAGE_NAVIGATE_TO_PLAYERS_OF_TEAM' | translate }}
-  </button>
-</mat-card>
+<ysg-more-actions
+  [button1Text]="'PLAYERS_PAGE_NAVIGATE_TO_PLAYERS_OF_TEAM'"
+  (button1Click)="navigateToPlayersOfTeam()"
+></ysg-more-actions>

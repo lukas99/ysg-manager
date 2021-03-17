@@ -17,6 +17,7 @@ import { CrudDetailComponent } from './crud/crud-detail/crud-detail.component';
 import { MatSelectModule } from '@angular/material/select';
 import { AgGridModule } from 'ag-grid-angular';
 import { CrudListAgComponent } from './crud/crud-list-aggrid/crud-list-ag.component';
+import { MoreActionsComponent } from './more-actions/more-actions.component';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -35,7 +36,12 @@ import { CrudListAgComponent } from './crud/crud-list-aggrid/crud-list-ag.compon
  * in providers: [ ] of any module
  */
 @NgModule({
-  declarations: [CrudListComponent, CrudListAgComponent, CrudDetailComponent],
+  declarations: [
+    CrudListComponent,
+    CrudListAgComponent,
+    CrudDetailComponent,
+    MoreActionsComponent
+  ],
   imports: [
     // angular
     CommonModule,
@@ -88,7 +94,8 @@ import { CrudListAgComponent } from './crud/crud-list-aggrid/crud-list-ag.compon
     // declared components
     CrudListComponent,
     CrudListAgComponent,
-    CrudDetailComponent
+    CrudDetailComponent,
+    MoreActionsComponent
   ],
   providers: [] // should stay empty
 })

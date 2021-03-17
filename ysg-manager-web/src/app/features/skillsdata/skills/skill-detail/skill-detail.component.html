@@ -24,9 +24,7 @@
   [options]="crudDetailOptions"
   [fieldsTemplate]="fields"
 ></ysg-crud-detail>
-<mat-card>
-  <mat-card-subtitle>{{ 'MORE_ACTIONS' | translate }}</mat-card-subtitle>
-  <button mat-stroked-button (click)="navigateToResultsOfSkill()">
-    {{ 'SKILLS_PAGE_NAVIGATE_TO_RESULTS_OF_SKILL' | translate }}
-  </button>
-</mat-card>
+<ysg-more-actions
+  [button1Text]="'SKILLS_PAGE_NAVIGATE_TO_RESULTS_OF_SKILL'"
+  (button1Click)="navigateToResultsOfSkill()"
+></ysg-more-actions>
