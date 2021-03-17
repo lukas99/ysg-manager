@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PlayersService } from '../../../../core/services/players.service';
 import { TeamsService } from '../../../../core/services/teams.service';
-import { PlayerPosition, SkillType, Team } from '../../../../types';
+import { PlayerPosition, Team } from '../../../../types';
 import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
 
 @Component({
