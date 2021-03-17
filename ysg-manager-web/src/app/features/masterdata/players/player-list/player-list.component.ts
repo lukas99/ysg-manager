@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
 import { TranslateService } from '@ngx-translate/core';
 import { PlayersService } from '../../../../core/services/players.service';
 import { TeamsService } from '../../../../core/services/teams.service';
-import { Team } from '../../../../types';
+import { PlayerPosition, SkillType, Team } from '../../../../types';
+import { CrudListOptionsAg } from '../../../../shared/crud/crud-list-aggrid/crud-list-ag.component';
 
 @Component({
   selector: 'ysg-player-list',
@@ -11,7 +11,7 @@ import { Team } from '../../../../types';
   styleUrls: []
 })
 export class PlayerListComponent {
-  crudListOptions: CrudListOptions;
+  crudListOptions: CrudListOptionsAg;
   selectedTeam: Team = this.teamsService.getSelectedItemValue();
 
   constructor(
@@ -20,26 +20,45 @@ export class PlayerListComponent {
     private translateService: TranslateService
   ) {
     this.crudListOptions = {
-      headers: [
+      columnDefs: [
         {
-          key: 'firstName',
-          title: this.translateService.instant('PLAYER_FIRST_NAME')
+          field: 'position',
+          headerName: this.translateService.instant('PLAYER_POSITION'),
+          cellRenderer: (params) => this.translatePlayerPosition(params.value),
+          filterValueGetter: (params) =>
+            this.translatePlayerPosition(params.data.position),
+          sort: 'asc'
         },
         {
-          key: 'lastName',
-          title: this.translateService.instant('PLAYER_LAST_NAME')
+          field: 'shirtNumber',
+          headerName: this.translateService.instant('PLAYER_SHIRT_NUMBER'),
+          sort: 'asc'
         },
         {
-          key: 'shirtNumber',
-          title: this.translateService.instant('PLAYER_SHIRT_NUMBER')
+          field: 'firstName',
+          headerName: this.translateService.instant('PLAYER_FIRST_NAME')
         },
         {
-          key: 'position',
-          title: this.translateService.instant('PLAYER_POSITION')
+          field: 'lastName',
+          headerName: this.translateService.instant('PLAYER_LAST_NAME')
         }
       ],
       crudService: playersService,
       routerDetailUrl: '/masterdata/players/detail'
     };
+  }
+
+  private translatePlayerPosition(playerPosition: PlayerPosition) {
+    switch (playerPosition) {
+      case PlayerPosition.SKATER: {
+        return this.translateService.instant('PLAYER_POSITION_SKATER');
+      }
+      case PlayerPosition.GOALTENDER: {
+        return this.translateService.instant('PLAYER_POSITION_GOALTENDER');
+      }
+      default: {
+        return playerPosition;
+      }
+    }
   }
 }

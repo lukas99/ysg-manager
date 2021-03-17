@@ -37,16 +37,8 @@ describe('PlayerListComponent', () => {
   it('creates the options', () => {
     const options = component.crudListOptions;
 
-    expect(options.headers.length).toBe(4);
-    expect(options.headers[0].key).toBe('firstName');
-    expect(options.headers[0].title).toBe('PLAYER_FIRST_NAME');
-    expect(options.headers[1].key).toBe('lastName');
-    expect(options.headers[1].title).toBe('PLAYER_LAST_NAME');
-    expect(options.headers[2].key).toBe('shirtNumber');
-    expect(options.headers[2].title).toBe('PLAYER_SHIRT_NUMBER');
-    expect(options.headers[3].key).toBe('position');
-    expect(options.headers[3].title).toBe('PLAYER_POSITION');
-    expect(translateService.instant).toHaveBeenCalledTimes(4);
+    expect(options.columnDefs.length).toBe(4);
+    expect(translateService.instant).toHaveBeenCalled();
 
     expect(options.crudService).toBe(playersService);
     expect(options.routerDetailUrl).toBeDefined();

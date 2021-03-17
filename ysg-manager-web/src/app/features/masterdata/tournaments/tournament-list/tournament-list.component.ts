@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TournamentsService } from '../../../../core/services/tournaments.service';
-import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CrudListOptionsAg } from '../../../../shared/crud/crud-list-aggrid/crud-list-ag.component';
 
 @Component({
   selector: 'ysg-tournament-list',
@@ -9,21 +9,24 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: []
 })
 export class TournamentListComponent {
-  crudListOptions: CrudListOptions;
+  crudListOptions: CrudListOptionsAg;
 
   constructor(
     private tournamentsService: TournamentsService,
     private translateService: TranslateService
   ) {
     this.crudListOptions = {
-      headers: [
+      columnDefs: [
         {
-          key: 'name',
-          title: this.translateService.instant('TOURNAMENT_NAME')
+          field: 'name',
+          headerName: this.translateService.instant('TOURNAMENT_NAME')
         },
         {
-          key: 'dateDescription',
-          title: this.translateService.instant('TOURNAMENT_DATE_DESCRIPTION')
+          field: 'dateDescription',
+          headerName: this.translateService.instant(
+            'TOURNAMENT_DATE_DESCRIPTION'
+          ),
+          sort: 'asc'
         }
       ],
       crudService: tournamentsService,

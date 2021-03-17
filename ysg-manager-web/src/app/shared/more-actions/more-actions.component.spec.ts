@@ -9,7 +9,7 @@ describe('MoreActionsComponent', () => {
 
   it('emits the click event of button 1', () => {
     let eventReceived = false;
-    component.button1Click.subscribe(()=>eventReceived = true);
+    component.button1Click.subscribe(() => (eventReceived = true));
 
     component.onButton1Click();
 

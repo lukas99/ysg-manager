@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
 import { TranslateService } from '@ngx-translate/core';
 import { TeamsService } from '../../../../core/services/teams.service';
+import { CrudListOptionsAg } from '../../../../shared/crud/crud-list-aggrid/crud-list-ag.component';
 
 @Component({
   selector: 'ysg-team-list',
@@ -9,17 +9,17 @@ import { TeamsService } from '../../../../core/services/teams.service';
   styleUrls: []
 })
 export class TeamListComponent {
-  crudListOptions: CrudListOptions;
+  crudListOptions: CrudListOptionsAg;
 
   constructor(
     private teamsService: TeamsService,
     private translateService: TranslateService
   ) {
     this.crudListOptions = {
-      headers: [
+      columnDefs: [
         {
-          key: 'name',
-          title: this.translateService.instant('TEAM_NAME')
+          field: 'name',
+          headerName: this.translateService.instant('TEAM_NAME')
         }
       ],
       crudService: teamsService,

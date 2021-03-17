@@ -19,14 +19,11 @@ describe('SkillListComponent', () => {
   it('creates the options', () => {
     const options = component.crudListOptions;
 
-    expect(options.headers.length).toBe(3);
-    expect(options.headers[0].key).toBe('name');
-    expect(options.headers[0].title).toBe('SKILL_NAME');
-    expect(options.headers[1].key).toBe('skillType');
-    expect(options.headers[1].title).toBe('SKILL_TYPE');
-    expect(options.headers[2].key).toBe('number');
-    expect(options.headers[2].title).toBe('SKILL_NUMBER');
-    expect(translateService.instant).toHaveBeenCalledTimes(3);
+    expect(options.columnDefs.length).toBe(3);
+    expect(translateService.instant).toHaveBeenCalled();
+
+    expect(options.crudService).toBe(skillsService);
+    expect(options.routerDetailUrl).toBeDefined();
 
     expect(options.crudService).toBe(skillsService);
     expect(options.routerDetailUrl).toBeDefined();

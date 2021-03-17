@@ -19,10 +19,8 @@ describe('TeamListComponent', () => {
   it('can be created', () => {
     const options = component.crudListOptions;
 
-    expect(options.headers.length).toBe(1);
-    expect(options.headers[0].key).toBe('name');
-    expect(options.headers[0].title).toBe('TEAM_NAME');
-    expect(translateService.instant).toHaveBeenCalledTimes(1);
+    expect(options.columnDefs.length).toBe(1);
+    expect(translateService.instant).toHaveBeenCalled();
 
     expect(options.crudService).toBe(teamsService);
     expect(options.routerDetailUrl).toBeDefined();
