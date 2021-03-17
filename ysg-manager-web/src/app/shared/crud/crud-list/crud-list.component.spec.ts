@@ -3,7 +3,7 @@ import { TournamentsService } from '../../../core/services/tournaments.service';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { skip } from 'rxjs/operators';
-import { CrudListAgComponent } from './crud-list-ag.component';
+import { CrudListComponent } from './crud-list.component';
 import DoneCallback = jest.DoneCallback;
 
 describe('CrudListAgComponent', () => {
@@ -11,7 +11,7 @@ describe('CrudListAgComponent', () => {
   let tournament2: Tournament;
   let tournaments: Tournament[];
 
-  let component: CrudListAgComponent;
+  let component: CrudListComponent;
 
   let tournamentsService: TournamentsService;
   let router: Router;
@@ -39,7 +39,7 @@ describe('CrudListAgComponent', () => {
       removeSelectedItem: jest.fn()
     };
     router = <any>{ navigateByUrl: jest.fn() };
-    component = new CrudListAgComponent(router);
+    component = new CrudListComponent(router);
     component.options = {
       columnDefs: [
         {

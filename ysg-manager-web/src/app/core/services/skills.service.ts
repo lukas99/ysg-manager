@@ -5,7 +5,7 @@ import { Skill, SkillList, Tournament } from '../../types';
 import { map } from 'rxjs/operators';
 import { TournamentsService } from './tournaments.service';
 import { CrudStateService } from './crud-state.service';
-import { CrudService } from '../../shared/crud/crud-list-aggrid/crud-list-ag.component';
+import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
 
 @Injectable({
   providedIn: 'root'

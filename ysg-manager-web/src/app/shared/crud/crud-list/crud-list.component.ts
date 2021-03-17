@@ -7,7 +7,7 @@ import { switchMap } from 'rxjs/operators';
 /**
  * The options to pass to the CrudListComponent.
  */
-export interface CrudListOptionsAg {
+export interface CrudListOptions {
   /**
    * The agGrid column definitions.
    */
@@ -37,12 +37,12 @@ export interface CrudService {
  * Generic implementation of a CRUD list table with agGrid.
  */
 @Component({
-  selector: 'ysg-crud-list-ag',
-  templateUrl: 'crud-list-ag.component.html',
-  styleUrls: ['crud-list-ag.component.css']
+  selector: 'ysg-crud-list',
+  templateUrl: 'crud-list.component.html',
+  styleUrls: ['crud-list.component.css']
 })
-export class CrudListAgComponent implements OnInit {
-  @Input() options!: CrudListOptionsAg;
+export class CrudListComponent implements OnInit {
+  @Input() options!: CrudListOptions;
 
   private gridApi!: GridApi;
 

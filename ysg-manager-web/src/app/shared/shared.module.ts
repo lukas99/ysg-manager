@@ -15,7 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CrudDetailComponent } from './crud/crud-detail/crud-detail.component';
 import { MatSelectModule } from '@angular/material/select';
 import { AgGridModule } from 'ag-grid-angular';
-import { CrudListAgComponent } from './crud/crud-list-aggrid/crud-list-ag.component';
+import { CrudListComponent } from './crud/crud-list/crud-list.component';
 import { MoreActionsComponent } from './more-actions/more-actions.component';
 
 /**
@@ -35,11 +35,7 @@ import { MoreActionsComponent } from './more-actions/more-actions.component';
  * in providers: [ ] of any module
  */
 @NgModule({
-  declarations: [
-    CrudListAgComponent,
-    CrudDetailComponent,
-    MoreActionsComponent
-  ],
+  declarations: [CrudListComponent, CrudDetailComponent, MoreActionsComponent],
   imports: [
     // angular
     CommonModule,
@@ -90,7 +86,7 @@ import { MoreActionsComponent } from './more-actions/more-actions.component';
     AgGridModule,
 
     // declared components
-    CrudListAgComponent,
+    CrudListComponent,
     CrudDetailComponent,
     MoreActionsComponent
   ],

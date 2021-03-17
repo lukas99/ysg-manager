@@ -9,7 +9,7 @@ import { FormGroup } from '@angular/forms';
 import { EMPTY, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import { CrudService } from '../crud-list-aggrid/crud-list-ag.component';
+import { CrudService } from '../crud-list/crud-list.component';
 
 /**
  * The options for to pass to the CrudDetailComponent.

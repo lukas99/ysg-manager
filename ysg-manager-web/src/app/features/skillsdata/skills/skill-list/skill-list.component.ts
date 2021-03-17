@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SkillsService } from '../../../../core/services/skills.service';
-import { CrudListOptionsAg } from '../../../../shared/crud/crud-list-aggrid/crud-list-ag.component';
+import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
 import { SkillType } from '../../../../types';
 
 @Component({
@@ -10,7 +10,7 @@ import { SkillType } from '../../../../types';
   styleUrls: []
 })
 export class SkillListComponent {
-  crudListOptions: CrudListOptionsAg;
+  crudListOptions: CrudListOptions;
 
   constructor(
     private skillsService: SkillsService,

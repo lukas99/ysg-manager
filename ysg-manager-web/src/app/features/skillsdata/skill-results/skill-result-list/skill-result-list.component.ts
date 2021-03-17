@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SkillResultsService } from '../../../../core/services/skill-results.service';
 import { Team } from '../../../../types';
 import { SkillsService } from '../../../../core/services/skills.service';
-import { CrudListOptionsAg } from '../../../../shared/crud/crud-list-aggrid/crud-list-ag.component';
+import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
 
 @Component({
   selector: 'ysg-skill-result-list',
@@ -11,7 +11,7 @@ import { CrudListOptionsAg } from '../../../../shared/crud/crud-list-aggrid/crud
   styleUrls: []
 })
 export class SkillResultListComponent {
-  crudListOptions: CrudListOptionsAg;
+  crudListOptions: CrudListOptions;
   selectedSkill: Team = this.skillsService.getSelectedItemValue();
 
   constructor(

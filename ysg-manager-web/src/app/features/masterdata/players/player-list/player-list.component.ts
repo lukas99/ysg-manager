@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PlayersService } from '../../../../core/services/players.service';
 import { TeamsService } from '../../../../core/services/teams.service';
 import { PlayerPosition, SkillType, Team } from '../../../../types';
-import { CrudListOptionsAg } from '../../../../shared/crud/crud-list-aggrid/crud-list-ag.component';
+import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
 
 @Component({
   selector: 'ysg-player-list',
@@ -11,7 +11,7 @@ import { CrudListOptionsAg } from '../../../../shared/crud/crud-list-aggrid/crud
   styleUrls: []
 })
 export class PlayerListComponent {
-  crudListOptions: CrudListOptionsAg;
+  crudListOptions: CrudListOptions;
   selectedTeam: Team = this.teamsService.getSelectedItemValue();
 
   constructor(

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TournamentsService } from '../../../../core/services/tournaments.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CrudListOptionsAg } from '../../../../shared/crud/crud-list-aggrid/crud-list-ag.component';
+import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
 
 @Component({
   selector: 'ysg-tournament-list',
@@ -9,7 +9,7 @@ import { CrudListOptionsAg } from '../../../../shared/crud/crud-list-aggrid/crud
   styleUrls: []
 })
 export class TournamentListComponent {
-  crudListOptions: CrudListOptionsAg;
+  crudListOptions: CrudListOptions;
 
   constructor(
     private tournamentsService: TournamentsService,

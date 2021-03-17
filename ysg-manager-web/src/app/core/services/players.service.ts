@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Link, Player, PlayerList, Team } from '../../types';
 import { CrudStateService } from './crud-state.service';
 import { TeamsService } from './teams.service';
-import { CrudService } from '../../shared/crud/crud-list-aggrid/crud-list-ag.component';
+import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
 
 @Injectable({
   providedIn: 'root'
