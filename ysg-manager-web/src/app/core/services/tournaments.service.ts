@@ -4,8 +4,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Tournament, TournamentList } from '../../types';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
 import { CrudStateService } from './crud-state.service';
+import { CrudService } from '../../shared/crud/crud-list-aggrid/crud-list-ag.component';
 
 @Injectable({
   providedIn: 'root'

@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { CrudService } from '../crud-list/crud-list.component';
 import { ColDef, GridApi } from 'ag-grid-community';
 import { switchMap } from 'rxjs/operators';
 
@@ -18,6 +17,20 @@ export interface CrudListOptionsAg {
    * The url to the detail page.
    */
   routerDetailUrl: string;
+}
+
+/**
+ * Provides the CRUD operations for the CRUD list and detail components.
+ */
+export interface CrudService {
+  getItems(): Observable<any[]>;
+  createItem(item: any): Observable<any>;
+  updateItem(item: any): Observable<any>;
+  deleteItem(item: any): Observable<any>;
+  getItemTitle(item: any): string;
+  getSelectedItem(): Observable<any>;
+  setSelectedItem(item: any): void;
+  removeSelectedItem(): void;
 }
 
 /**

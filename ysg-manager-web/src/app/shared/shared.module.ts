@@ -12,7 +12,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CrudListComponent } from './crud/crud-list/crud-list.component';
 import { CrudDetailComponent } from './crud/crud-detail/crud-detail.component';
 import { MatSelectModule } from '@angular/material/select';
 import { AgGridModule } from 'ag-grid-angular';
@@ -37,7 +36,6 @@ import { MoreActionsComponent } from './more-actions/more-actions.component';
  */
 @NgModule({
   declarations: [
-    CrudListComponent,
     CrudListAgComponent,
     CrudDetailComponent,
     MoreActionsComponent
@@ -92,7 +90,6 @@ import { MoreActionsComponent } from './more-actions/more-actions.component';
     AgGridModule,
 
     // declared components
-    CrudListComponent,
     CrudListAgComponent,
     CrudDetailComponent,
     MoreActionsComponent

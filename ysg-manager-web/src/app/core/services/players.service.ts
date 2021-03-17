@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
 import { Link, Player, PlayerList, Team } from '../../types';
 import { CrudStateService } from './crud-state.service';
 import { TeamsService } from './teams.service';
+import { CrudService } from '../../shared/crud/crud-list-aggrid/crud-list-ag.component';
 
 @Injectable({
   providedIn: 'root'

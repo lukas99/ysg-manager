@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Skill, SkillList, Tournament } from '../../types';
 import { map } from 'rxjs/operators';
-import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
 import { TournamentsService } from './tournaments.service';
 import { CrudStateService } from './crud-state.service';
+import { CrudService } from '../../shared/crud/crud-list-aggrid/crud-list-ag.component';
 
 @Injectable({
   providedIn: 'root'
