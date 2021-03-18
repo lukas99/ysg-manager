@@ -5,6 +5,8 @@ import { of } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { CrudListComponent } from './crud-list.component';
 import DoneCallback = jest.DoneCallback;
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('CrudListAgComponent', () => {
   let tournament1: Tournament;
@@ -14,7 +16,9 @@ describe('CrudListAgComponent', () => {
   let component: CrudListComponent;
 
   let tournamentsService: TournamentsService;
+  let dialog: MatDialog;
   let router: Router;
+  let translateService: TranslateService;
 
   beforeEach(() => {
     tournament1 = {
@@ -38,8 +42,10 @@ describe('CrudListAgComponent', () => {
       setSelectedItem: jest.fn(),
       removeSelectedItem: jest.fn()
     };
+    dialog = <any>{};
     router = <any>{ navigateByUrl: jest.fn() };
-    component = new CrudListComponent(router);
+    translateService = <any>{ instant: jest.fn() };
+    component = new CrudListComponent(dialog, router, translateService);
     component.options = {
       columnDefs: [
         {
@@ -98,6 +104,6 @@ describe('CrudListAgComponent', () => {
         done();
       });
 
-    component.delete({ data: tournament2 });
+    component.delete(tournament2);
   });
 });

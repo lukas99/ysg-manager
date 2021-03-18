@@ -3,6 +3,12 @@ import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { ColDef, GridApi } from 'ag-grid-community';
 import { switchMap } from 'rxjs/operators';
+import {
+  ConfirmationDialogComponent,
+  ConfirmationDialogData
+} from '../../confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * The options to pass to the CrudListComponent.
@@ -57,7 +63,11 @@ export class CrudListComponent implements OnInit {
     resizable: true
   };
 
-  constructor(private router: Router) {}
+  constructor(
+    private dialog: MatDialog,
+    private router: Router,
+    private translateService: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.items$ = this.refreshToken$.pipe(
@@ -94,13 +104,32 @@ export class CrudListComponent implements OnInit {
   deleteSelectedItem() {
     const selectedNodes = this.gridApi.getSelectedNodes();
     if (selectedNodes.length > 0) {
-      this.delete(selectedNodes[0]);
+      const selectedItem = selectedNodes[0].data;
+      this.openDeleteConfirmationDialog(selectedItem);
     }
   }
 
-  delete(node: any) {
+  openDeleteConfirmationDialog(itemToDelete: any): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: <ConfirmationDialogData>{
+        title: 'DELETE_CONFIRMATION_DIALOG_TITLE',
+        text: this.translateService.instant('DELETE_CONFIRMATION_DIALOG_TEXT', {
+          itemName: this.options.crudService.getItemTitle(itemToDelete)
+        }),
+        cancelButtonText: 'NO',
+        confirmButtonText: 'YES'
+      }
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.delete(itemToDelete);
+      }
+    });
+  }
+
+  delete(itemToDelete: any) {
     this.options.crudService
-      .deleteItem(node.data)
+      .deleteItem(itemToDelete)
       .subscribe(() => this.refreshToken$.next(undefined));
   }
 

@@ -17,6 +17,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { AgGridModule } from 'ag-grid-angular';
 import { CrudListComponent } from './crud/crud-list/crud-list.component';
 import { MoreActionsComponent } from './more-actions/more-actions.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -35,7 +37,12 @@ import { MoreActionsComponent } from './more-actions/more-actions.component';
  * in providers: [ ] of any module
  */
 @NgModule({
-  declarations: [CrudListComponent, CrudDetailComponent, MoreActionsComponent],
+  declarations: [
+    CrudListComponent,
+    CrudDetailComponent,
+    MoreActionsComponent,
+    ConfirmationDialogComponent
+  ],
   imports: [
     // angular
     CommonModule,
@@ -56,6 +63,7 @@ import { MoreActionsComponent } from './more-actions/more-actions.component';
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
+    MatDialogModule,
 
     // agGrid
     AgGridModule.withComponents([])

@@ -1,9 +1,14 @@
 {
   "APP_TITLE": "YSG Manager",
 
-  "SAVE": "Speichern",
   "CANCEL": "Abbrechen",
+  "YES": "Ja",
   "MORE_ACTIONS": "Weitere Aktionen",
+  "NO": "Nein",
+  "SAVE": "Speichern",
+
+  "DELETE_CONFIRMATION_DIALOG_TITLE": "Element löschen",
+  "DELETE_CONFIRMATION_DIALOG_TEXT": "Willst du '{{itemName}}' wirklich löschen?",
 
   "NAVIGATION_MASTERDATA": "Stammdaten",
   "NAVIGATION_SKILL_RESULTS": "Resultate",
