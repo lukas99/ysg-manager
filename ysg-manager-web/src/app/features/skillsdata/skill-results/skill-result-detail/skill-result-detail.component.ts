@@ -50,7 +50,7 @@ export class SkillResultDetailComponent implements OnInit {
   private initPlayerAndTeam() {
     this.crudDetailOptions.form.valueChanges
       .pipe(
-        filter((skillResult) => skillResult._links.self.href),
+        filter((skillResult) => skillResult._links.self?.href),
         take(1)
       )
       .subscribe((skillResult) =>
