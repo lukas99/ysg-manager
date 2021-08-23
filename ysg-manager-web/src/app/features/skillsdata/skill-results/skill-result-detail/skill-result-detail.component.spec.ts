@@ -4,14 +4,16 @@ import { SkillResultDetailComponent } from './skill-result-detail.component';
 import { SkillResultsService } from '../../../../core/services/skill-results.service';
 import { TeamsService } from '../../../../core/services/teams.service';
 import { PlayersService } from '../../../../core/services/players.service';
-import { Player, SkillResult, Team } from '../../../../types';
+import { Player, Skill, SkillResult, SkillType, Team } from '../../../../types';
 import { of } from 'rxjs';
+import { SkillsService } from '../../../../core/services/skills.service';
 
 describe('SkillResultDetailComponent', () => {
   let component: SkillResultDetailComponent;
   let skillResultsService: SkillResultsService;
   let teamsService: TeamsService;
   let playersService: PlayersService;
+  let skillsService: SkillsService;
   let formBuilder: FormBuilder;
 
   let team1: Team;
@@ -20,6 +22,7 @@ describe('SkillResultDetailComponent', () => {
   let player1: Player;
   let player2: Player;
   let players: Player[];
+  let skill: Skill;
 
   beforeEach(() => {
     team1 = <Team>{ name: 'EHC Engelberg' };
@@ -36,6 +39,12 @@ describe('SkillResultDetailComponent', () => {
       _links: { self: { href: 'players/2' } }
     };
     players = [player1, player2];
+    skill = {
+      name: 'Magic Transitions',
+      skillType: SkillType.TIME_WITH_RATING,
+      number: 1,
+      _links: <any>{}
+    };
 
     skillResultsService = <any>{};
     teamsService = <any>{
@@ -44,12 +53,16 @@ describe('SkillResultDetailComponent', () => {
     playersService = <any>{
       getPlayers: jest.fn(() => of(players))
     };
+    skillsService = <any>{
+      getSelectedItemValue: jest.fn(() => skill)
+    };
     formBuilder = new FormBuilder();
 
     component = new SkillResultDetailComponent(
       skillResultsService,
       teamsService,
       playersService,
+      skillsService,
       formBuilder
     );
   });

@@ -51,13 +51,13 @@ export class SkillResultListComponent {
           filter: 'agNumberColumnFilter'
         },
         {
-          field: 'failures',
-          headerName: this.translateService.instant('SKILL_RESULT_FAILURES'),
+          field: 'points',
+          headerName: this.translateService.instant('SKILL_RESULT_POINTS'),
           filter: 'agNumberColumnFilter'
         },
         {
-          field: 'points',
-          headerName: this.translateService.instant('SKILL_RESULT_POINTS'),
+          field: 'failures',
+          headerName: this.translateService.instant('SKILL_RESULT_FAILURES'),
           filter: 'agNumberColumnFilter'
         }
       ],

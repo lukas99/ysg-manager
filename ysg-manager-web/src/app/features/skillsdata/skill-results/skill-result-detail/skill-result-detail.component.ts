@@ -3,9 +3,10 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
 import { SkillResultsService } from '../../../../core/services/skill-results.service';
 import { TeamsService } from '../../../../core/services/teams.service';
-import { Player, SkillResult, Team } from '../../../../types';
+import { Player, Skill, SkillResult, SkillType, Team } from '../../../../types';
 import { PlayersService } from '../../../../core/services/players.service';
 import { filter, take } from 'rxjs/operators';
+import { SkillsService } from '../../../../core/services/skills.service';
 
 @Component({
   selector: 'ysg-skill-result-detail',
@@ -15,6 +16,8 @@ import { filter, take } from 'rxjs/operators';
 export class SkillResultDetailComponent implements OnInit {
   crudDetailOptions: CrudDetailOptions;
 
+  selectedSkill!: Skill;
+
   teams!: Team[];
   players!: Player[];
 
@@ -22,17 +25,25 @@ export class SkillResultDetailComponent implements OnInit {
     private skillResultsService: SkillResultsService,
     private teamsService: TeamsService,
     private playerService: PlayersService,
+    private skillsService: SkillsService,
     private formBuilder: FormBuilder
   ) {
+    this.selectedSkill = this.skillsService.getSelectedItemValue();
     this.crudDetailOptions = {
       form: this.formBuilder.group({
         // fields only needed for form but not for model
         team: new FormControl(),
         player: new FormControl(),
         // fields also needed for model
-        time: ['', Validators.required],
-        failures: ['', Validators.required],
-        points: [''],
+        time: [
+          { value: '', disabled: !this.isWithTime() },
+          this.isWithTime() ? Validators.required : Validators.nullValidator
+        ],
+        points: [
+          { value: '', disabled: !this.isWithPoints() },
+          this.isWithPoints() ? Validators.required : Validators.nullValidator
+        ],
+        failures: [''],
         _links: ['']
       }),
       crudService: skillResultsService,
@@ -90,5 +101,26 @@ export class SkillResultDetailComponent implements OnInit {
       !!object2 &&
       object1._links.self.href === object2._links.self.href
     );
+  }
+
+  private isWithTime(): boolean {
+    switch (this.selectedSkill.skillType) {
+      case SkillType.TIME:
+      case SkillType.TIME_WITH_POINTS:
+      case SkillType.TIME_WITH_RATING:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  private isWithPoints(): boolean {
+    switch (this.selectedSkill.skillType) {
+      case SkillType.POINTS:
+      case SkillType.TIME_WITH_POINTS:
+        return true;
+      default:
+        return false;
+    }
   }
 }
