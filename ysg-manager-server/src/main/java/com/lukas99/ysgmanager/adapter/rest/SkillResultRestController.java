@@ -57,6 +57,13 @@ public class SkillResultRestController {
     return createSkillResult(skillResultModel, skill, player);
   }
 
+  /**
+   * Create a new skillResult.
+   *
+   * @param skillId          the id of the skill for which the result should be created.
+   * @param skillResultModel the skillResult to create.
+   * @return the created skillResult.
+   */
   @PostMapping("/skills/{skillId}/skill-results")
   public ResponseEntity<SkillResultModel> createSkillResultBySkill(
       @PathVariable Long skillId, @Valid @RequestBody SkillResultModel skillResultModel) {
@@ -67,8 +74,8 @@ public class SkillResultRestController {
     return createSkillResult(skillResultModel, skill, player);
   }
 
-  private ResponseEntity<SkillResultModel> createSkillResult(SkillResultModel skillResultModel,
-      Optional<Skill> skill, Optional<Player> player) {
+  private ResponseEntity<SkillResultModel> createSkillResult(
+      SkillResultModel skillResultModel, Optional<Skill> skill, Optional<Player> player) {
     if (player.isPresent() && skill.isPresent()) {
       SkillResult skillResult = skillResultModel.toEntity(player.get(), skill.get());
       skillResult = skillResultService.save(skillResult);
