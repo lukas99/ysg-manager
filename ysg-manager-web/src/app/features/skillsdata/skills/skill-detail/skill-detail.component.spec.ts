@@ -55,4 +55,9 @@ describe('SkillDetailComponent', () => {
     component.navigateToResultsOfSkill();
     expect(router.navigateByUrl).toHaveBeenCalled();
   });
+
+  it('navigates to the ratings of the skill', () => {
+    component.navigateToRatingsOfSkill();
+    expect(router.navigateByUrl).toHaveBeenCalled();
+  });
 });

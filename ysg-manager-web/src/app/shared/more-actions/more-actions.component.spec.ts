@@ -15,4 +15,13 @@ describe('MoreActionsComponent', () => {
 
     expect(eventReceived).toBeTruthy();
   });
+
+  it('emits the click event of button 2', () => {
+    let eventReceived = false;
+    component.button2Click.subscribe(() => (eventReceived = true));
+
+    component.onButton2Click();
+
+    expect(eventReceived).toBeTruthy();
+  });
 });

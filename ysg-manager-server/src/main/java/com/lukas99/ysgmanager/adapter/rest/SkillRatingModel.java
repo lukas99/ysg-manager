@@ -18,6 +18,8 @@ public class SkillRatingModel extends RepresentationModel<SkillRatingModel> {
   @NotNull
   private Integer score;
 
+  private PlayerModel player;
+
   /**
    * Creates an entity of this model.
    *

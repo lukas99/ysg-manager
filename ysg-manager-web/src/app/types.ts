@@ -63,6 +63,7 @@ export interface Skill {
     self: Link;
     tournament: Link;
     skillresults: Link;
+    skillratings: Link;
   };
 }
 
@@ -94,5 +95,21 @@ export interface SkillResult {
 export interface SkillResultList {
   _embedded: {
     skillResultModelList: SkillResult[];
+  };
+}
+
+export interface SkillRating {
+  score: number;
+  player: Player;
+  _links: {
+    self: Link;
+    player: Link;
+    skill: Link;
+  };
+}
+
+export interface SkillRatingList {
+  _embedded: {
+    skillRatingModelList: SkillRating[];
   };
 }

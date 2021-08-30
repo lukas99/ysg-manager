@@ -59,4 +59,8 @@ export class SkillDetailComponent {
   navigateToResultsOfSkill() {
     this.router.navigateByUrl('/skillsdata/skillresults');
   }
+
+  navigateToRatingsOfSkill() {
+    this.router.navigateByUrl('/skillsdata/skillratings');
+  }
 }

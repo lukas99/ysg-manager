@@ -27,7 +27,8 @@ describe('SkillResultsService', () => {
     _links: {
       self: { href: 'skills/1' },
       tournament: { href: 'tournaments/1' },
-      skillresults: { href: '/skills/1/skill-results' }
+      skillresults: { href: '/skills/1/skill-results' },
+      skillratings: { href: '/skills/1/skill-ratings' }
     }
   };
 

@@ -48,12 +48,34 @@ public class SkillRatingRestController {
    * @return the created skillRating.
    */
   @PostMapping("/players/{playerId}/skill-ratings")
-  public ResponseEntity<SkillRatingModel> createSkillRating(
+  public ResponseEntity<SkillRatingModel> createSkillRatingByPlayer(
       @PathVariable Long playerId, @Valid @RequestBody SkillRatingModel skillRatingModel) {
     Optional<Player> player = playerService.findOne(playerId);
     Optional<Skill> skill = skillRatingModel.getLink("skill")
         .map(skillLink -> RestUtils.getLastPathSegment(skillLink))
         .flatMap(skillId -> skillService.findOne(skillId));
+    return createSkillRating(skillRatingModel, skill, player);
+  }
+
+  /**
+   * Create a new skillRating.
+   *
+   * @param skillId          the id of the skill for which the rating should be created.
+   * @param skillRatingModel the skillRating to create.
+   * @return the created skillRating.
+   */
+  @PostMapping("/skills/{skillId}/skill-ratings")
+  public ResponseEntity<SkillRatingModel> createSkillRatingBySkill(
+      @PathVariable Long skillId, @Valid @RequestBody SkillRatingModel skillRatingModel) {
+    Optional<Skill> skill = skillService.findOne(skillId);
+    Optional<Player> player = skillRatingModel.getLink("player")
+        .map(playerLink -> RestUtils.getLastPathSegment(playerLink))
+        .flatMap(playerId -> playerService.findOne(playerId));
+    return createSkillRating(skillRatingModel, skill, player);
+  }
+
+  private ResponseEntity<SkillRatingModel> createSkillRating(
+      SkillRatingModel skillRatingModel, Optional<Skill> skill, Optional<Player> player) {
     if (player.isPresent() && skill.isPresent()) {
       SkillRating skillRating = skillRatingModel.toEntity(player.get(), skill.get());
       skillRating = skillRatingService.save(skillRating);

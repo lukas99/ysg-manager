@@ -1,6 +1,9 @@
 <mat-card>
   <mat-card-subtitle>{{ 'MORE_ACTIONS' | translate }}</mat-card-subtitle>
-  <button mat-stroked-button (click)="onButton1Click()">
+  <button mat-stroked-button (click)="onButton1Click()" *ngIf="button1Text">
     {{ button1Text | translate }}
+  </button>
+  <button mat-stroked-button (click)="onButton2Click()" *ngIf="button2Text">
+    {{ button2Text | translate }}
   </button>
 </mat-card>

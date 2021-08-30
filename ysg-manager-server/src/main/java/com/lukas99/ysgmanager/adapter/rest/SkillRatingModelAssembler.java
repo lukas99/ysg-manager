@@ -21,6 +21,7 @@ public class SkillRatingModelAssembler extends
     SkillRatingModel model = instantiateModel(skillRating);
 
     model.setScore(skillRating.getScore());
+    model.setPlayer(new PlayerModelAssembler().toModel(skillRating.getPlayer()));
 
     model.add(linkTo(
         methodOn(SkillRatingRestController.class).getSkillRating(skillRating.getId()))

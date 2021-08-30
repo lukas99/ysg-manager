@@ -19,6 +19,13 @@ const routes: Routes = [
           import('./skill-results/skill-results.module').then(
             (m) => m.SkillResultsModule
           )
+      },
+      {
+        path: 'skillratings',
+        loadChildren: () =>
+          import('./skill-ratings/skill-ratings.module').then(
+            (m) => m.SkillRatingsModule
+          )
       }
     ]
   }

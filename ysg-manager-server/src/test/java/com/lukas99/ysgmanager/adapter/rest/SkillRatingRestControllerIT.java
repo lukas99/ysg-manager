@@ -107,13 +107,34 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
 
   @Test
   @Transactional
-  public void createSkillRating() throws Exception {
+  public void createSkillRatingByPlayer() throws Exception {
     int databaseSizeBeforeCreate = skillRatingRepository.findAll().size();
 
     // Create the SkillRating
     restSkillRatingMockMvc.perform(post("/api/players/{playerId}/skill-ratings", romanJosi.getId())
         .contentType(TestUtils.APPLICATION_JSON)
         .content(TestUtils.convertObjectToJsonBytes(magicTransitionsRatingModel)))
+        .andExpect(status().isOk());
+
+    // Validate the SkillRating in the database
+    List<SkillRating> skillRatingList = skillRatingRepository.findAll();
+    assertThat(skillRatingList).hasSize(databaseSizeBeforeCreate + 1);
+    SkillRating testSkillRating = skillRatingList.get(skillRatingList.size() - 1);
+    assertThat(testSkillRating.getPlayer()).isEqualTo(romanJosi);
+    assertThat(testSkillRating.getSkill()).isEqualTo(magicTransitions);
+    assertThat(testSkillRating.getScore()).isEqualTo(SkillRatingTemplates.NINTY);
+  }
+
+  @Test
+  @Transactional
+  public void createSkillRatingBySkill() throws Exception {
+    int databaseSizeBeforeCreate = skillRatingRepository.findAll().size();
+
+    // Create the SkillRating
+    restSkillRatingMockMvc
+        .perform(post("/api/skills/{skillId}/skill-ratings", magicTransitions.getId())
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsRatingModel)))
         .andExpect(status().isOk());
 
     // Validate the SkillRating in the database

@@ -34,6 +34,7 @@
 
   "SKILLS_PAGE_TITLE": "Skills",
   "SKILLS_PAGE_NAVIGATE_TO_RESULTS_OF_SKILL": "Resultate bearbeiten",
+  "SKILLS_PAGE_NAVIGATE_TO_RATINGS_OF_SKILL": "Bewertungen bearbeiten",
   "SKILL_NAME": "Name",
   "SKILL_TYPE": "Typ",
   "SKILL_NUMBER": "Nummer",
@@ -50,5 +51,13 @@
   "SKILL_RESULT_PLAYER_SHIRT_NUMBER": "Nummer",
   "SKILL_RESULT_TIME": "Zeit",
   "SKILL_RESULT_FAILURES": "Fehler",
-  "SKILL_RESULT_POINTS": "Punkte"
+  "SKILL_RESULT_POINTS": "Punkte",
+
+  "SKILL_RATINGS_PAGE_TITLE": "Bewertungen",
+  "SKILL_RATING_PLAYER_TEAM": "Mannschaft",
+  "SKILL_RATING_PLAYER_NAME": "Spieler",
+  "SKILL_RATING_PLAYER_FIRST_NAME": "Vorname",
+  "SKILL_RATING_PLAYER_LAST_NAME": "Nachname",
+  "SKILL_RATING_PLAYER_SHIRT_NUMBER": "Nummer",
+  "SKILL_RATING_SCORE": "Bewertung"
 }
