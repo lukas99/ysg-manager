@@ -159,14 +159,14 @@ public class SkillRestControllerIT extends IntegrationTest {
             .value(is(SkillType.TIME_WITH_RATING.toString())))
         .andExpect(jsonPath("$.content.[0].name").value(is(SkillTemplates.MAGIC_TRANSITIONS)))
         .andExpect(jsonPath("$.content.[0].number").value(is(SkillTemplates.ONE)))
-        .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
+        .andExpect(jsonPath("$.content.[0].links", hasSize(4)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
             endsWith("/skills/" + magicTransitions.getId())))
         .andExpect(jsonPath("$.content.[1].skillType").value(is(SkillType.POINTS.toString())))
         .andExpect(jsonPath("$.content.[1].name").value(is(SkillTemplates.BEST_SHOT)))
         .andExpect(jsonPath("$.content.[1].number").value(is(SkillTemplates.TWO)))
-        .andExpect(jsonPath("$.content.[1].links", hasSize(3)))
+        .andExpect(jsonPath("$.content.[1].links", hasSize(4)))
         .andExpect(jsonPath("$.content.[1].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[1].links.[0].href",
             endsWith("/skills/" + bestShot.getId())));
@@ -185,7 +185,7 @@ public class SkillRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.skillType").value(SkillType.TIME_WITH_RATING.toString()))
         .andExpect(jsonPath("$.name").value(SkillTemplates.MAGIC_TRANSITIONS))
         .andExpect(jsonPath("$.number").value(SkillTemplates.ONE))
-        .andExpect(jsonPath("$.links", hasSize(3)))
+        .andExpect(jsonPath("$.links", hasSize(4)))
         .andExpect(jsonPath("$.links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.links.[0].href", endsWith("/skills/" + magicTransitions.getId())))
         .andExpect(jsonPath("$.links.[1].rel").value(is("tournament")))
@@ -193,6 +193,9 @@ public class SkillRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.links.[2].rel").value(is("skillresults")))
         .andExpect(jsonPath("$.links.[2].href",
             endsWith("/skills/" + magicTransitions.getId() + "/skill-results")))
+        .andExpect(jsonPath("$.links.[3].rel").value(is("skillratings")))
+        .andExpect(jsonPath("$.links.[3].href",
+            endsWith("/skills/" + magicTransitions.getId() + "/skill-ratings")))
     ;
   }
 
