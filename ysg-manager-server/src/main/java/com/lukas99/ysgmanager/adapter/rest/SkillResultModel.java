@@ -3,6 +3,7 @@ package com.lukas99.ysgmanager.adapter.rest;
 import com.lukas99.ysgmanager.domain.Player;
 import com.lukas99.ysgmanager.domain.Skill;
 import com.lukas99.ysgmanager.domain.SkillResult;
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
@@ -14,7 +15,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Setter
 public class SkillResultModel extends RepresentationModel<SkillResultModel> {
 
-  private Integer time;
+  private BigDecimal time;
   private Integer failures;
   private Integer points;
   private PlayerModel player;

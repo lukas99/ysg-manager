@@ -2,7 +2,7 @@ create table skillresult (
 	id bigint primary key,
 	skill_id bigint not null,
 	player_id bigint not null,
-	time integer default null,
+	time numeric(5,2) default null,
 	failures integer default null,
 	points integer default null,
 	created timestamp not null,

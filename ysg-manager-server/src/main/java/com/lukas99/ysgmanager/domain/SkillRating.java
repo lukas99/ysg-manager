@@ -1,5 +1,6 @@
 package com.lukas99.ysgmanager.domain;
 
+import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -40,7 +41,7 @@ public class SkillRating extends Auditable {
    * The score given by a skill expert.
    */
   @NotNull
-  private Integer score;
+  private BigDecimal score;
 
   public void update(SkillRating skillRating) {
     skill = skillRating.getSkill();

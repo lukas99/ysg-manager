@@ -3,6 +3,7 @@ package com.lukas99.ysgmanager.adapter.rest;
 import com.lukas99.ysgmanager.domain.Player;
 import com.lukas99.ysgmanager.domain.Skill;
 import com.lukas99.ysgmanager.domain.SkillRating;
+import java.math.BigDecimal;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,7 @@ import org.springframework.hateoas.RepresentationModel;
 public class SkillRatingModel extends RepresentationModel<SkillRatingModel> {
 
   @NotNull
-  private Integer score;
+  private BigDecimal score;
 
   private PlayerModel player;
 

@@ -1,5 +1,6 @@
 package com.lukas99.ysgmanager.domain;
 
+import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -37,9 +38,9 @@ public class SkillResult extends Auditable {
   private Player player;
 
   /**
-   * The execution time as milliseconds.
+   * The execution time in seconds with maximum 2 numbers after the point.
    */
-  private Integer time;
+  private BigDecimal time;
 
   /**
    * The amount of failures made during execution.

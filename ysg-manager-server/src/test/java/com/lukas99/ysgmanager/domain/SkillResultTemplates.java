@@ -1,8 +1,10 @@
 package com.lukas99.ysgmanager.domain;
 
+import java.math.BigDecimal;
+
 public class SkillResultTemplates {
 
-  public static final Integer THIRTY_SECONDS = 30_000;
+  public static final BigDecimal THIRTY_SECONDS = new BigDecimal("30.00");
   public static final Integer ONE = 1;
 
   public static final Integer SIX = 2;

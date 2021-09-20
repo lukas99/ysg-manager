@@ -31,6 +31,7 @@ import com.lukas99.ysgmanager.domain.Team;
 import com.lukas99.ysgmanager.domain.TeamTemplates;
 import com.lukas99.ysgmanager.domain.Tournament;
 import com.lukas99.ysgmanager.domain.TournamentTemplates;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,8 +114,8 @@ public class SkillResultRestControllerIT extends IntegrationTest {
 
     // Create the SkillResult
     restSkillResultMockMvc.perform(post("/api/players/{playerId}/skill-results", romanJosi.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(magicTransitionsResultModel)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsResultModel)))
         .andExpect(status().isOk());
 
     // Validate the SkillResult in the database
@@ -165,7 +166,8 @@ public class SkillResultRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.links", empty()))
         .andExpect(jsonPath("$.content", hasSize(1)))
-        .andExpect(jsonPath("$.content.[0].time").value(is(SkillResultTemplates.THIRTY_SECONDS)))
+        .andExpect(jsonPath("$.content.[0].time").value(
+            is(SkillResultTemplates.THIRTY_SECONDS.doubleValue())))
         .andExpect(jsonPath("$.content.[0].failures").value(is(SkillResultTemplates.ONE)))
         .andExpect(jsonPath("$.content.[0].points").value(is(nullValue())))
         .andExpect(jsonPath("$.content.[0].player.firstName")
@@ -219,7 +221,7 @@ public class SkillResultRestControllerIT extends IntegrationTest {
     restSkillResultMockMvc.perform(get("/api/skill-results/{id}", magicTransitionsResult.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.time").value(is(SkillResultTemplates.THIRTY_SECONDS)))
+        .andExpect(jsonPath("$.time").value(is(SkillResultTemplates.THIRTY_SECONDS.doubleValue())))
         .andExpect(jsonPath("$.failures").value(is(SkillResultTemplates.ONE)))
         .andExpect(jsonPath("$.points").value(is(nullValue())))
         .andExpect(jsonPath("$.player.firstName").value(is(romanJosi.getFirstName())))
@@ -254,21 +256,21 @@ public class SkillResultRestControllerIT extends IntegrationTest {
     int databaseSizeBeforeUpdate = skillResultRepository.findAll().size();
 
     // Update the skillResult
-    magicTransitionsResultModel.setTime(31_000);
+    magicTransitionsResultModel.setTime(new BigDecimal("31.00"));
     magicTransitionsResultModel.setFailures(2);
     magicTransitionsResultModel.setPoints(3);
 
     restSkillResultMockMvc.perform(
-        put("/api/skill-results/{id}", magicTransitionsResult.getId())
-            .contentType(TestUtils.APPLICATION_JSON)
-            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsResultModel)))
+            put("/api/skill-results/{id}", magicTransitionsResult.getId())
+                .contentType(TestUtils.APPLICATION_JSON)
+                .content(TestUtils.convertObjectToJsonBytes(magicTransitionsResultModel)))
         .andExpect(status().isOk());
 
     // Validate the SkillResult in the database
     List<SkillResult> skillResultList = skillResultRepository.findAll();
     assertThat(skillResultList).hasSize(databaseSizeBeforeUpdate);
     SkillResult testSkillResult = skillResultList.get(skillResultList.size() - 1);
-    assertThat(testSkillResult.getTime()).isEqualTo(31_000);
+    assertThat(testSkillResult.getTime().toString()).isEqualTo("31.00");
     assertThat(testSkillResult.getFailures()).isEqualTo(2);
     assertThat(testSkillResult.getPoints()).isEqualTo(3);
   }

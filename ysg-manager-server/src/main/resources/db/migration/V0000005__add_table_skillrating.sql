@@ -2,7 +2,7 @@ create table skillrating (
 	id bigint primary key,
 	skill_id bigint not null,
 	player_id bigint not null,
-	score integer not null,
+	score numeric(5,2) not null,
 	created timestamp not null,
 	created_by text not null,
 	modified timestamp not null,

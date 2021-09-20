@@ -30,6 +30,7 @@ import com.lukas99.ysgmanager.domain.Team;
 import com.lukas99.ysgmanager.domain.TeamTemplates;
 import com.lukas99.ysgmanager.domain.Tournament;
 import com.lukas99.ysgmanager.domain.TournamentTemplates;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -112,8 +113,8 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
 
     // Create the SkillRating
     restSkillRatingMockMvc.perform(post("/api/players/{playerId}/skill-ratings", romanJosi.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(magicTransitionsRatingModel)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsRatingModel)))
         .andExpect(status().isOk());
 
     // Validate the SkillRating in the database
@@ -155,8 +156,8 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
 
     // Create the SkillRating, which fails.
     restSkillRatingMockMvc.perform(post("/api/players/{playerId}/skill-ratings", romanJosi.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(magicTransitionsRatingModel)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsRatingModel)))
         .andExpect(status().isBadRequest());
 
     List<SkillRating> skillRatingList = skillRatingRepository.findAll();
@@ -177,7 +178,8 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.links", empty()))
         .andExpect(jsonPath("$.content", hasSize(1)))
-        .andExpect(jsonPath("$.content.[0].score").value(is(SkillRatingTemplates.NINTY)))
+        .andExpect(
+            jsonPath("$.content.[0].score").value(is(SkillRatingTemplates.NINTY.doubleValue())))
         .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
@@ -198,7 +200,7 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.links", empty()))
         .andExpect(jsonPath("$.content", hasSize(1)))
-        .andExpect(jsonPath("$.content.[0].score").value(SkillRatingTemplates.EIGHTY))
+        .andExpect(jsonPath("$.content.[0].score").value(SkillRatingTemplates.EIGHTY.doubleValue()))
         .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
@@ -215,7 +217,7 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
     restSkillRatingMockMvc.perform(get("/api/skill-ratings/{id}", magicTransitionsRating.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.score").value(SkillRatingTemplates.NINTY))
+        .andExpect(jsonPath("$.score").value(SkillRatingTemplates.NINTY.doubleValue()))
         .andExpect(jsonPath("$.links", hasSize(3)))
         .andExpect(jsonPath("$.links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.links.[0].href",
@@ -243,19 +245,19 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
     int databaseSizeBeforeUpdate = skillRatingRepository.findAll().size();
 
     // Update the skillRating
-    magicTransitionsRatingModel.setScore(50);
+    magicTransitionsRatingModel.setScore(new BigDecimal("50.00"));
 
     restSkillRatingMockMvc.perform(
-        put("/api/skill-ratings/{id}", magicTransitionsRating.getId())
-            .contentType(TestUtils.APPLICATION_JSON)
-            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsRatingModel)))
+            put("/api/skill-ratings/{id}", magicTransitionsRating.getId())
+                .contentType(TestUtils.APPLICATION_JSON)
+                .content(TestUtils.convertObjectToJsonBytes(magicTransitionsRatingModel)))
         .andExpect(status().isOk());
 
     // Validate the SkillRating in the database
     List<SkillRating> skillRatingList = skillRatingRepository.findAll();
     assertThat(skillRatingList).hasSize(databaseSizeBeforeUpdate);
     SkillRating testSkillRating = skillRatingList.get(skillRatingList.size() - 1);
-    assertThat(testSkillRating.getScore()).isEqualTo(50);
+    assertThat(testSkillRating.getScore().toString()).isEqualTo("50.00");
   }
 
   @Test
