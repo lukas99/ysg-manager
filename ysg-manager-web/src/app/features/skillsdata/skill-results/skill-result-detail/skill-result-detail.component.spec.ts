@@ -7,6 +7,7 @@ import { PlayersService } from '../../../../core/services/players.service';
 import { Player, Skill, SkillResult, SkillType, Team } from '../../../../types';
 import { of } from 'rxjs';
 import { SkillsService } from '../../../../core/services/skills.service';
+import { SkillTypeService } from '../../../../core/services/skill-type.service';
 
 describe('SkillResultDetailComponent', () => {
   let component: SkillResultDetailComponent;
@@ -14,6 +15,7 @@ describe('SkillResultDetailComponent', () => {
   let teamsService: TeamsService;
   let playersService: PlayersService;
   let skillsService: SkillsService;
+  let skillTypeService: SkillTypeService;
   let formBuilder: FormBuilder;
 
   let team1: Team;
@@ -41,7 +43,8 @@ describe('SkillResultDetailComponent', () => {
     players = [player1, player2];
     skill = {
       name: 'Magic Transitions',
-      skillType: SkillType.TIME_WITH_RATING,
+      typeForPlayers: SkillType.TIME_WITH_RATING,
+      typeForGoaltenders: SkillType.TIME_WITH_RATING,
       number: 1,
       _links: <any>{}
     };
@@ -56,6 +59,11 @@ describe('SkillResultDetailComponent', () => {
     skillsService = <any>{
       getSelectedItemValue: jest.fn(() => skill)
     };
+    skillTypeService = <any>{
+      canRecordResultForPlayerAndSkill: jest.fn(() => true),
+      isWithTime: jest.fn(() => true),
+      isWithPoints: jest.fn(() => true)
+    };
     formBuilder = new FormBuilder();
 
     component = new SkillResultDetailComponent(
@@ -63,6 +71,7 @@ describe('SkillResultDetailComponent', () => {
       teamsService,
       playersService,
       skillsService,
+      skillTypeService,
       formBuilder
     );
   });
@@ -133,7 +142,7 @@ describe('SkillResultDetailComponent', () => {
     component.onTeamSelected(team1);
     tick();
 
-    expect(component.players).toBe(players);
+    expect(component.players).toStrictEqual(players);
     expect(playersService.getPlayers).toHaveBeenCalledWith(team1);
   }));
 

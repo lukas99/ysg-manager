@@ -19,20 +19,29 @@ export class SkillListComponent {
     this.crudListOptions = {
       columnDefs: [
         {
+          field: 'number',
+          headerName: this.translateService.instant('SKILL_NUMBER'),
+          sort: 'asc'
+        },
+        {
           field: 'name',
           headerName: this.translateService.instant('SKILL_NAME')
         },
         {
-          field: 'skillType',
-          headerName: this.translateService.instant('SKILL_TYPE'),
+          field: 'typeForPlayers',
+          headerName: this.translateService.instant('SKILL_TYPE_FOR_PLAYERS'),
           cellRenderer: (params) => this.translateSkillType(params.value),
           filterValueGetter: (params) =>
-            this.translateSkillType(params.data.skillType)
+            this.translateSkillType(params.data.typeForPlayers)
         },
         {
-          field: 'number',
-          headerName: this.translateService.instant('SKILL_NUMBER'),
-          sort: 'asc'
+          field: 'typeForGoaltenders',
+          headerName: this.translateService.instant(
+            'SKILL_TYPE_FOR_GOALTENDERS'
+          ),
+          cellRenderer: (params) => this.translateSkillType(params.value),
+          filterValueGetter: (params) =>
+            this.translateSkillType(params.data.typeForGoaltenders)
         }
       ],
       crudService: skillsService,
@@ -53,6 +62,15 @@ export class SkillListComponent {
       }
       case SkillType.POINTS: {
         return this.translateService.instant('SKILL_TYPE_POINTS');
+      }
+      case SkillType.RATING: {
+        return this.translateService.instant('SKILL_TYPE_RATING');
+      }
+      case SkillType.GOALTENDERS_OVERALL: {
+        return this.translateService.instant('SKILL_TYPE_GOALTENDERS_OVERALL');
+      }
+      case SkillType.NO_RESULTS: {
+        return this.translateService.instant('SKILL_TYPE_NO_RESULTS');
       }
       default: {
         return skillType;

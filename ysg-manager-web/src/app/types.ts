@@ -56,7 +56,8 @@ export interface PlayerList {
 }
 
 export interface Skill {
-  skillType: SkillType;
+  typeForPlayers: SkillType;
+  typeForGoaltenders: SkillType;
   name: string;
   number: number;
   _links: {
@@ -71,7 +72,10 @@ export enum SkillType {
   TIME_WITH_RATING = 'TIME_WITH_RATING',
   TIME_WITH_POINTS = 'TIME_WITH_POINTS',
   TIME = 'TIME',
-  POINTS = 'POINTS'
+  POINTS = 'POINTS',
+  RATING = 'RATING',
+  GOALTENDERS_OVERALL = 'GOALTENDERS_OVERALL',
+  NO_RESULTS = 'NO_RESULTS'
 }
 
 export interface SkillList {

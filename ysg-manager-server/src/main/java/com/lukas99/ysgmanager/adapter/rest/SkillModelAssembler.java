@@ -19,7 +19,8 @@ public class SkillModelAssembler extends RepresentationModelAssemblerSupport<Ski
   public SkillModel toModel(Skill skill) {
     SkillModel model = instantiateModel(skill);
 
-    model.setSkillType(skill.getSkillType());
+    model.setTypeForPlayers(skill.getTypeForPlayers());
+    model.setTypeForGoaltenders(skill.getTypeForGoaltenders());
     model.setName(skill.getName());
     model.setNumber(skill.getNumber());
 

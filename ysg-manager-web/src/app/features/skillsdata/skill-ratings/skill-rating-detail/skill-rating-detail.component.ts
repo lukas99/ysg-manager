@@ -7,6 +7,7 @@ import { PlayersService } from '../../../../core/services/players.service';
 import { SkillsService } from '../../../../core/services/skills.service';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { filter, take } from 'rxjs/operators';
+import { SkillTypeService } from '../../../../core/services/skill-type.service';
 
 @Component({
   selector: 'ysg-skill-rating-detail',
@@ -26,6 +27,7 @@ export class SkillRatingDetailComponent implements OnInit {
     private teamsService: TeamsService,
     private playerService: PlayersService,
     private skillsService: SkillsService,
+    private skillTypeService: SkillTypeService,
     private formBuilder: FormBuilder
   ) {
     this.selectedSkill = this.skillsService.getSelectedItemValue();
@@ -73,7 +75,12 @@ export class SkillRatingDetailComponent implements OnInit {
 
   onTeamSelected(selectedTeam: Team) {
     this.playerService.getPlayers(selectedTeam).subscribe((players) => {
-      this.players = players;
+      this.players = players.filter((player) =>
+        this.skillTypeService.canRecordRatingForPlayerAndSkill(
+          player,
+          this.selectedSkill
+        )
+      );
     });
   }
 

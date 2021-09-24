@@ -22,7 +22,8 @@ describe('SkillRatingsService', () => {
 
   let skill: Skill = {
     name: 'Best Shot',
-    skillType: SkillType.POINTS,
+    typeForPlayers: SkillType.POINTS,
+    typeForGoaltenders: SkillType.POINTS,
     number: 1,
     _links: {
       self: { href: 'skills/1' },

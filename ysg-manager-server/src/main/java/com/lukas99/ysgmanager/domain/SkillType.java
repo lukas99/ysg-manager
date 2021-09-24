@@ -31,6 +31,25 @@ public enum SkillType {
    * <p>
    * E.g. YSG skill no. 2 'Best Shot'.
    */
-  POINTS
+  POINTS,
+
+  /**
+   * Results with rating.
+   * <p>
+   * E.g. YSG skill no. 4 'Controlled Jumble' for goaltenders.
+   */
+  RATING,
+
+  /**
+   * The goaltenders overall skill.
+   */
+  GOALTENDERS_OVERALL,
+
+  /**
+   * In case no results will be recorded for a skill.
+   *
+   * E.g. YSG goaltenders overall skill where no player results will be recorded.
+   */
+  NO_RESULTS
 
 }

@@ -16,7 +16,10 @@ import org.springframework.hateoas.RepresentationModel;
 public class SkillModel extends RepresentationModel<SkillModel> {
 
   @NotNull
-  private SkillType skillType;
+  private SkillType typeForPlayers;
+
+  @NotNull
+  private SkillType typeForGoaltenders;
 
   @NotNull
   private String name;
@@ -31,7 +34,8 @@ public class SkillModel extends RepresentationModel<SkillModel> {
    */
   public Skill toEntity(Tournament tournament) {
     var skill = new Skill();
-    skill.setSkillType(getSkillType());
+    skill.setTypeForPlayers(getTypeForPlayers());
+    skill.setTypeForGoaltenders(getTypeForGoaltenders());
     skill.setName(getName());
     skill.setNumber(getNumber());
     skill.setTournament(tournament);

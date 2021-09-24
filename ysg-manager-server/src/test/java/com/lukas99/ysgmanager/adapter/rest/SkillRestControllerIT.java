@@ -94,15 +94,16 @@ public class SkillRestControllerIT extends IntegrationTest {
 
     // Create the Skill
     restSkillMockMvc.perform(post("/api/tournaments/{tournamentId}/skills", ysg2019.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(magicTransitions)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitions)))
         .andExpect(status().isOk());
 
     // Validate the Skill in the database
     List<Skill> skillList = skillRepository.findAll();
     assertThat(skillList).hasSize(databaseSizeBeforeCreate + 1);
     Skill testSkill = skillList.get(skillList.size() - 1);
-    assertThat(testSkill.getSkillType()).isEqualTo(SkillType.TIME_WITH_RATING);
+    assertThat(testSkill.getTypeForPlayers()).isEqualTo(SkillType.TIME_WITH_RATING);
+    assertThat(testSkill.getTypeForGoaltenders()).isEqualTo(SkillType.TIME_WITH_RATING);
     assertThat(testSkill.getName()).isEqualTo(SkillTemplates.MAGIC_TRANSITIONS);
     assertThat(testSkill.getNumber()).isEqualTo(SkillTemplates.ONE);
     assertThat(testSkill.getTournament()).isEqualTo(ysg2019);
@@ -110,15 +111,32 @@ public class SkillRestControllerIT extends IntegrationTest {
 
   @Test
   @Transactional
-  public void checkSkillTypeIsRequired() throws Exception {
+  public void checkSkillTypeForPlayersIsRequired() throws Exception {
     int databaseSizeBeforeTest = skillRepository.findAll().size();
     // set the field null
-    magicTransitionsModel.setSkillType(null);
+    magicTransitionsModel.setTypeForPlayers(null);
 
     // Create the Skill, which fails.
     restSkillMockMvc.perform(post("/api/tournaments/{tournamentId}/skills", ysg2019.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(magicTransitionsModel)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsModel)))
+        .andExpect(status().isBadRequest());
+
+    List<Skill> skillList = skillRepository.findAll();
+    assertThat(skillList).hasSize(databaseSizeBeforeTest);
+  }
+
+  @Test
+  @Transactional
+  public void checkSkillTypeForGoaltendersIsRequired() throws Exception {
+    int databaseSizeBeforeTest = skillRepository.findAll().size();
+    // set the field null
+    magicTransitionsModel.setTypeForGoaltenders(null);
+
+    // Create the Skill, which fails.
+    restSkillMockMvc.perform(post("/api/tournaments/{tournamentId}/skills", ysg2019.getId())
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsModel)))
         .andExpect(status().isBadRequest());
 
     List<Skill> skillList = skillRepository.findAll();
@@ -134,8 +152,8 @@ public class SkillRestControllerIT extends IntegrationTest {
 
     // Create the Skill, which fails.
     restSkillMockMvc.perform(post("/api/tournaments/{tournamentId}/skills", ysg2019.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(magicTransitionsModel)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsModel)))
         .andExpect(status().isBadRequest());
 
     List<Skill> skillList = skillRepository.findAll();
@@ -155,15 +173,20 @@ public class SkillRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.links", empty()))
         .andExpect(jsonPath("$.content", hasSize(2)))
-        .andExpect(jsonPath("$.content.[0].skillType")
-            .value(is(SkillType.TIME_WITH_RATING.toString())))
+        .andExpect(jsonPath("$.content.[0].typeForPlayers").value(
+            is(SkillType.TIME_WITH_RATING.toString())))
+        .andExpect(jsonPath("$.content.[0].typeForGoaltenders").value(
+            is(SkillType.TIME_WITH_RATING.toString())))
         .andExpect(jsonPath("$.content.[0].name").value(is(SkillTemplates.MAGIC_TRANSITIONS)))
         .andExpect(jsonPath("$.content.[0].number").value(is(SkillTemplates.ONE)))
         .andExpect(jsonPath("$.content.[0].links", hasSize(4)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
             endsWith("/skills/" + magicTransitions.getId())))
-        .andExpect(jsonPath("$.content.[1].skillType").value(is(SkillType.POINTS.toString())))
+        .andExpect(jsonPath("$.content.[1].typeForPlayers").value(
+            is(SkillType.POINTS.toString())))
+        .andExpect(jsonPath("$.content.[1].typeForGoaltenders").value(
+            is(SkillType.POINTS.toString())))
         .andExpect(jsonPath("$.content.[1].name").value(is(SkillTemplates.BEST_SHOT)))
         .andExpect(jsonPath("$.content.[1].number").value(is(SkillTemplates.TWO)))
         .andExpect(jsonPath("$.content.[1].links", hasSize(4)))
@@ -182,7 +205,8 @@ public class SkillRestControllerIT extends IntegrationTest {
     restSkillMockMvc.perform(get("/api/skills/{id}", magicTransitions.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andExpect(jsonPath("$.skillType").value(SkillType.TIME_WITH_RATING.toString()))
+        .andExpect(jsonPath("$.typeForPlayers").value(SkillType.TIME_WITH_RATING.toString()))
+        .andExpect(jsonPath("$.typeForGoaltenders").value(SkillType.TIME_WITH_RATING.toString()))
         .andExpect(jsonPath("$.name").value(SkillTemplates.MAGIC_TRANSITIONS))
         .andExpect(jsonPath("$.number").value(SkillTemplates.ONE))
         .andExpect(jsonPath("$.links", hasSize(4)))
@@ -216,20 +240,22 @@ public class SkillRestControllerIT extends IntegrationTest {
     int databaseSizeBeforeUpdate = skillRepository.findAll().size();
 
     // Update the skill
-    magicTransitionsModel.setSkillType(SkillType.TIME_WITH_POINTS);
+    magicTransitionsModel.setTypeForPlayers(SkillType.TIME_WITH_POINTS);
+    magicTransitionsModel.setTypeForGoaltenders(SkillType.RATING);
     magicTransitionsModel.setName("updatedName");
     magicTransitionsModel.setNumber(99);
 
     restSkillMockMvc.perform(put("/api/skills/{id}", magicTransitions.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(magicTransitionsModel)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(magicTransitionsModel)))
         .andExpect(status().isOk());
 
     // Validate the Skill in the database
     List<Skill> skillList = skillRepository.findAll();
     assertThat(skillList).hasSize(databaseSizeBeforeUpdate);
     Skill testSkill = skillList.get(skillList.size() - 1);
-    assertThat(testSkill.getSkillType()).isEqualTo(SkillType.TIME_WITH_POINTS);
+    assertThat(testSkill.getTypeForPlayers()).isEqualTo(SkillType.TIME_WITH_POINTS);
+    assertThat(testSkill.getTypeForGoaltenders()).isEqualTo(SkillType.RATING);
     assertThat(testSkill.getName()).isEqualTo("updatedName");
     assertThat(testSkill.getNumber()).isEqualTo(99);
   }
@@ -244,7 +270,7 @@ public class SkillRestControllerIT extends IntegrationTest {
 
     // Delete the skill
     restSkillMockMvc.perform(
-        delete("/api/skills/{id}", magicTransitions.getId()).accept(TestUtils.APPLICATION_JSON))
+            delete("/api/skills/{id}", magicTransitions.getId()).accept(TestUtils.APPLICATION_JSON))
         .andExpect(status().isNoContent());
 
     // Validate the database contains one less item

@@ -33,8 +33,12 @@ public class Skill extends Auditable {
   private Long id;
 
   @NotNull
-  @Column(name = "type")
-  private SkillType skillType;
+  @Column
+  private SkillType typeForPlayers;
+
+  @NotNull
+  @Column
+  private SkillType typeForGoaltenders;
 
   @NotNull
   private String name;
@@ -57,7 +61,8 @@ public class Skill extends Auditable {
   private List<SkillResult> results;
 
   public void update(Skill skill) {
-    skillType = skill.getSkillType();
+    typeForPlayers = skill.getTypeForPlayers();
+    typeForGoaltenders = skill.getTypeForGoaltenders();
     name = skill.getName();
     number = skill.getNumber();
     tournament = skill.getTournament();

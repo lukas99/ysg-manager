@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 /**
  * Provides actions by a button list.
@@ -11,6 +11,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class MoreActionsComponent {
   @Input() button1Text!: string;
   @Input() button2Text!: string;
+
+  @Input() button1Disabled = true;
+  @Input() button2Disabled = true;
 
   @Output() button1Click = new EventEmitter<void>();
   @Output() button2Click = new EventEmitter<void>();

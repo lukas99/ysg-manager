@@ -3,10 +3,11 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
 import { SkillResultsService } from '../../../../core/services/skill-results.service';
 import { TeamsService } from '../../../../core/services/teams.service';
-import { Player, Skill, SkillResult, SkillType, Team } from '../../../../types';
+import { Player, Skill, SkillResult, Team } from '../../../../types';
 import { PlayersService } from '../../../../core/services/players.service';
 import { filter, take } from 'rxjs/operators';
 import { SkillsService } from '../../../../core/services/skills.service';
+import { SkillTypeService } from '../../../../core/services/skill-type.service';
 
 @Component({
   selector: 'ysg-skill-result-detail',
@@ -26,6 +27,7 @@ export class SkillResultDetailComponent implements OnInit {
     private teamsService: TeamsService,
     private playerService: PlayersService,
     private skillsService: SkillsService,
+    private skillTypeService: SkillTypeService,
     private formBuilder: FormBuilder
   ) {
     this.selectedSkill = this.skillsService.getSelectedItemValue();
@@ -81,7 +83,12 @@ export class SkillResultDetailComponent implements OnInit {
 
   onTeamSelected(selectedTeam: Team) {
     this.playerService.getPlayers(selectedTeam).subscribe((players) => {
-      this.players = players;
+      this.players = players.filter((player) =>
+        this.skillTypeService.canRecordResultForPlayerAndSkill(
+          player,
+          this.selectedSkill
+        )
+      );
     });
   }
 
@@ -103,24 +110,11 @@ export class SkillResultDetailComponent implements OnInit {
     );
   }
 
-  private isWithTime(): boolean {
-    switch (this.selectedSkill.skillType) {
-      case SkillType.TIME:
-      case SkillType.TIME_WITH_POINTS:
-      case SkillType.TIME_WITH_RATING:
-        return true;
-      default:
-        return false;
-    }
+  private isWithTime() {
+    return this.skillTypeService.isWithTime(this.selectedSkill);
   }
 
-  private isWithPoints(): boolean {
-    switch (this.selectedSkill.skillType) {
-      case SkillType.POINTS:
-      case SkillType.TIME_WITH_POINTS:
-        return true;
-      default:
-        return false;
-    }
+  private isWithPoints() {
+    return this.skillTypeService.isWithPoints(this.selectedSkill);
   }
 }

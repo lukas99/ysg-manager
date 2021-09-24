@@ -6,8 +6,16 @@
         <input matInput formControlName="name" required />
       </mat-form-field>
       <mat-form-field appearance="fill">
-        <mat-label>{{ 'SKILL_TYPE' | translate }}</mat-label>
-        <mat-select formControlName="skillType" required>
+        <mat-label>{{ 'SKILL_TYPE_FOR_PLAYERS' | translate }}</mat-label>
+        <mat-select formControlName="typeForPlayers" required>
+          <mat-option *ngFor="let type of skillTypes" [value]="type.value">
+            {{ type.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'SKILL_TYPE_FOR_GOALTENDERS' | translate }}</mat-label>
+        <mat-select formControlName="typeForGoaltenders" required>
           <mat-option *ngFor="let type of skillTypes" [value]="type.value">
             {{ type.viewValue }}
           </mat-option>
@@ -26,7 +34,9 @@
 ></ysg-crud-detail>
 <ysg-more-actions
   [button1Text]="'SKILLS_PAGE_NAVIGATE_TO_RESULTS_OF_SKILL'"
+  [button1Disabled]="!enableSkillResults"
   (button1Click)="navigateToResultsOfSkill()"
   [button2Text]="'SKILLS_PAGE_NAVIGATE_TO_RATINGS_OF_SKILL'"
+  [button2Disabled]="!enableSkillRatings"
   (button2Click)="navigateToRatingsOfSkill()"
 ></ysg-more-actions>
