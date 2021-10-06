@@ -40,6 +40,16 @@ public class Skill extends Auditable {
   @Column
   private SkillType typeForGoaltenders;
 
+  /**
+   * The players with this position will be included in the tournament ranking of this skill. E.g.
+   * when a skill has set type SKATER, then the tournament ranking of this skill will only contain
+   * skaters but no goaltenders. Only the tournament skill rankings depend on this setting, but not
+   * the skill rankings.
+   */
+  @NotNull
+  @Column
+  private PlayerPosition tournamentRankingPlayerPosition;
+
   @NotNull
   private String name;
 

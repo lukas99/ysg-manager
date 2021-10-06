@@ -26,6 +26,7 @@ public class SkillTemplates {
     return Skill.builder().name(MAGIC_TRANSITIONS).number(ONE)
         .typeForPlayers(SkillType.TIME_WITH_RATING)
         .typeForGoaltenders(SkillType.TIME_WITH_RATING)
+        .tournamentRankingPlayerPosition(PlayerPosition.SKATER)
         .tournament(tournament).build();
   }
 
@@ -37,6 +38,7 @@ public class SkillTemplates {
     return Skill.builder().name(BEST_SHOT).number(TWO)
         .typeForPlayers(SkillType.POINTS)
         .typeForGoaltenders(SkillType.POINTS)
+        .tournamentRankingPlayerPosition(PlayerPosition.SKATER)
         .tournament(tournament).build();
   }
 
@@ -48,6 +50,7 @@ public class SkillTemplates {
     return Skill.builder().name(PASS_AND_GO).number(THREE)
         .typeForPlayers(SkillType.TIME_WITH_POINTS)
         .typeForGoaltenders(SkillType.TIME_WITH_POINTS)
+        .tournamentRankingPlayerPosition(PlayerPosition.SKATER)
         .tournament(tournament).build();
   }
 
@@ -59,6 +62,7 @@ public class SkillTemplates {
     return Skill.builder().name(CONTROLLED_JUMBLE).number(FOUR)
         .typeForPlayers(SkillType.TIME)
         .typeForGoaltenders(SkillType.RATING)
+        .tournamentRankingPlayerPosition(PlayerPosition.SKATER)
         .tournament(tournament).build();
   }
 
@@ -69,7 +73,8 @@ public class SkillTemplates {
   public static Skill hitTheRoad(Tournament tournament) {
     return Skill.builder().name(HIT_THE_ROAD).number(FIVE)
         .typeForPlayers(SkillType.TIME_WITH_RATING)
-        .typeForPlayers(SkillType.RATING)
+        .typeForGoaltenders(SkillType.RATING)
+        .tournamentRankingPlayerPosition(PlayerPosition.SKATER)
         .tournament(tournament).build();
   }
 
@@ -81,6 +86,7 @@ public class SkillTemplates {
     return Skill.builder().name(GOALTENDERS).number(SIX)
         .typeForPlayers(SkillType.NO_RESULTS)
         .typeForGoaltenders(SkillType.GOALTENDERS_OVERALL)
+        .tournamentRankingPlayerPosition(PlayerPosition.GOALTENDER)
         .tournament(tournament).build();
   }
 

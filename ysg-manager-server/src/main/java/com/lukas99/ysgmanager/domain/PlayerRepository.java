@@ -18,4 +18,9 @@ public interface PlayerRepository
    */
   List<Player> findByTeam(Team team);
 
+  /**
+   * @param position The players with this position will be retrieved.
+   * @return The players with the given position.
+   */
+  List<Player> findByPosition(PlayerPosition position);
 }

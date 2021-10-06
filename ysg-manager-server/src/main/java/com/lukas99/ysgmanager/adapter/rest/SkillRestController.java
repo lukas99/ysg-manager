@@ -110,4 +110,18 @@ public class SkillRestController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Get all skills of the given tournament
+   *
+   * @param tournamentId the id of the tournament for which the skills should be retrieved
+   * @return accepted.
+   */
+  @PostMapping("/tournaments/{tournamentId}/skills/calculate-rankings")
+  public ResponseEntity<Void> calculateSkillRankings(@PathVariable Long tournamentId) {
+    Tournament tournament = tournamentService.findOne(tournamentId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    skillService.calculateSkillRankingsAsync(tournament);
+    return ResponseEntity.accepted().build();
+  }
+
 }

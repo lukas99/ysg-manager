@@ -278,4 +278,18 @@ public class SkillRestControllerIT extends IntegrationTest {
     assertThat(skillList).hasSize(databaseSizeBeforeDelete - 1);
   }
 
+  @Test
+  @Transactional
+  public void calculateSkillRankings() throws Exception {
+    skillService.save(magicTransitions);
+    skillService.save(bestShot);
+
+    // just check the availability of the REST service and the response code
+    // there is a separate test which checks the ranking calculation itself
+    restSkillMockMvc.perform(
+            post("/api/tournaments/{tournamentId}/skills/calculate-rankings",
+                ysg2019.getId()).accept(TestUtils.APPLICATION_JSON))
+        .andExpect(status().isAccepted());
+  }
+
 }

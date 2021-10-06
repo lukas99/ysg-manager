@@ -3,6 +3,7 @@ create table skill (
 	tournament_id bigint not null,
 	type_for_players text not null,
 	type_for_goaltenders text not null,
+    tournament_ranking_player_position text not null,
 	name text not null,
 	number integer default null,
 	created timestamp not null,

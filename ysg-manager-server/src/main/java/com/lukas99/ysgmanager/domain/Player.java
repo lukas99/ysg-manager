@@ -2,6 +2,8 @@ package com.lukas99.ysgmanager.domain;
 
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -39,6 +41,7 @@ public class Player extends Auditable {
   private Integer shirtNumber;
 
   @NotNull
+  @Enumerated(EnumType.STRING)
   private PlayerPosition position;
 
   @NotNull
