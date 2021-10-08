@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.lukas99.ysgmanager.domain.PlayerPosition;
 import com.lukas99.ysgmanager.domain.Skill;
 import com.lukas99.ysgmanager.domain.SkillRepository;
 import com.lukas99.ysgmanager.domain.SkillService;
@@ -242,6 +243,7 @@ public class SkillRestControllerIT extends IntegrationTest {
     // Update the skill
     magicTransitionsModel.setTypeForPlayers(SkillType.TIME_WITH_POINTS);
     magicTransitionsModel.setTypeForGoaltenders(SkillType.RATING);
+    magicTransitionsModel.setTournamentRankingPlayerPosition(PlayerPosition.GOALTENDER);
     magicTransitionsModel.setName("updatedName");
     magicTransitionsModel.setNumber(99);
 
@@ -256,6 +258,7 @@ public class SkillRestControllerIT extends IntegrationTest {
     Skill testSkill = skillList.get(skillList.size() - 1);
     assertThat(testSkill.getTypeForPlayers()).isEqualTo(SkillType.TIME_WITH_POINTS);
     assertThat(testSkill.getTypeForGoaltenders()).isEqualTo(SkillType.RATING);
+    assertThat(testSkill.getTournamentRankingPlayerPosition()).isEqualTo(PlayerPosition.GOALTENDER);
     assertThat(testSkill.getName()).isEqualTo("updatedName");
     assertThat(testSkill.getNumber()).isEqualTo(99);
   }

@@ -1,5 +1,6 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
+import com.lukas99.ysgmanager.domain.PlayerPosition;
 import com.lukas99.ysgmanager.domain.Skill;
 import com.lukas99.ysgmanager.domain.SkillType;
 import com.lukas99.ysgmanager.domain.Tournament;
@@ -22,6 +23,9 @@ public class SkillModel extends RepresentationModel<SkillModel> {
   private SkillType typeForGoaltenders;
 
   @NotNull
+  private PlayerPosition tournamentRankingPlayerPosition;
+
+  @NotNull
   private String name;
 
   private Integer number;
@@ -36,6 +40,7 @@ public class SkillModel extends RepresentationModel<SkillModel> {
     var skill = new Skill();
     skill.setTypeForPlayers(getTypeForPlayers());
     skill.setTypeForGoaltenders(getTypeForGoaltenders());
+    skill.setTournamentRankingPlayerPosition(getTournamentRankingPlayerPosition());
     skill.setName(getName());
     skill.setNumber(getNumber());
     skill.setTournament(tournament);

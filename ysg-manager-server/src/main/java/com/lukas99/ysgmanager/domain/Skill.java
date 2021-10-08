@@ -73,6 +73,7 @@ public class Skill extends Auditable {
   public void update(Skill skill) {
     typeForPlayers = skill.getTypeForPlayers();
     typeForGoaltenders = skill.getTypeForGoaltenders();
+    tournamentRankingPlayerPosition = skill.getTournamentRankingPlayerPosition();
     name = skill.getName();
     number = skill.getNumber();
     tournament = skill.getTournament();
