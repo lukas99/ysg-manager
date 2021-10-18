@@ -22,6 +22,19 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="fill">
+        <mat-label>{{
+          'SKILL_TOURNAMENT_RANKING_PLAYER_POSITION' | translate
+        }}</mat-label>
+        <mat-select formControlName="tournamentRankingPlayerPosition" required>
+          <mat-option
+            *ngFor="let position of positions"
+            [value]="position.value"
+          >
+            {{ position.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
         <mat-label>{{ 'SKILL_NUMBER' | translate }}</mat-label>
         <input matInput formControlName="number" />
       </mat-form-field>

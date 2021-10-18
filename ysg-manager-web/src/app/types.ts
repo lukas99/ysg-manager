@@ -58,6 +58,7 @@ export interface PlayerList {
 export interface Skill {
   typeForPlayers: SkillType;
   typeForGoaltenders: SkillType;
+  tournamentRankingPlayerPosition: PlayerPosition;
   name: string;
   number: number;
   _links: {

@@ -4,7 +4,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { Skill, SkillType } from '../../../../types';
+import { PlayerPosition, Skill, SkillType } from '../../../../types';
 import { SkillTypeService } from '../../../../core/services/skill-type.service';
 
 describe('SkillDetailComponent', () => {
@@ -22,6 +22,7 @@ describe('SkillDetailComponent', () => {
       name: 'Magic Transitions',
       typeForPlayers: SkillType.TIME_WITH_RATING,
       typeForGoaltenders: SkillType.TIME_WITH_RATING,
+      tournamentRankingPlayerPosition: PlayerPosition.SKATER,
       number: 1,
       _links: <any>{}
     };
@@ -64,7 +65,16 @@ describe('SkillDetailComponent', () => {
         'SKILL_TYPE_GOALTENDERS_OVERALL'
       );
       expect(component.skillTypes[6].viewValue).toBe('SKILL_TYPE_NO_RESULTS');
-      expect(translateService.instant).toHaveBeenCalledTimes(7);
+      expect(translateService.instant).toHaveBeenCalledTimes(9); // 7 + 2 position
+    });
+
+    it('initializes the positions array', () => {
+      expect(component.positions.length).toBe(2);
+      expect(component.positions[0].viewValue).toBe('PLAYER_POSITION_SKATER');
+      expect(component.positions[1].viewValue).toBe(
+        'PLAYER_POSITION_GOALTENDER'
+      );
+      expect(translateService.instant).toHaveBeenCalledTimes(9); // 2 + 7 skill types
     });
 
     it('creates the options', fakeAsync(() => {

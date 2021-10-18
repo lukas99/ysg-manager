@@ -4,7 +4,14 @@ import { SkillResultDetailComponent } from './skill-result-detail.component';
 import { SkillResultsService } from '../../../../core/services/skill-results.service';
 import { TeamsService } from '../../../../core/services/teams.service';
 import { PlayersService } from '../../../../core/services/players.service';
-import { Player, Skill, SkillResult, SkillType, Team } from '../../../../types';
+import {
+  Player,
+  PlayerPosition,
+  Skill,
+  SkillResult,
+  SkillType,
+  Team
+} from '../../../../types';
 import { of } from 'rxjs';
 import { SkillsService } from '../../../../core/services/skills.service';
 import { SkillTypeService } from '../../../../core/services/skill-type.service';
@@ -45,6 +52,7 @@ describe('SkillResultDetailComponent', () => {
       name: 'Magic Transitions',
       typeForPlayers: SkillType.TIME_WITH_RATING,
       typeForGoaltenders: SkillType.TIME_WITH_RATING,
+      tournamentRankingPlayerPosition: PlayerPosition.SKATER,
       number: 1,
       _links: <any>{}
     };

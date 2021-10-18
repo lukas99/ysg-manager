@@ -6,6 +6,7 @@ import {
 import {
   Player,
   PlayerList,
+  PlayerPosition,
   Skill,
   SkillResult,
   SkillResultList,
@@ -24,6 +25,7 @@ describe('SkillResultsService', () => {
     name: 'Best Shot',
     typeForPlayers: SkillType.POINTS,
     typeForGoaltenders: SkillType.POINTS,
+    tournamentRankingPlayerPosition: PlayerPosition.SKATER,
     number: 1,
     _links: {
       self: { href: 'skills/1' },

@@ -21,6 +21,7 @@ public class SkillModelAssembler extends RepresentationModelAssemblerSupport<Ski
 
     model.setTypeForPlayers(skill.getTypeForPlayers());
     model.setTypeForGoaltenders(skill.getTypeForGoaltenders());
+    model.setTournamentRankingPlayerPosition(skill.getTournamentRankingPlayerPosition());
     model.setName(skill.getName());
     model.setNumber(skill.getNumber());
 

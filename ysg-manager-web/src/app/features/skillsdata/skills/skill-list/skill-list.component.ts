@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SkillsService } from '../../../../core/services/skills.service';
 import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
-import { SkillType } from '../../../../types';
+import { PlayerPosition, SkillType } from '../../../../types';
 
 @Component({
   selector: 'ysg-skill-list',
@@ -42,6 +42,17 @@ export class SkillListComponent {
           cellRenderer: (params) => this.translateSkillType(params.value),
           filterValueGetter: (params) =>
             this.translateSkillType(params.data.typeForGoaltenders)
+        },
+        {
+          field: 'tournamentRankingPlayerPosition',
+          headerName: this.translateService.instant(
+            'SKILL_TOURNAMENT_RANKING_PLAYER_POSITION'
+          ),
+          cellRenderer: (params) => this.translatePlayerPosition(params.value),
+          filterValueGetter: (params) =>
+            this.translatePlayerPosition(
+              params.data.tournamentRankingPlayerPosition
+            )
         }
       ],
       crudService: skillsService,
@@ -74,6 +85,20 @@ export class SkillListComponent {
       }
       default: {
         return skillType;
+      }
+    }
+  }
+
+  private translatePlayerPosition(playerPosition: PlayerPosition) {
+    switch (playerPosition) {
+      case PlayerPosition.SKATER: {
+        return this.translateService.instant('PLAYER_POSITION_SKATER');
+      }
+      case PlayerPosition.GOALTENDER: {
+        return this.translateService.instant('PLAYER_POSITION_GOALTENDER');
+      }
+      default: {
+        return playerPosition;
       }
     }
   }

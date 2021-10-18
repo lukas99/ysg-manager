@@ -19,7 +19,7 @@ describe('SkillListComponent', () => {
   it('creates the options', () => {
     const options = component.crudListOptions;
 
-    expect(options.columnDefs.length).toBe(4);
+    expect(options.columnDefs.length).toBe(5);
     expect(translateService.instant).toHaveBeenCalled();
 
     expect(options.crudService).toBe(skillsService);

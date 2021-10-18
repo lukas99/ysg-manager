@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
 import { FormBuilder, Validators } from '@angular/forms';
 import { SkillsService } from '../../../../core/services/skills.service';
-import { Skill, SkillType } from '../../../../types';
+import { PlayerPosition, Skill, SkillType } from '../../../../types';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { SkillTypeService } from '../../../../core/services/skill-type.service';
 
-interface Type {
+interface ViewObject {
   value: string;
   viewValue: string;
 }
@@ -22,7 +22,7 @@ export class SkillDetailComponent {
   enableSkillResults = false;
   enableSkillRatings = false;
 
-  skillTypes: Type[] = [
+  skillTypes: ViewObject[] = [
     {
       value: SkillType.TIME_WITH_RATING,
       viewValue: this.translateService.instant('SKILL_TYPE_TIME_WITH_RATING')
@@ -53,6 +53,17 @@ export class SkillDetailComponent {
     }
   ];
 
+  positions: ViewObject[] = [
+    {
+      value: PlayerPosition.SKATER,
+      viewValue: this.translateService.instant('PLAYER_POSITION_SKATER')
+    },
+    {
+      value: PlayerPosition.GOALTENDER,
+      viewValue: this.translateService.instant('PLAYER_POSITION_GOALTENDER')
+    }
+  ];
+
   constructor(
     private skillsService: SkillsService,
     private skillTypeService: SkillTypeService,
@@ -65,6 +76,10 @@ export class SkillDetailComponent {
         name: ['', Validators.required],
         typeForPlayers: [SkillType.NO_RESULTS, Validators.required],
         typeForGoaltenders: [SkillType.NO_RESULTS, Validators.required],
+        tournamentRankingPlayerPosition: [
+          PlayerPosition.SKATER,
+          Validators.required
+        ],
         number: [''],
         _links: ['']
       }),
