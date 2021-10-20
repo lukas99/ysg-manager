@@ -1,6 +1,7 @@
 package com.lukas99.ysgmanager.domain;
 
 import java.math.BigDecimal;
+import javax.persistence.EntityManager;
 
 public class SkillResultTemplates {
 
@@ -14,8 +15,21 @@ public class SkillResultTemplates {
         .build();
   }
 
+  public static SkillResult magicTransitionsResult(Skill skill, Player player, EntityManager em) {
+    return persist(magicTransitionsResult(skill, player), em);
+  }
+
   public static SkillResult bestShotResult(Skill skill, Player player) {
     return SkillResult.builder().skill(skill).player(player).points(SIX).build();
+  }
+
+  public static SkillResult bestShotResult(Skill skill, Player player, EntityManager em) {
+    return persist(bestShotResult(skill, player), em);
+  }
+
+  private static SkillResult persist(SkillResult skillResult, EntityManager em) {
+    em.persist(skillResult);
+    return skillResult;
   }
 
 }

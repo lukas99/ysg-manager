@@ -10,6 +10,10 @@ public class PlayerTemplates {
   public static final String JOSI = "Josi";
   public static final int FIFITY_NINE = 59;
 
+  public static final String TIMO = "Roman";
+  public static final String MEIER = "Josi";
+  public static final int TWENTY_EIGHT = 28;
+
   public static final String MARTIN = "Martin";
   public static final String GERBER = "Gerber";
   public static final int TWENTY_NINE = 29;
@@ -23,6 +27,17 @@ public class PlayerTemplates {
     Player romanJosi = romanJosi(team);
     em.persist(romanJosi);
     return romanJosi;
+  }
+
+  public static Player timoMeier(Team team) {
+    return Player.builder().firstName(TIMO).lastName(MEIER).position(SKATER)
+        .shirtNumber(TWENTY_EIGHT).team(team).build();
+  }
+
+  public static Player timoMeier(Team team, EntityManager em) {
+    Player timoMeier = timoMeier(team);
+    em.persist(timoMeier);
+    return timoMeier;
   }
 
   public static Player martinGerber(Team team) {

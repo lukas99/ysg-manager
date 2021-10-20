@@ -19,16 +19,6 @@ public class SkillRankingService {
   }
 
   /**
-   * Save a skillRanking.
-   *
-   * @param skillRanking the entity to save.
-   * @return the persisted entity.
-   */
-  public SkillRanking save(SkillRanking skillRanking) {
-    return skillRankingRepository.save(skillRanking);
-  }
-
-  /**
    * Get one skillRanking by id.
    *
    * @param id the id of the entity.
@@ -37,15 +27,6 @@ public class SkillRankingService {
   @Transactional(readOnly = true)
   public Optional<SkillRanking> findOne(Long id) {
     return skillRankingRepository.findById(id);
-  }
-
-  /**
-   * Delete the skillRanking by id.
-   *
-   * @param id the id of the entity.
-   */
-  public void delete(Long id) {
-    skillRankingRepository.deleteById(id);
   }
 
   /**
@@ -58,12 +39,11 @@ public class SkillRankingService {
   }
 
   /**
-   * @param skill The skill for which the rankings should be retrieved.
-   * @return The rankings of the given skill.
+   * @param tournament The tournament for which the rankings should be retrieved.
+   * @return All rankings for the given tournament.
    */
-  @Transactional(readOnly = true)
-  public List<SkillRanking> findBySkill(Skill skill) {
-    return skillRankingRepository.findBySkillOrderBySequenceAsc(skill);
+  public List<SkillRanking> findByTournament(Tournament tournament) {
+    return skillRankingRepository.findBySkillTournament(tournament);
   }
 
 }

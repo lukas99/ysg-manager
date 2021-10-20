@@ -32,6 +32,17 @@ public class TournamentModelAssembler
     model.add(
         linkTo(methodOn(SkillRestController.class).getSkills(tournament.getId()))
             .withRel("skills"));
+    model.add(
+        linkTo(methodOn(SkillRestController.class).calculateSkillRankings(tournament.getId()))
+            .withRel("calculateskillrankings"));
+    model.add(
+        linkTo(methodOn(SkillRankingRestController.class).getSkillRankings(tournament.getId()))
+            .withRel("skillrankings"));
+    model.add(
+        linkTo(
+            methodOn(SkillTournamentRankingRestController.class)
+                .getSkillTournamentRankings(tournament.getId()))
+            .withRel("skilltournamentrankings"));
 
     return model;
   }
