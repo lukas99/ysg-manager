@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,12 +47,15 @@ class SkillServiceTest {
   }
 
   @Test
-  void calculateSkillRankings_isExecutedByOnlyOneThreadAtOnce() {
+  void calculateSkillRankings_isExecutedByOnlyOneThreadAtOnce() throws Exception {
     int threadCount = 2;
     ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
     IntStream.range(0, threadCount).forEach(
         count -> executorService.execute(() -> skillService.calculateSkillRankings(ysg2019)));
+
     executorService.shutdown();
+    // wait for threads to complete
+    executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
     // each mock should be called only once
     verify(skillRankingService, times(1)).deleteAll(ysg2019);

@@ -2,7 +2,7 @@ package com.lukas99.ysgmanager.domain;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -97,7 +97,7 @@ public class SkillService {
   /**
    * To ensure that skill ranking calculation is done by only one thread at once.
    */
-  private final Semaphore skillCalculationSemaphore = new Semaphore(1);
+  private final ReentrantLock skillCalculationLock = new ReentrantLock();
 
   /**
    * Calculates the skill rankings and the tournament skill rankings for the given tournament.
@@ -105,20 +105,23 @@ public class SkillService {
    * @param tournament The tournament for which the rankings should be calculated.
    */
   public void calculateSkillRankings(Tournament tournament) {
-    if (skillCalculationSemaphore.tryAcquire()) {
-      log.info("Start skill ranking calculation");
+    boolean locked = skillCalculationLock.tryLock();
+    if (locked) {
+      try {
+        log.info("Start skill ranking calculation");
 
-      skillRankingService.deleteAll(tournament);
-      skillTournamentRankingService.deleteAll(tournament);
-      // without flush, removal will not be persisted and adding new rankings
-      // will cause unique constraint violation exceptions
-      entityManager.flush();
+        skillRankingService.deleteAll(tournament);
+        skillTournamentRankingService.deleteAll(tournament);
+        // without flush, removal will not be persisted and adding new rankings
+        // will cause unique constraint violation exceptions
+        entityManager.flush();
 
-      skillRankingCalculator.calculateRankings(tournament);
-      skillTournamentRankingCalculator.calculateTournamentRankings(tournament);
-
-      skillCalculationSemaphore.release();
-      log.info("Finished skill ranking calculation");
+        skillRankingCalculator.calculateRankings(tournament);
+        skillTournamentRankingCalculator.calculateTournamentRankings(tournament);
+        log.info("Finished skill ranking calculation");
+      } finally {
+        skillCalculationLock.unlock();
+      }
     } else {
       // do nothing, skill calculation can only be done by
       log.info("Skill ranking calculation is already running. Request is ignored.");
