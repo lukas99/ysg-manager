@@ -3,6 +3,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { SkillsService } from '../../../../core/services/skills.service';
 import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
 import { PlayerPosition, SkillType } from '../../../../types';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  ConfirmationDialogComponent,
+  ConfirmationDialogData
+} from '../../../../shared/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'ysg-skill-list',
@@ -14,7 +19,8 @@ export class SkillListComponent {
 
   constructor(
     private skillsService: SkillsService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private dialog: MatDialog
   ) {
     this.crudListOptions = {
       columnDefs: [
@@ -101,5 +107,27 @@ export class SkillListComponent {
         return playerPosition;
       }
     }
+  }
+
+  calculateSkillRankings() {
+    this.skillsService.calculateSkillRankings().subscribe(
+      () =>
+        this.showCalculationInfoDialog(
+          'SKILLS_PAGE_SKILL_RANKINGS_CALCULATION_STARTED'
+        ),
+      () =>
+        this.showCalculationInfoDialog(
+          'SKILLS_PAGE_SKILL_RANKINGS_CALCULATION_FAILED'
+        )
+    );
+  }
+
+  private showCalculationInfoDialog(textTranslationKey: string): void {
+    this.dialog.open(ConfirmationDialogComponent, {
+      data: <ConfirmationDialogData>{
+        text: this.translateService.instant(textTranslationKey),
+        confirmButtonText: 'OK'
+      }
+    });
   }
 }

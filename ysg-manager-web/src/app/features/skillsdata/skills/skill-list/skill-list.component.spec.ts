@@ -1,19 +1,22 @@
 import { SkillListComponent } from './skill-list.component';
 import { SkillsService } from '../../../../core/services/skills.service';
 import { TranslateService } from '@ngx-translate/core';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('SkillListComponent', () => {
   let component: SkillListComponent;
 
   let skillsService: SkillsService;
   let translateService: TranslateService;
+  let dialog: MatDialog;
 
   beforeEach(() => {
     skillsService = <SkillsService>{};
     translateService = <any>{
       instant: jest.fn().mockImplementation((translationKey) => translationKey)
     };
-    component = new SkillListComponent(skillsService, translateService);
+    dialog = <any>{};
+    component = new SkillListComponent(skillsService, translateService, dialog);
   });
 
   it('creates the options', () => {

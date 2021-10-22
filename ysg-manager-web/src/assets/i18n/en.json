@@ -12,9 +12,11 @@
 
   "NAVIGATION_MASTERDATA": "Masterdata",
   "NAVIGATION_SKILL_RESULTS": "Results",
-  "NAVIGATION_SKILLS": "Skills",
   "NAVIGATION_TOURNAMENTS": "Tournaments",
   "NAVIGATION_TEAMS": "Teams",
+  "NAVIGATION_SKILLS": "Skills",
+  "NAVIGATION_SKILL_RANKINGS": "Skill Rankings",
+  "NAVIGATION_TOURNAMENT_SKILL_RANKINGS": "Skill Tournament Rankings",
 
   "TOURNAMENTS_PAGE_TITLE": "Tournaments",
   "TOURNAMENT_NAME": "Name",
@@ -33,6 +35,9 @@
   "PLAYER_POSITION_GOALTENDER": "Goaltender",
 
   "SKILLS_PAGE_TITLE": "Skills",
+  "SKILLS_PAGE_SKILL_CALCULATE_RANKINGS": "Calculate skill rankings",
+  "SKILLS_PAGE_SKILL_RANKINGS_CALCULATION_STARTED": "Skill ranking calculation was started",
+  "SKILLS_PAGE_SKILL_RANKINGS_CALCULATION_FAILED": "Failed to start skill ranking calculation",
   "SKILLS_PAGE_NAVIGATE_TO_RESULTS_OF_SKILL": "Edit results",
   "SKILLS_PAGE_NAVIGATE_TO_RATINGS_OF_SKILL": "Edit ratings",
   "SKILL_NAME": "Name",
@@ -64,5 +69,17 @@
   "SKILL_RATING_PLAYER_FIRST_NAME": "First name",
   "SKILL_RATING_PLAYER_LAST_NAME": "Last name",
   "SKILL_RATING_PLAYER_SHIRT_NUMBER": "Shirt number",
-  "SKILL_RATING_SCORE": "Rating"
+  "SKILL_RATING_SCORE": "Rating",
+
+  "SKILL_RANKINGS_PAGE_TITLE": "Skill Rankings",
+  "SKILL_TOURNAMENT_RANKINGS_PAGE_TITLE": "Tournament Skill Rankings",
+  "SKILL_RANKING_SKILL_NAME": "Skill",
+  "SKILL_RANKING_SKILL_NUMBER": "Skill Number",
+  "SKILL_RANKING_SEQUENCE": "Sequence",
+  "SKILL_RANKING_RANK": "Rank",
+  "SKILL_RANKING_PLAYER_TEAM": "Team",
+  "SKILL_RANKING_PLAYER_SHIRT_NUMBER": "Shirt number",
+  "SKILL_RANKING_PLAYER_FIRST_NAME": "First name",
+  "SKILL_RANKING_PLAYER_LAST_NAME": "Last name",
+  "SKILL_RANKING_PLAYER_POSITION": "Player position"
 }

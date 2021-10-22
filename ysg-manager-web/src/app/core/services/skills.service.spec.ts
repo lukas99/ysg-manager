@@ -19,7 +19,14 @@ describe('SkillsService', () => {
     _links: {
       self: { href: 'tournaments/1' },
       teams: { href: 'tournaments/1/teams' },
-      skills: { href: 'tournaments/1/skills' }
+      skills: { href: 'tournaments/1/skills' },
+      calculateskillrankings: {
+        href: 'tournaments/1/skills/calculate-rankings'
+      },
+      skillrankings: { href: 'tournaments/1/skill-rankings' },
+      skilltournamentrankings: {
+        href: 'tournaments/1/skill-tournament-rankings'
+      }
     }
   };
 
@@ -152,5 +159,17 @@ describe('SkillsService', () => {
     const title = service.getSkillTitle(skill);
 
     expect(title).toBe('Magic Transitions');
+  });
+
+  it('should calculate the skill rankings', (done: DoneCallback) => {
+    service.calculateSkillRankings().subscribe(() => {
+      done();
+    });
+
+    const testRequest = httpMock.expectOne(
+      'tournaments/1/skills/calculate-rankings'
+    );
+    expect(testRequest.request.method).toBe('POST');
+    testRequest.flush({});
   });
 });

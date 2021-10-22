@@ -26,6 +26,20 @@ const routes: Routes = [
           import('./skill-ratings/skill-ratings.module').then(
             (m) => m.SkillRatingsModule
           )
+      },
+      {
+        path: 'skillrankings',
+        loadChildren: () =>
+          import('./skill-rankings/skill-rankings.module').then(
+            (m) => m.SkillRankingsModule
+          )
+      },
+      {
+        path: 'skilltournamentrankings',
+        loadChildren: () =>
+          import(
+            './skill-tournament-rankings/skill-tournament-rankings.module'
+          ).then((m) => m.SkillTournamentRankingsModule)
       }
     ]
   }

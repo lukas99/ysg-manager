@@ -1,12 +1,19 @@
-<h1 mat-dialog-title>{{ data.title | translate }}</h1>
-<div mat-dialog-content>
+<h1 mat-dialog-title *ngIf="data.title">
+  {{ data.title | translate }}
+</h1>
+<div mat-dialog-content *ngIf="data.text">
   <p>{{ data.text | translate }}'</p>
 </div>
 <div mat-dialog-actions align="end">
-  <button mat-button (click)="onCancelClick()" cdkFocusInitial>
+  <button
+    mat-button
+    (click)="onCancelClick()"
+    cdkFocusInitial
+    *ngIf="data.cancelButtonText"
+  >
     {{ data.cancelButtonText | translate }}
   </button>
-  <button mat-button (click)="onConfirmClick()">
+  <button mat-button (click)="onConfirmClick()" *ngIf="data.confirmButtonText">
     {{ data.confirmButtonText | translate }}
   </button>
 </div>

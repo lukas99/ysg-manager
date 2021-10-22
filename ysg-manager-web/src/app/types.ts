@@ -9,6 +9,9 @@ export interface Tournament {
     self: Link;
     teams: Link;
     skills: Link;
+    calculateskillrankings: Link;
+    skillrankings: Link;
+    skilltournamentrankings: Link;
   };
 }
 
@@ -116,5 +119,33 @@ export interface SkillRating {
 export interface SkillRatingList {
   _embedded: {
     skillRatingModelList: SkillRating[];
+  };
+}
+
+export interface Ranking {
+  skill: Skill;
+  player: Player;
+  rank: number;
+  sequence: number;
+  _links: {
+    self: Link;
+    player: Link;
+    skill: Link;
+  };
+}
+
+export interface SkillRanking extends Ranking {}
+
+export interface SkillRankingList {
+  _embedded: {
+    skillRankingModelList: SkillRanking[];
+  };
+}
+
+export interface SkillTournamentRanking extends Ranking {}
+
+export interface SkillTournamentRankingList {
+  _embedded: {
+    skillTournamentRankingModelList: SkillTournamentRanking[];
   };
 }

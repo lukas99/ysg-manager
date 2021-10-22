@@ -24,12 +24,26 @@ describe('CrudListAgComponent', () => {
     tournament1 = {
       name: 'YSG 2019',
       dateDescription: '2019',
-      _links: { self: { href: '' }, teams: { href: '' }, skills: { href: '' } }
+      _links: {
+        self: { href: '' },
+        teams: { href: '' },
+        skills: { href: '' },
+        calculateskillrankings: { href: '' },
+        skillrankings: { href: '' },
+        skilltournamentrankings: { href: '' }
+      }
     };
     tournament2 = {
       name: 'YSG 2020',
       dateDescription: '2020',
-      _links: { self: { href: '' }, teams: { href: '' }, skills: { href: '' } }
+      _links: {
+        self: { href: '' },
+        teams: { href: '' },
+        skills: { href: '' },
+        calculateskillrankings: { href: '' },
+        skillrankings: { href: '' },
+        skilltournamentrankings: { href: '' }
+      }
     };
     tournaments = [tournament1, tournament2];
 

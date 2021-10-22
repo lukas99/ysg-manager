@@ -27,7 +27,14 @@ describe('CrudDetailComponent', () => {
       _links: {
         self: { href: 'tournaments/1' },
         teams: { href: 'tournaments/1/teams' },
-        skills: { href: 'tournaments/1/skills' }
+        skills: { href: 'tournaments/1/skills' },
+        calculateskillrankings: {
+          href: 'tournaments/1/skills/calculate-rankings'
+        },
+        skillrankings: { href: 'tournaments/1/skill-rankings' },
+        skilltournamentrankings: {
+          href: 'tournaments/1/skill-tournament-rankings'
+        }
       }
     };
 

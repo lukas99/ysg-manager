@@ -77,4 +77,10 @@ export class SkillsService extends CrudStateService implements CrudService {
   getItemTitle(item: any): string {
     return this.getSkillTitle(item);
   }
+
+  calculateSkillRankings(): Observable<void> {
+    const rankingCalculationLink = this.applicationTournament._links
+      .calculateskillrankings;
+    return this.http.post<void>(rankingCalculationLink.href, {});
+  }
 }
