@@ -1,5 +1,7 @@
 package com.lukas99.ysgmanager.domain;
 
+import static org.mockito.AdditionalAnswers.answerVoid;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -48,14 +50,17 @@ class SkillServiceTest {
 
   @Test
   void calculateSkillRankings_isExecutedByOnlyOneThreadAtOnce() throws Exception {
+    // wait to make call of second thread not starting skill ranking calculation
+    doAnswer(answerVoid((tournament) -> Thread.sleep(500)))
+        .when(skillRankingService).deleteAll(ysg2019);
+
     int threadCount = 2;
     ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
     IntStream.range(0, threadCount).forEach(
         count -> executorService.execute(() -> skillService.calculateSkillRankings(ysg2019)));
 
     executorService.shutdown();
-    // wait for threads to complete
-    executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+    executorService.awaitTermination(1, TimeUnit.SECONDS); // wait for threads to complete
 
     // each mock should be called only once
     verify(skillRankingService, times(1)).deleteAll(ysg2019);
