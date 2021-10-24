@@ -39,6 +39,12 @@ public class SkillRankingCalculator {
   @Value("${ysg.skills.rankings.calculator.calculate-skill-bestshot-at-last:true}")
   private boolean calculateSkillBestShotAtLast;
 
+  @Value("${ysg.skills.rankings.calculator.penalty-time-per-failure:1}")
+  private Integer penaltyTime;
+
+  @Value("${ysg.skills.rankings.calculator.penalty-points-per-failure:1}")
+  private Integer penaltyPoints;
+
   private final SkillRepository skillRepository;
   private final SkillRankingRepository rankingRepository;
   private final SkillRatingRepository ratingRepository;
@@ -150,7 +156,7 @@ public class SkillRankingCalculator {
       Comparator<ResultWithRating> comparator) {
     List<SkillRating> ratings = getRatings(skill, position);
     List<ResultWithRating> resultWithRatings = getResults(skill, position).stream()
-        .map(ResultWithRating::valueOf)
+        .map(skillResult -> ResultWithRating.valueOf(skillResult, penaltyTime, penaltyPoints))
         .peek(resultWithRating -> ratings.stream()
             .filter(rating -> rating.getPlayer().equals(resultWithRating.getPlayer()))
             .findFirst().ifPresent(rating -> resultWithRating.setScore(rating.getScore())))
@@ -162,7 +168,8 @@ public class SkillRankingCalculator {
   private void createRankingsForSkillResults(Skill skill, PlayerPosition position,
       Comparator<ResultWithRating> comparator) {
     List<ResultWithRating> resultWithRatings = getResults(skill, position).stream()
-        .map(ResultWithRating::valueOf).sorted(comparator).collect(Collectors.toList());
+        .map(skillResult -> ResultWithRating.valueOf(skillResult, penaltyTime, penaltyPoints))
+        .sorted(comparator).collect(Collectors.toList());
     createRanking(resultWithRatings, comparator);
   }
 
@@ -234,17 +241,28 @@ public class SkillRankingCalculator {
     private Skill skill;
     private Player player;
     private BigDecimal time;
-    private Integer failures;
     private Integer points;
     private BigDecimal score;
 
-    static ResultWithRating valueOf(SkillResult skillResult) {
+    static ResultWithRating valueOf(SkillResult skillResult,
+        Integer penaltyTimePerFailure, Integer penaltyPointsPerFailure) {
+      // include failures to time or points
+      BigDecimal time = skillResult.getTime();
+      Integer points = skillResult.getPoints();
+      if (nonNull(skillResult.getFailures()) && skillResult.getFailures() > 0) {
+        if (nonNull(skillResult.getTime())) {
+          time = skillResult.getTime().add(
+              BigDecimal.valueOf(skillResult.getFailures())
+                  .multiply(BigDecimal.valueOf(penaltyTimePerFailure)));
+        } else if (nonNull(skillResult.getPoints())) {
+          points = skillResult.getPoints() - (skillResult.getFailures() * penaltyPointsPerFailure);
+        }
+      }
       return ResultWithRating.builder()
           .skill(skillResult.getSkill())
           .player(skillResult.getPlayer())
-          .time(skillResult.getTime())
-          .failures(skillResult.getFailures())
-          .points(skillResult.getPoints())
+          .time(time)
+          .points(points)
           .build();
     }
 

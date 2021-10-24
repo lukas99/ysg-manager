@@ -78,30 +78,49 @@ class SkillRankingCalculationServiceITHelper {
 
   private void addMagicTransitionResultAndRating(PlayerPosition position, int playerNumber,
       int score, double time) {
+    addMagicTransitionResultAndRating(position, playerNumber, score, time, null);
+  }
+
+  private void addMagicTransitionResultAndRating(PlayerPosition position, int playerNumber,
+      int score, double time, Integer failures) {
     Player player = getOrCreatePlayer(playerNumber, position);
     skillResults.add(SkillResult.builder().player(player).skill(magicTransitions)
-        .time(new BigDecimal(time)).build());
+        .time(new BigDecimal(time)).failures(failures).build());
     skillRatings.add(SkillRating.builder().player(player).skill(magicTransitions)
         .score(new BigDecimal(score)).build());
   }
 
   private void addBestShotResult(PlayerPosition position, int playerNumber, int points) {
+    addBestShotResult(position, playerNumber, points, null);
+  }
+
+  private void addBestShotResult(PlayerPosition position, int playerNumber, int points,
+      Integer failures) {
     Player player = getOrCreatePlayer(playerNumber, position);
     skillResults.add(SkillResult.builder().player(player).skill(bestShot)
-        .points(points).build());
+        .points(points).failures(failures).build());
   }
 
   private void addPassAndGoResult(PlayerPosition position, int playerNumber, int points,
       double time) {
+    this.addPassAndGoResult(position, playerNumber, points, time, null);
+  }
+
+  private void addPassAndGoResult(PlayerPosition position, int playerNumber, int points,
+      double time, Integer failures) {
     Player player = getOrCreatePlayer(playerNumber, position);
     skillResults.add(SkillResult.builder().player(player).skill(passAndGo)
-        .points(points).time(new BigDecimal(time)).build());
+        .points(points).time(new BigDecimal(time)).failures(failures).build());
   }
 
   private void addControlledJumblePlayerResult(int playerNumber, double time) {
+    addControlledJumblePlayerResult(playerNumber, time, null);
+  }
+
+  private void addControlledJumblePlayerResult(int playerNumber, double time, Integer failures) {
     Player player = getOrCreatePlayer(playerNumber, SKATER);
     skillResults.add(SkillResult.builder().player(player).skill(controlledJumble)
-        .time(new BigDecimal(time)).build());
+        .time(new BigDecimal(time)).failures(failures).build());
   }
 
   private void addControlledJumbleGoaltenderRating(int playerNumber, double score) {
@@ -111,9 +130,14 @@ class SkillRankingCalculationServiceITHelper {
   }
 
   private void addHitTheRoadPlayerResultAndRating(int playerNumber, double score, double time) {
+    addHitTheRoadPlayerResultAndRating(playerNumber, score, time, null);
+  }
+
+  private void addHitTheRoadPlayerResultAndRating(int playerNumber, double score, double time,
+      Integer failures) {
     Player player = getOrCreatePlayer(playerNumber, SKATER);
     skillResults.add(SkillResult.builder().player(player).skill(hitTheRoad)
-        .time(new BigDecimal(time)).build());
+        .time(new BigDecimal(time)).failures(failures).build());
     skillRatings.add(SkillRating.builder().player(player).skill(hitTheRoad)
         .score(new BigDecimal(score)).build());
   }
@@ -165,13 +189,11 @@ class SkillRankingCalculationServiceITHelper {
     };
   }
 
-  // 397w -> 397
-  // 397b -> 398
   public void addMagicTransitionsResultsAndRatings() {
     addMagicTransitionResultAndRating(SKATER, 338, 90, 17.81);
-    addMagicTransitionResultAndRating(SKATER, 373, 85, 17.8);
+    addMagicTransitionResultAndRating(SKATER, 373, 85, 16.8, 1);
     addMagicTransitionResultAndRating(SKATER, 715, 85, 18.35);
-    addMagicTransitionResultAndRating(SKATER, 343, 85, 19.44);
+    addMagicTransitionResultAndRating(SKATER, 343, 85, 18.44, 1);
     addMagicTransitionResultAndRating(SKATER, 119, 85, 19.5);
     addMagicTransitionResultAndRating(SKATER, 397, 85, 21.06);
     addMagicTransitionResultAndRating(SKATER, 6, 83, 18.16);
@@ -308,11 +330,9 @@ class SkillRankingCalculationServiceITHelper {
     addMagicTransitionResultAndRating(GOALTENDER, 801, 70, 36.78);
   }
 
-  // 397w -> 397
-  // 397b -> 398
   public void addBestShotResults() {
     addBestShotResult(SKATER, 515, 9);
-    addBestShotResult(SKATER, 8, 9);
+    addBestShotResult(SKATER, 8, 10, 1);
     addBestShotResult(SKATER, 368, 6);
     addBestShotResult(SKATER, 507, 6);
     addBestShotResult(SKATER, 521, 6);
@@ -451,13 +471,11 @@ class SkillRankingCalculationServiceITHelper {
     addBestShotResult(GOALTENDER, 501, 0);
   }
 
-  // 397w -> 397
-  // 397b -> 398
   public void addPassAndGoResults() {
     addPassAndGoResult(SKATER, 338, 5, 22.78);
-    addPassAndGoResult(SKATER, 913, 5, 23.4);
+    addPassAndGoResult(SKATER, 913, 5, 22.4, 1);
     addPassAndGoResult(SKATER, 714, 5, 24.03);
-    addPassAndGoResult(SKATER, 388, 5, 26.1);
+    addPassAndGoResult(SKATER, 388, 5, 25.1, 1);
     addPassAndGoResult(SKATER, 707, 5, 26.18);
     addPassAndGoResult(SKATER, 702, 5, 26.53);
     addPassAndGoResult(SKATER, 8, 5, 27.22);
@@ -594,12 +612,10 @@ class SkillRankingCalculationServiceITHelper {
     addPassAndGoResult(GOALTENDER, 430, 0, 30.16);
   }
 
-  // 397w -> 397
-  // 397b -> 398
   public void addControlledJumbleResultsAndRatings() {
     addControlledJumblePlayerResult(20, 15.67);
-    addControlledJumblePlayerResult(6, 16.81);
-    addControlledJumblePlayerResult(343, 17.03);
+    addControlledJumblePlayerResult(6, 15.81, 1);
+    addControlledJumblePlayerResult(343, 16.03, 1);
     addControlledJumblePlayerResult(210, 17.4);
     addControlledJumblePlayerResult(379, 17.46);
     addControlledJumblePlayerResult(119, 17.63);
@@ -737,8 +753,6 @@ class SkillRankingCalculationServiceITHelper {
     addControlledJumbleGoaltenderRating(21, 72.45);
   }
 
-  // 397w -> 397
-  // 397b -> 398
   public void addHitTheRoadResultsAndRatings() {
     addHitTheRoadPlayerResultAndRating(338, 90, 1.86);
     addHitTheRoadPlayerResultAndRating(529, 87, 1.94);

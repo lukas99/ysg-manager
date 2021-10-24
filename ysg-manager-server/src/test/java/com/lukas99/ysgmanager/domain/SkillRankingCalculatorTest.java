@@ -1,5 +1,7 @@
 package com.lukas99.ysgmanager.domain;
 
+import static com.lukas99.ysgmanager.domain.SkillResultTemplates.bestShotResult;
+import static com.lukas99.ysgmanager.domain.SkillResultTemplates.magicTransitionsResult;
 import static java.util.Comparator.comparing;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
@@ -7,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.lukas99.ysgmanager.domain.SkillRankingCalculator.ResultWithRating;
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -164,6 +167,47 @@ class SkillRankingCalculatorTest {
 
     assertThat(ranking62.getRank()).isEqualTo(6);
     assertThat(ranking62.getSequence()).isEqualTo(6);
+  }
+
+  @Test
+  public void resultWithRatingRespectsFailures_skillWithTime() {
+    SkillResult skillResult = magicTransitionsResult(skill, player1).toBuilder()
+        .failures(2).time(new BigDecimal("12.6")).build();
+
+    ResultWithRating resultWithRating = ResultWithRating.valueOf(skillResult, 1, 1);
+
+    assertThat(resultWithRating.getTime()).isEqualTo(new BigDecimal("14.6"));
+  }
+
+  @Test
+  public void resultWithRatingRespectsFailures_skillWithPoints() {
+    SkillResult skillResult = bestShotResult(skill, player1).toBuilder()
+        .failures(2).points(5).build();
+
+    ResultWithRating resultWithRating = ResultWithRating.valueOf(skillResult, 1, 1);
+
+    assertThat(resultWithRating.getPoints()).isEqualTo(3);
+    assertThat(resultWithRating.getTime()).isNull();
+  }
+
+  @Test
+  public void resultWithRatingRespectsFailures_failuresIsNull() {
+    SkillResult skillResult = magicTransitionsResult(skill, player1).toBuilder()
+        .failures(null).time(new BigDecimal("12.6")).build();
+
+    ResultWithRating resultWithRating = ResultWithRating.valueOf(skillResult, 1, 1);
+
+    assertThat(resultWithRating.getTime()).isEqualTo(new BigDecimal("12.6"));
+  }
+
+  @Test
+  public void resultWithRatingRespectsFailures_skillWithTime_failuresIsZero() {
+    SkillResult skillResult = magicTransitionsResult(skill, player1).toBuilder()
+        .failures(0).time(new BigDecimal("12.6")).build();
+
+    ResultWithRating resultWithRating = ResultWithRating.valueOf(skillResult, 1, 1);
+
+    assertThat(resultWithRating.getTime()).isEqualTo(new BigDecimal("12.6"));
   }
 
 }
