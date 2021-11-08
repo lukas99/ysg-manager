@@ -1,6 +1,6 @@
 <ng-template #fields>
   <ng-container [formGroup]="crudDetailOptions.form">
-    <div>
+    <div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
       <mat-form-field appearance="fill">
         <mat-label>{{ 'SKILL_RATING_PLAYER_TEAM' | translate }}</mat-label>
         <mat-select

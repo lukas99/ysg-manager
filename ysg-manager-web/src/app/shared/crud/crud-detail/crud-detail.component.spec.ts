@@ -11,10 +11,12 @@ import {
 } from '@angular/forms';
 import { Tournament } from '../../../types';
 import { of } from 'rxjs';
+import { ShortcutService } from '../../../core/services/shortcut.service';
 
 describe('CrudDetailComponent', () => {
   let component: CrudDetailComponent;
   let tournamentService: TournamentsService;
+  let shortcutService: ShortcutService;
   let router: Router;
   let formBuilder: FormBuilder;
 
@@ -48,10 +50,11 @@ describe('CrudDetailComponent', () => {
     tournamentService.getItemTitle = jest.fn(() => 'item title');
     tournamentService.getSelectedItem = jest.fn(() => of(existingTournament));
 
+    shortcutService = <any>{ add: jest.fn() };
     router = <any>{ navigateByUrl: jest.fn() };
     formBuilder = new FormBuilder();
 
-    component = new CrudDetailComponent(router);
+    component = new CrudDetailComponent(shortcutService, router);
 
     component.options = {
       form: new FormGroup({
@@ -95,6 +98,11 @@ describe('CrudDetailComponent', () => {
       );
       expect(formValue._links).toBe(existingTournament._links);
     }));
+
+    it('registers the shortcuts', () => {
+      component.ngOnInit();
+      expect(shortcutService.add).toHaveBeenCalled();
+    });
   });
 
   describe('getTitle', () => {

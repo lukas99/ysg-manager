@@ -8,6 +8,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { LanguagePickerComponent } from './language-picker/language-picker.component';
 import { SharedModule } from '../shared/shared.module';
 import { TournamentPickerComponent } from './tournament-picker/tournament-picker.component';
+import { HotkeyModule } from 'angular2-hotkeys';
 
 /**
  * Import HttpClient with TranslateHttpLoader to load translation files using this factory method.
@@ -42,7 +43,10 @@ export function TranslationLoaderFactory(http: HttpClient) {
         useFactory: TranslationLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+
+    // angular2-hotkeys
+    HotkeyModule.forRoot()
   ],
   exports: [LoginComponent, LanguagePickerComponent, TournamentPickerComponent]
 })

@@ -9,6 +9,7 @@ import {
 } from '../../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { ShortcutService } from '../../../core/services/shortcut.service';
 
 /**
  * The options to pass to the CrudListComponent.
@@ -66,13 +67,19 @@ export class CrudListComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private router: Router,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private shortcutService: ShortcutService
   ) {}
 
   ngOnInit(): void {
     this.items$ = this.refreshToken$.pipe(
       switchMap(() => this.options.crudService.getItems())
     );
+    this.registerShortcuts();
+  }
+
+  private registerShortcuts(): void {
+    this.shortcutService.add('plus', () => this.createItem());
   }
 
   onGridReady(params: any) {

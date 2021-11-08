@@ -7,6 +7,7 @@ import { CrudListComponent } from './crud-list.component';
 import DoneCallback = jest.DoneCallback;
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { ShortcutService } from '../../../core/services/shortcut.service';
 
 describe('CrudListAgComponent', () => {
   let tournament1: Tournament;
@@ -19,6 +20,7 @@ describe('CrudListAgComponent', () => {
   let dialog: MatDialog;
   let router: Router;
   let translateService: TranslateService;
+  let shortcutService: ShortcutService;
 
   beforeEach(() => {
     tournament1 = {
@@ -59,7 +61,13 @@ describe('CrudListAgComponent', () => {
     dialog = <any>{};
     router = <any>{ navigateByUrl: jest.fn() };
     translateService = <any>{ instant: jest.fn() };
-    component = new CrudListComponent(dialog, router, translateService);
+    shortcutService = <any>{ add: jest.fn() };
+    component = new CrudListComponent(
+      dialog,
+      router,
+      translateService,
+      shortcutService
+    );
     component.options = {
       columnDefs: [
         {
@@ -83,6 +91,11 @@ describe('CrudListAgComponent', () => {
         expect(t).toEqual(tournaments);
         done();
       });
+    });
+
+    it('registers the shortcuts', () => {
+      component.ngOnInit();
+      expect(shortcutService.add).toHaveBeenCalled();
     });
   });
 

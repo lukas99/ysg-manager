@@ -19,6 +19,7 @@ import { CrudListComponent } from './crud/crud-list/crud-list.component';
 import { MoreActionsComponent } from './more-actions/more-actions.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { A11yModule } from '@angular/cdk/a11y';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -48,6 +49,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
+    A11yModule, // for cursor focus configuration in forms
 
     // ngx-translate
     TranslateModule,
@@ -73,6 +75,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
+    A11yModule,
 
     // ngx-translate
     TranslateModule,

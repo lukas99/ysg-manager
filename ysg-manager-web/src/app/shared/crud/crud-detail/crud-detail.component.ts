@@ -10,6 +10,7 @@ import { EMPTY, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { CrudService } from '../crud-list/crud-list.component';
+import { ShortcutService } from '../../../core/services/shortcut.service';
 
 /**
  * The options for to pass to the CrudDetailComponent.
@@ -39,12 +40,21 @@ export class CrudDetailComponent implements OnInit, AfterContentInit {
   form = new FormGroup({});
   item$: Observable<any> = EMPTY;
 
-  constructor(private router: Router) {}
+  constructor(
+    private shortcutService: ShortcutService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.item$ = this.options.crudService
       .getSelectedItem()
       .pipe(tap((item) => this.form.patchValue(item)));
+    this.registerShortcuts();
+  }
+
+  private registerShortcuts(): void {
+    this.shortcutService.add('ctrl+s', () => this.save());
+    this.shortcutService.add('ctrl+c', () => this.cancel());
   }
 
   ngAfterContentInit(): void {
