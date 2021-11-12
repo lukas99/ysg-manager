@@ -2,14 +2,6 @@
   <ng-container [formGroup]="crudDetailOptions.form">
     <div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
       <mat-form-field appearance="fill">
-        <mat-label>{{ 'PLAYER_FIRST_NAME' | translate }}</mat-label>
-        <input matInput formControlName="firstName" />
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>{{ 'PLAYER_LAST_NAME' | translate }}</mat-label>
-        <input matInput formControlName="lastName" />
-      </mat-form-field>
-      <mat-form-field appearance="fill">
         <mat-label>{{ 'PLAYER_SHIRT_NUMBER' | translate }}</mat-label>
         <input matInput formControlName="shirtNumber" required />
       </mat-form-field>
@@ -23,6 +15,14 @@
             {{ position.viewValue }}
           </mat-option>
         </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'PLAYER_FIRST_NAME' | translate }}</mat-label>
+        <input matInput formControlName="firstName" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'PLAYER_LAST_NAME' | translate }}</mat-label>
+        <input matInput formControlName="lastName" />
       </mat-form-field>
     </div>
   </ng-container>
