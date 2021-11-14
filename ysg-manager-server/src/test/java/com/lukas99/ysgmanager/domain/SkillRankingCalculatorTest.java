@@ -260,12 +260,10 @@ class SkillRankingCalculatorTest {
 
     when(rankingRepository.findByPlayerAndSkillTournament(player1, ysg2019)).thenReturn(List.of(
         SkillRanking.builder().player(player1).rank(1).build(),
-        SkillRanking.builder().player(player1).rank(10).build()
-    ));
+        SkillRanking.builder().player(player1).rank(10).build()));
     when(rankingRepository.findByPlayerAndSkillTournament(player2, ysg2019)).thenReturn(List.of(
         SkillRanking.builder().player(player2).rank(3).build(),
-        SkillRanking.builder().player(player2).rank(3).build()
-    ));
+        SkillRanking.builder().player(player2).rank(3).build()));
     when(rankingRepository.findByPlayerAndSkillTournament(player3, ysg2019))
         .thenReturn(Lists.emptyList());
 
@@ -278,6 +276,33 @@ class SkillRankingCalculatorTest {
     List<Player> playersWithRanking =
         savedRankings.stream().map(SkillRanking::getPlayer).collect(Collectors.toList());
     assertThat(playersWithRanking).containsExactly(player2, player1); // player2 is better
+  }
+
+  @Test
+  public void resortRankings_forGoaltenders_rankPlayersWithMoreSkillResultsBetter() {
+    when(playerRepository.findByPosition(GOALTENDER))
+        .thenReturn(List.of(player1, player2, player3));
+
+    when(rankingRepository.findByPlayerAndSkillTournament(player1, ysg2019)).thenReturn(List.of(
+        SkillRanking.builder().player(player1).rank(10).build(),
+        SkillRanking.builder().player(player1).rank(10).build(),
+        SkillRanking.builder().player(player1).rank(10).build()));
+    when(rankingRepository.findByPlayerAndSkillTournament(player2, ysg2019)).thenReturn(List.of(
+        SkillRanking.builder().player(player2).rank(2).build(),
+        SkillRanking.builder().player(player2).rank(2).build()));
+    when(rankingRepository.findByPlayerAndSkillTournament(player3, ysg2019)).thenReturn(List.of(
+        SkillRanking.builder().player(player3).rank(1).build(),
+        SkillRanking.builder().player(player3).rank(1).build()));
+
+    calculator.createRankingsForGoaltendersOverall(ysg2019, SkillTemplates.goaltenders(ysg2019));
+
+    ArgumentCaptor<SkillRanking> skillRankingCaptor = ArgumentCaptor.forClass(SkillRanking.class);
+    verify(rankingRepository, times(3)).save(skillRankingCaptor.capture());
+    List<SkillRanking> savedRankings = skillRankingCaptor.getAllValues();
+    assertThat(savedRankings.size()).isEqualTo(3);
+    List<Player> playersWithRanking =
+        savedRankings.stream().map(SkillRanking::getPlayer).collect(Collectors.toList());
+    assertThat(playersWithRanking).containsExactly(player1, player3, player2); // player2 is best
   }
 
 }

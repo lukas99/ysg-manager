@@ -341,6 +341,7 @@ public class SkillRankingCalculator {
             .currentRank(ranking.getRank())
             .overallAverageRank(overallAverageRank)
             .overallMaxRank(overallMaxRank)
+            .totalRankingCount(allRankingsForPlayer.size())
             .build();
         log.info(
             "Ranking to update: Seq: {}, rank: {}, overallAverageRank: {}, overallMaxRank: {}. "
@@ -352,7 +353,13 @@ public class SkillRankingCalculator {
         rankingsPlus.add(rankingPlus);
       }
     });
-    rankingsPlus.sort(comparator);
+    // player which has a ranking for all skills is always ranked better than a player
+    // which did not participate in all skills (specially relevant for goaltenders overall
+    // ranking where goaltenders with fewer rankings should be ranked worse)
+    Comparator<RankingPlus> considerTotalRankingCount =
+        comparing(RankingPlus::getTotalRankingCount).reversed()
+            .thenComparing(comparator);
+    rankingsPlus.sort(considerTotalRankingCount);
     Integer startSequence = rankingsPlus.stream()
         .min(comparing(RankingPlus::getCurrentSequence))
         .map(RankingPlus::getCurrentSequence).orElseThrow();
@@ -383,6 +390,7 @@ public class SkillRankingCalculator {
     private Integer currentRank;
     private Double overallAverageRank;
     private Integer overallMaxRank;
+    private Integer totalRankingCount;
 
   }
 
