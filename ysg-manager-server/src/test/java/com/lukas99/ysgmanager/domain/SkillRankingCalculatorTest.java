@@ -1,5 +1,7 @@
 package com.lukas99.ysgmanager.domain;
 
+import static com.lukas99.ysgmanager.domain.PlayerPosition.GOALTENDER;
+import static com.lukas99.ysgmanager.domain.PlayerPosition.SKATER;
 import static com.lukas99.ysgmanager.domain.SkillResultTemplates.bestShotResult;
 import static com.lukas99.ysgmanager.domain.SkillResultTemplates.magicTransitionsResult;
 import static java.util.Comparator.comparing;
@@ -13,6 +15,8 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,10 +33,21 @@ class SkillRankingCalculatorTest {
   private SkillRankingCalculator calculator;
 
   @Mock
+  private SkillRatingRepository skillRatingRepository;
+
+  @Mock
+  private SkillResultRepository skillResultRepository;
+
+  @Mock
   private SkillRankingRepository rankingRepository;
+
+  @Mock
+  private PlayerRepository playerRepository;
 
   @Captor
   private ArgumentCaptor<SkillRanking> rankingCaptor;
+
+  private Tournament ysg2019;
 
   private Skill skill;
 
@@ -45,17 +60,17 @@ class SkillRankingCalculatorTest {
 
   @BeforeEach
   public void setUp() {
-    Tournament ysg2019 = TournamentTemplates.ysg2019();
+    ysg2019 = TournamentTemplates.ysg2019();
     Team ehcEngelberg = TeamTemplates.ehcEngelberg(ysg2019);
 
     skill = SkillTemplates.magicTransitions(ysg2019);
 
-    player1 = Player.builder().id(1L).shirtNumber(1).team(ehcEngelberg).build();
-    player2 = Player.builder().id(2L).shirtNumber(2).team(ehcEngelberg).build();
-    player3 = Player.builder().id(3L).shirtNumber(3).team(ehcEngelberg).build();
-    player4 = Player.builder().id(4L).shirtNumber(4).team(ehcEngelberg).build();
-    player5 = Player.builder().id(5L).shirtNumber(5).team(ehcEngelberg).build();
-    player6 = Player.builder().id(6L).shirtNumber(6).team(ehcEngelberg).build();
+    player1 = Player.builder().id(1L).shirtNumber(1).position(SKATER).team(ehcEngelberg).build();
+    player2 = Player.builder().id(2L).shirtNumber(2).position(SKATER).team(ehcEngelberg).build();
+    player3 = Player.builder().id(3L).shirtNumber(3).position(SKATER).team(ehcEngelberg).build();
+    player4 = Player.builder().id(4L).shirtNumber(4).position(SKATER).team(ehcEngelberg).build();
+    player5 = Player.builder().id(5L).shirtNumber(5).position(SKATER).team(ehcEngelberg).build();
+    player6 = Player.builder().id(6L).shirtNumber(6).position(SKATER).team(ehcEngelberg).build();
   }
 
   @Test
@@ -208,6 +223,61 @@ class SkillRankingCalculatorTest {
     ResultWithRating resultWithRating = ResultWithRating.valueOf(skillResult, 1, 1);
 
     assertThat(resultWithRating.getTime()).isEqualTo(new BigDecimal("12.6"));
+  }
+
+  @Test
+  public void createRankingsForSkillResultsAndRatings_withoutRating() {
+    when(skillResultRepository.findBySkill(skill)).thenReturn((List.of(
+        SkillResult.builder().skill(skill).player(player1).time(new BigDecimal("20")).build(),
+        SkillResult.builder().skill(skill).player(player2).time(new BigDecimal("15")).build(),
+        SkillResult.builder().skill(skill).player(player3).time(new BigDecimal("10")).build()
+    )));
+    // no rating for player 3
+    when(skillRatingRepository.findBySkill(skill)).thenReturn(List.of(
+        SkillRating.builder().skill(skill).player(player1).score(new BigDecimal("60")).build(),
+        SkillRating.builder().skill(skill).player(player2).score(new BigDecimal("70")).build()
+    ));
+
+    Comparator<ResultWithRating> byTime = comparing(ResultWithRating::getTime);
+    Comparator<ResultWithRating> byScore = comparing(ResultWithRating::getScore).reversed();
+    Comparator<ResultWithRating> byScoreAndTime = byScore.thenComparing(byTime);
+
+    calculator.createRankingsForSkillResultsAndRatings(skill, SKATER, byScoreAndTime);
+
+    ArgumentCaptor<SkillRanking> skillRankingCaptor = ArgumentCaptor.forClass(SkillRanking.class);
+    verify(rankingRepository, times(2)).save(skillRankingCaptor.capture());
+    List<SkillRanking> savedRankings = skillRankingCaptor.getAllValues();
+    assertThat(savedRankings.size()).isEqualTo(2);
+    List<Player> playersWithRanking =
+        savedRankings.stream().map(SkillRanking::getPlayer).collect(Collectors.toList());
+    assertThat(playersWithRanking).contains(player1, player2);
+  }
+
+  @Test
+  public void resortRankings_forGoaltenders_withoutRankings() {
+    when(playerRepository.findByPosition(GOALTENDER))
+        .thenReturn(List.of(player1, player2, player3));
+
+    when(rankingRepository.findByPlayerAndSkillTournament(player1, ysg2019)).thenReturn(List.of(
+        SkillRanking.builder().player(player1).rank(1).build(),
+        SkillRanking.builder().player(player1).rank(10).build()
+    ));
+    when(rankingRepository.findByPlayerAndSkillTournament(player2, ysg2019)).thenReturn(List.of(
+        SkillRanking.builder().player(player2).rank(3).build(),
+        SkillRanking.builder().player(player2).rank(3).build()
+    ));
+    when(rankingRepository.findByPlayerAndSkillTournament(player3, ysg2019))
+        .thenReturn(Lists.emptyList());
+
+    calculator.createRankingsForGoaltendersOverall(ysg2019, SkillTemplates.goaltenders(ysg2019));
+
+    ArgumentCaptor<SkillRanking> skillRankingCaptor = ArgumentCaptor.forClass(SkillRanking.class);
+    verify(rankingRepository, times(2)).save(skillRankingCaptor.capture());
+    List<SkillRanking> savedRankings = skillRankingCaptor.getAllValues();
+    assertThat(savedRankings.size()).isEqualTo(2);
+    List<Player> playersWithRanking =
+        savedRankings.stream().map(SkillRanking::getPlayer).collect(Collectors.toList());
+    assertThat(playersWithRanking).containsExactly(player2, player1); // player2 is better
   }
 
 }

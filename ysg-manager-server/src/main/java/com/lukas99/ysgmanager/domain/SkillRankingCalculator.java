@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -87,9 +88,8 @@ public class SkillRankingCalculator {
     Comparator<ResultWithRating> byTime = comparing(ResultWithRating::getTime);
     Comparator<ResultWithRating> byScore = comparing(ResultWithRating::getScore).reversed();
     Comparator<ResultWithRating> byPoints = comparing(ResultWithRating::getPoints).reversed();
-    Comparator<ResultWithRating> byScoreAndTime = byScore.thenComparing(ResultWithRating::getTime);
-    Comparator<ResultWithRating> byPointsAndTime =
-        byPoints.thenComparing(ResultWithRating::getTime);
+    Comparator<ResultWithRating> byScoreAndTime = byScore.thenComparing(byTime);
+    Comparator<ResultWithRating> byPointsAndTime = byPoints.thenComparing(byTime);
 
     skills.stream()
         // goaltenders overall: calculate after resorting to not falsify resorting of
@@ -102,8 +102,8 @@ public class SkillRankingCalculator {
             createRankingsForSkillResultsAndRatings(skill, SKATER, byScoreAndTime);
             createRankingsForSkillResultsAndRatings(skill, GOALTENDER, byScoreAndTime);
           } else if (hasType(skill, TIME_WITH_POINTS, TIME_WITH_POINTS)) { // pass and go
-            createRankingsForSkillResultsAndRatings(skill, SKATER, byPointsAndTime);
-            createRankingsForSkillResultsAndRatings(skill, GOALTENDER, byPointsAndTime);
+            createRankingsForSkillResults(skill, SKATER, byPointsAndTime);
+            createRankingsForSkillResults(skill, GOALTENDER, byPointsAndTime);
           } else if (hasType(skill, TIME, RATING)) { // controlled jumble
             createRankingsForSkillResults(skill, SKATER, byTime);
             createRankingsForSkillRatings(skill, GOALTENDER, byScore);
@@ -111,8 +111,8 @@ public class SkillRankingCalculator {
             createRankingsForSkillResultsAndRatings(skill, SKATER, byScoreAndTime);
             createRankingsForSkillRatings(skill, GOALTENDER, byScore);
           } else if (hasType(skill, POINTS, POINTS)) { // best shot
-            createRankingsForSkillResultsAndRatings(skill, SKATER, byPoints);
-            createRankingsForSkillResultsAndRatings(skill, GOALTENDER, byPoints);
+            createRankingsForSkillResults(skill, SKATER, byPoints);
+            createRankingsForSkillResults(skill, GOALTENDER, byPoints);
           }
         });
 
@@ -124,27 +124,11 @@ public class SkillRankingCalculator {
           log.info("Calculate rankings for skill '{}' with number {}",
               skill.getName(), skill.getNumber());
           if (hasType(skill, NO_RESULTS, GOALTENDERS_OVERALL)) { // goaltenders overall
-            List<Player> goaltenders = playerRepository.findByPosition(GOALTENDER);
-            // create arbitrary ranking first and resort them later
-            List<SkillRanking> rankings = createLinearRanking(skill, goaltenders);
-            Comparator<RankingPlus> byOverallAverageAndMaxOverallRank =
-                comparing(RankingPlus::getOverallAverageRank)
-                    .thenComparing(RankingPlus::getOverallMaxRank);
-            resortRankings(tournament, rankings, byOverallAverageAndMaxOverallRank, true);
+            createRankingsForGoaltendersOverall(tournament, skill);
           }
         });
 
     log.info("Finished calculation of rankings for skills");
-  }
-
-  private List<SkillRanking> createLinearRanking(Skill skill, List<Player> players) {
-    List<SkillRanking> rankings = new ArrayList<>();
-    for (int i = 0; i < players.size(); i++) {
-      int sequence = i + 1;
-      rankings.add(SkillRanking.builder().sequence(sequence).rank(sequence)
-          .skill(skill).player(players.get(i)).build());
-    }
-    return rankings;
   }
 
   private boolean hasType(Skill skill, SkillType playerType, SkillType goaltenderType) {
@@ -152,7 +136,7 @@ public class SkillRankingCalculator {
         && skill.getTypeForGoaltenders().equals(goaltenderType);
   }
 
-  private void createRankingsForSkillResultsAndRatings(Skill skill, PlayerPosition position,
+  void createRankingsForSkillResultsAndRatings(Skill skill, PlayerPosition position,
       Comparator<ResultWithRating> comparator) {
     List<SkillRating> ratings = getRatings(skill, position);
     List<ResultWithRating> resultWithRatings = getResults(skill, position).stream()
@@ -160,6 +144,8 @@ public class SkillRankingCalculator {
         .peek(resultWithRating -> ratings.stream()
             .filter(rating -> rating.getPlayer().equals(resultWithRating.getPlayer()))
             .findFirst().ifPresent(rating -> resultWithRating.setScore(rating.getScore())))
+        // only create a ranking when a result and a rating is available
+        .filter(resultWithRating -> Objects.nonNull(resultWithRating.getScore()))
         .sorted(comparator)
         .collect(Collectors.toList());
     createRanking(resultWithRatings, comparator);
@@ -178,6 +164,26 @@ public class SkillRankingCalculator {
     List<ResultWithRating> resultWithRatings = getRatings(skill, position).stream()
         .map(ResultWithRating::valueOf).sorted(comparator).collect(Collectors.toList());
     createRanking(resultWithRatings, comparator);
+  }
+
+  void createRankingsForGoaltendersOverall(Tournament tournament, Skill skill) {
+    List<Player> goaltenders = playerRepository.findByPosition(GOALTENDER);
+    // create arbitrary ranking first and resort them later
+    List<SkillRanking> rankings = createLinearRanking(skill, goaltenders);
+    Comparator<RankingPlus> byOverallAverageAndMaxOverallRank =
+        comparing(RankingPlus::getOverallAverageRank)
+            .thenComparing(RankingPlus::getOverallMaxRank);
+    resortRankings(tournament, rankings, byOverallAverageAndMaxOverallRank, true);
+  }
+
+  private List<SkillRanking> createLinearRanking(Skill skill, List<Player> players) {
+    List<SkillRanking> rankings = new ArrayList<>();
+    for (int i = 0; i < players.size(); i++) {
+      int sequence = i + 1;
+      rankings.add(SkillRanking.builder().sequence(sequence).rank(sequence)
+          .skill(skill).player(players.get(i)).build());
+    }
+    return rankings;
   }
 
   private List<SkillRating> getRatings(Skill skill, PlayerPosition position) {
@@ -322,25 +328,29 @@ public class SkillRankingCalculator {
     rankings.forEach(ranking -> {
       List<SkillRanking> allRankingsForPlayer =
           rankingRepository.findByPlayerAndSkillTournament(ranking.getPlayer(), tournament);
-      double overallAverageRank = allRankingsForPlayer.stream()
-          .mapToInt(SkillRanking::getRank).summaryStatistics().getAverage();
-      Integer overallMaxRank = allRankingsForPlayer.stream()
-          .max(comparing(SkillRanking::getRank))
-          .map(SkillRanking::getRank).orElseThrow();
-      RankingPlus rankingPlus = RankingPlus.builder()
-          .ranking(ranking).currentSequence(ranking.getSequence())
-          .currentRank(ranking.getRank())
-          .overallAverageRank(overallAverageRank)
-          .overallMaxRank(overallMaxRank)
-          .build();
-      log.info(
-          "Ranking to update: Seq: {}, rank: {}, overallAverageRank: {}, overallMaxRank: {}. "
-              + "Player of team '{}' with number {}",
-          rankingPlus.getCurrentSequence(), rankingPlus.getCurrentRank(),
-          rankingPlus.getOverallAverageRank(), rankingPlus.getOverallMaxRank(),
-          rankingPlus.getRanking().getPlayer().getTeam().getName(),
-          rankingPlus.getRanking().getPlayer().getShirtNumber());
-      rankingsPlus.add(rankingPlus);
+      // a goaltender can have no rankings in case he is part of a team but did not participate
+      // in a skill (means has no rankings)
+      if (!allRankingsForPlayer.isEmpty()) {
+        double overallAverageRank = allRankingsForPlayer.stream()
+            .mapToInt(SkillRanking::getRank).summaryStatistics().getAverage();
+        Integer overallMaxRank = allRankingsForPlayer.stream()
+            .max(comparing(SkillRanking::getRank))
+            .map(SkillRanking::getRank).orElseThrow();
+        RankingPlus rankingPlus = RankingPlus.builder()
+            .ranking(ranking).currentSequence(ranking.getSequence())
+            .currentRank(ranking.getRank())
+            .overallAverageRank(overallAverageRank)
+            .overallMaxRank(overallMaxRank)
+            .build();
+        log.info(
+            "Ranking to update: Seq: {}, rank: {}, overallAverageRank: {}, overallMaxRank: {}. "
+                + "Player of team '{}' with number {}",
+            rankingPlus.getCurrentSequence(), rankingPlus.getCurrentRank(),
+            rankingPlus.getOverallAverageRank(), rankingPlus.getOverallMaxRank(),
+            rankingPlus.getRanking().getPlayer().getTeam().getName(),
+            rankingPlus.getRanking().getPlayer().getShirtNumber());
+        rankingsPlus.add(rankingPlus);
+      }
     });
     rankingsPlus.sort(comparator);
     Integer startSequence = rankingsPlus.stream()
