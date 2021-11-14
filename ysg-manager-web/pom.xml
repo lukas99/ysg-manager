@@ -6,11 +6,11 @@
   <parent>
     <groupId>com.lukas99</groupId>
     <artifactId>ysgmanager-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>ysgmanager-web</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <name>ysg-manager-web</name>
   <description>YSG Manager Web</description>
