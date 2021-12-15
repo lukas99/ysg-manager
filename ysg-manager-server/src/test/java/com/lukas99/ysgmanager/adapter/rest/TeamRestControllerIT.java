@@ -26,7 +26,7 @@ import com.lukas99.ysgmanager.domain.TeamService;
 import com.lukas99.ysgmanager.domain.TeamTemplates;
 import com.lukas99.ysgmanager.domain.Tournament;
 import com.lukas99.ysgmanager.domain.TournamentService;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -88,8 +88,8 @@ public class TeamRestControllerIT extends IntegrationTest {
 
     // Create the Team
     restTeamMockMvc.perform(post("/api/tournaments/{tournamentId}/teams", ysg2019.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(ehcEngelbergModel)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(ehcEngelbergModel)))
         .andExpect(status().isOk());
 
     // Validate the Team in the database
@@ -168,8 +168,8 @@ public class TeamRestControllerIT extends IntegrationTest {
             endsWith("/teams/" + ehcEngelberg.getId() + "/players")));
   }
 
-  private String getBase64EncodedString(byte[] object) throws UnsupportedEncodingException {
-    return new String(Base64.getEncoder().encode(object), "UTF8");
+  private String getBase64EncodedString(byte[] object) {
+    return new String(Base64.getEncoder().encode(object), StandardCharsets.UTF_8);
   }
 
   @Test
@@ -193,8 +193,9 @@ public class TeamRestControllerIT extends IntegrationTest {
     ehcEngelbergModel.setLogo(null);
 
     restTeamMockMvc
-        .perform(put("/api/teams/{id}", ehcEngelberg.getId()).contentType(TestUtils.APPLICATION_JSON)
-            .content(TestUtils.convertObjectToJsonBytes(ehcEngelbergModel)))
+        .perform(
+            put("/api/teams/{id}", ehcEngelberg.getId()).contentType(TestUtils.APPLICATION_JSON)
+                .content(TestUtils.convertObjectToJsonBytes(ehcEngelbergModel)))
         .andExpect(status().isOk());
 
     // Validate the Team in the database
