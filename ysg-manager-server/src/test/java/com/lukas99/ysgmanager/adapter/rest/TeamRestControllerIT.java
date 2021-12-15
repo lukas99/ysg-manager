@@ -1,6 +1,5 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import static com.lukas99.ysgmanager.adapter.rest.TestUtils.createFormattingConversionService;
 import static com.lukas99.ysgmanager.domain.TeamTemplates.EHC_ENGELBERG;
 import static com.lukas99.ysgmanager.domain.TeamTemplates.EHC_ENGELBERG_LOGO;
 import static com.lukas99.ysgmanager.domain.TeamTemplates.SC_BERN;
@@ -35,9 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -59,12 +56,6 @@ public class TeamRestControllerIT extends IntegrationTest {
   private TournamentService tournamentService;
 
   @Autowired
-  private MappingJackson2HttpMessageConverter jacksonMessageConverter;
-
-  @Autowired
-  private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
-  @Autowired
   private EntityManager em;
 
   private MockMvc restTeamMockMvc;
@@ -79,11 +70,7 @@ public class TeamRestControllerIT extends IntegrationTest {
     MockitoAnnotations.initMocks(this);
     final TeamRestController teamRestController =
         new TeamRestController(teamService, tournamentService);
-    this.restTeamMockMvc = MockMvcBuilders.standaloneSetup(teamRestController)
-        .setCustomArgumentResolvers(pageableArgumentResolver)
-        .setConversionService(createFormattingConversionService())
-        .setMessageConverters(jacksonMessageConverter)
-        .build();
+    this.restTeamMockMvc = MockMvcBuilders.standaloneSetup(teamRestController).build();
   }
 
   @BeforeEach

@@ -1,6 +1,5 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import static com.lukas99.ysgmanager.adapter.rest.TestUtils.createFormattingConversionService;
 import static com.lukas99.ysgmanager.domain.SkillRatingTemplates.controlledJumbleRating;
 import static com.lukas99.ysgmanager.domain.SkillRatingTemplates.magicTransitionsRating;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,9 +36,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -64,12 +61,6 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
   private SkillService skillService;
 
   @Autowired
-  private MappingJackson2HttpMessageConverter jacksonMessageConverter;
-
-  @Autowired
-  private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
-  @Autowired
   private EntityManager em;
 
   private MockMvc restSkillRatingMockMvc;
@@ -86,11 +77,8 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
     MockitoAnnotations.initMocks(this);
     final SkillRatingRestController skillRatingRestController =
         new SkillRatingRestController(skillRatingService, playerService, skillService);
-    this.restSkillRatingMockMvc = MockMvcBuilders.standaloneSetup(skillRatingRestController)
-        .setCustomArgumentResolvers(pageableArgumentResolver)
-        .setConversionService(createFormattingConversionService())
-        .setMessageConverters(jacksonMessageConverter)
-        .build();
+    this.restSkillRatingMockMvc =
+        MockMvcBuilders.standaloneSetup(skillRatingRestController).build();
   }
 
   @BeforeEach

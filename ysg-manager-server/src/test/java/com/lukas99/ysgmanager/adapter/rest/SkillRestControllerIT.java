@@ -1,6 +1,5 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import static com.lukas99.ysgmanager.adapter.rest.TestUtils.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.endsWith;
@@ -29,9 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -53,12 +50,6 @@ public class SkillRestControllerIT extends IntegrationTest {
   private TournamentService tournamentService;
 
   @Autowired
-  private MappingJackson2HttpMessageConverter jacksonMessageConverter;
-
-  @Autowired
-  private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
-  @Autowired
   private EntityManager em;
 
   private MockMvc restSkillMockMvc;
@@ -73,11 +64,7 @@ public class SkillRestControllerIT extends IntegrationTest {
     MockitoAnnotations.initMocks(this);
     final SkillRestController skillRestController =
         new SkillRestController(skillService, tournamentService);
-    this.restSkillMockMvc = MockMvcBuilders.standaloneSetup(skillRestController)
-        .setCustomArgumentResolvers(pageableArgumentResolver)
-        .setConversionService(createFormattingConversionService())
-        .setMessageConverters(jacksonMessageConverter)
-        .build();
+    this.restSkillMockMvc = MockMvcBuilders.standaloneSetup(skillRestController).build();
   }
 
   @BeforeEach

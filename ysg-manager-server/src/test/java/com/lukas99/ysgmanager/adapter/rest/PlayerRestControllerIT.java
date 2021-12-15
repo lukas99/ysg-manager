@@ -1,6 +1,5 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import static com.lukas99.ysgmanager.adapter.rest.TestUtils.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.endsWith;
@@ -30,9 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -54,12 +51,6 @@ public class PlayerRestControllerIT extends IntegrationTest {
   private TeamService teamService;
 
   @Autowired
-  private MappingJackson2HttpMessageConverter jacksonMessageConverter;
-
-  @Autowired
-  private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
-  @Autowired
   private EntityManager em;
 
   private MockMvc restPlayerMockMvc;
@@ -74,11 +65,7 @@ public class PlayerRestControllerIT extends IntegrationTest {
     MockitoAnnotations.initMocks(this);
     final PlayerRestController playerRestController =
         new PlayerRestController(playerService, teamService);
-    this.restPlayerMockMvc = MockMvcBuilders.standaloneSetup(playerRestController)
-        .setCustomArgumentResolvers(pageableArgumentResolver)
-        .setConversionService(createFormattingConversionService())
-        .setMessageConverters(jacksonMessageConverter)
-        .build();
+    this.restPlayerMockMvc = MockMvcBuilders.standaloneSetup(playerRestController).build();
   }
 
   @BeforeEach
@@ -97,8 +84,8 @@ public class PlayerRestControllerIT extends IntegrationTest {
 
     // Create the Player
     restPlayerMockMvc.perform(post("/api/teams/{teamId}/players", ehcEngelberg.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(romanJosiModel)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(romanJosiModel)))
         .andExpect(status().isOk());
 
     // Validate the Player in the database
@@ -121,8 +108,8 @@ public class PlayerRestControllerIT extends IntegrationTest {
 
     // Create the Player, which fails.
     restPlayerMockMvc.perform(post("/api/teams/{teamId}/players", ehcEngelberg.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(romanJosiModel)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(romanJosiModel)))
         .andExpect(status().isBadRequest());
 
     List<Player> playerList = playerRepository.findAll();
@@ -138,8 +125,8 @@ public class PlayerRestControllerIT extends IntegrationTest {
 
     // Create the Player, which fails.
     restPlayerMockMvc.perform(post("/api/teams/{teamId}/players", ehcEngelberg.getId())
-        .contentType(TestUtils.APPLICATION_JSON)
-        .content(TestUtils.convertObjectToJsonBytes(romanJosiModel)))
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(romanJosiModel)))
         .andExpect(status().isBadRequest());
 
     List<Player> playerList = playerRepository.findAll();

@@ -1,6 +1,5 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
-import static com.lukas99.ysgmanager.adapter.rest.TestUtils.createFormattingConversionService;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasSize;
@@ -29,9 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -53,12 +50,6 @@ public class SkillTournamentRankingRestControllerIT extends IntegrationTest {
   private SkillService skillService;
 
   @Autowired
-  private MappingJackson2HttpMessageConverter jacksonMessageConverter;
-
-  @Autowired
-  private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
-  @Autowired
   private EntityManager em;
 
   private MockMvc restSkillTournamentRankingMockMvc;
@@ -71,11 +62,7 @@ public class SkillTournamentRankingRestControllerIT extends IntegrationTest {
     final SkillTournamentRankingRestController skillTournamentRankingRestController =
         new SkillTournamentRankingRestController(skillTournamentRankingService, tournamentService);
     this.restSkillTournamentRankingMockMvc =
-        MockMvcBuilders.standaloneSetup(skillTournamentRankingRestController)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter)
-            .build();
+        MockMvcBuilders.standaloneSetup(skillTournamentRankingRestController).build();
   }
 
   @BeforeEach
@@ -108,7 +95,7 @@ public class SkillTournamentRankingRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
         .andExpect(jsonPath("$.content.[1].sequence").value(is(2)))
         .andExpect(jsonPath("$.content.[1].rank").value(is(1)))
-        .andExpect(jsonPath("$.content.[1].links", hasSize(3)))    ;
+        .andExpect(jsonPath("$.content.[1].links", hasSize(3)));
   }
 
   @Test
