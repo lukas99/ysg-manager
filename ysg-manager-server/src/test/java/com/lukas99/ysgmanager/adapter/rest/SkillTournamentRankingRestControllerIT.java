@@ -58,7 +58,7 @@ public class SkillTournamentRankingRestControllerIT extends IntegrationTest {
 
   @BeforeEach
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     final SkillTournamentRankingRestController skillTournamentRankingRestController =
         new SkillTournamentRankingRestController(skillTournamentRankingService, tournamentService);
     this.restSkillTournamentRankingMockMvc =

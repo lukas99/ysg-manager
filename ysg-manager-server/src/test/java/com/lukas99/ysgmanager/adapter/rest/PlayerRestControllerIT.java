@@ -62,7 +62,7 @@ public class PlayerRestControllerIT extends IntegrationTest {
 
   @BeforeEach
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     final PlayerRestController playerRestController =
         new PlayerRestController(playerService, teamService);
     this.restPlayerMockMvc = MockMvcBuilders.standaloneSetup(playerRestController).build();

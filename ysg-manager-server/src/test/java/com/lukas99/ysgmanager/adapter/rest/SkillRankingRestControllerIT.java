@@ -26,7 +26,9 @@ import com.lukas99.ysgmanager.domain.TournamentTemplates;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -58,7 +60,7 @@ public class SkillRankingRestControllerIT extends IntegrationTest {
 
   @BeforeEach
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     final SkillRankingRestController skillRankingRestController =
         new SkillRankingRestController(skillRankingService, tournamentService);
     this.restSkillRankingMockMvc =

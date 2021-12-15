@@ -67,7 +67,7 @@ public class TeamRestControllerIT extends IntegrationTest {
 
   @BeforeEach
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     final TeamRestController teamRestController =
         new TeamRestController(teamService, tournamentService);
     this.restTeamMockMvc = MockMvcBuilders.standaloneSetup(teamRestController).build();

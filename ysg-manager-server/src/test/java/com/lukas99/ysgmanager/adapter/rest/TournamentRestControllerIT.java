@@ -52,7 +52,7 @@ public class TournamentRestControllerIT extends IntegrationTest {
 
   @BeforeEach
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     final TournamentRestController tournamentRestController =
         new TournamentRestController(tournamentService);
     this.restTournamentMockMvc = MockMvcBuilders.standaloneSetup(tournamentRestController).build();

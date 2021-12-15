@@ -75,7 +75,7 @@ public class SkillResultRestControllerIT extends IntegrationTest {
 
   @BeforeEach
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     final SkillResultRestController skillResultResource =
         new SkillResultRestController(skillResultService, playerService, skillService);
     this.restSkillResultMockMvc = MockMvcBuilders.standaloneSetup(skillResultResource).build();
