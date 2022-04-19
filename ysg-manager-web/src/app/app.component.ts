@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { OktaAuthService } from '@okta/okta-angular';
+import { OKTA_AUTH, OktaAuthStateService } from '@okta/okta-angular';
 import { takeUntil } from 'rxjs/operators';
+import { AuthState, OktaAuth } from '@okta/okta-auth-js';
 
 /**
  * The main component of this app which contains the basic layout structure.
@@ -15,15 +16,19 @@ export class AppComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
   private destroy = new Subject<void>();
 
-  constructor(public oktaAuth: OktaAuthService) {}
+  constructor(
+    private authStateService: OktaAuthStateService,
+    @Inject(OKTA_AUTH) public oktaAuth: OktaAuth
+  ) {}
 
   async ngOnInit() {
     this.isAuthenticated = await this.oktaAuth.isAuthenticated();
     // Subscribe to authentication state changes
-    this.oktaAuth.$authenticationState
+    this.authStateService.authState$
       .pipe(takeUntil(this.destroy))
       .subscribe(
-        (isAuthenticated: boolean) => (this.isAuthenticated = isAuthenticated)
+        (authState: AuthState) =>
+          (this.isAuthenticated = !!authState.isAuthenticated)
       );
   }
 

@@ -5,15 +5,16 @@ import {
   HttpRequest
 } from '@angular/common/http';
 import { from, Observable } from 'rxjs';
-import { OktaAuthService } from '@okta/okta-angular';
-import { Injectable } from '@angular/core';
+import { OKTA_AUTH } from '@okta/okta-angular';
+import { Inject, Injectable } from '@angular/core';
+import { OktaAuth } from '@okta/okta-auth-js';
 
 /**
  * HttpInterceptor which adds an access token to outgoing HTTP requests.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private oktaAuth: OktaAuthService) {}
+  constructor(@Inject(OKTA_AUTH) private oktaAuth: OktaAuth) {}
 
   intercept(
     request: HttpRequest<any>,

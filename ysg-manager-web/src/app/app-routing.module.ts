@@ -8,14 +8,16 @@ import {
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './core/authentication/auth.interceptor';
+import { OktaAuth, OktaAuthOptions } from '@okta/okta-auth-js';
 
-const oktaConfig = {
+const config: OktaAuthOptions = {
   clientId: '0oaavzvotnqkm2vUe4x6',
   issuer: 'https://dev-280604.okta.com/oauth2/default',
   redirectUri: window.location.origin + '/implicit/callback',
   scopes: ['openid', 'profile'],
   pkce: true
 };
+const oktaAuth = new OktaAuth(config);
 
 /**
  * The available routes of this app.
@@ -69,7 +71,7 @@ export const routes: Routes = [
     RouterModule.forRoot(routes)
   ],
   providers: [
-    { provide: OKTA_CONFIG, useValue: oktaConfig },
+    { provide: OKTA_CONFIG, useValue: { oktaAuth } },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   exports: [RouterModule]
