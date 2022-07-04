@@ -12,7 +12,7 @@ export class ShortcutService {
    * @param combo The shortcut combo as string or as list of strings.
    * @param callback The callback method to invoke when the combo was pressed.
    */
-  add(combo: string | string[], callback: Function) {
+  add(combo: string | string[], callback: () => void) {
     // see https://github.com/brtnshrdr/angular2-hotkeys
     this.hotkeysService.add(
       new Hotkey(
