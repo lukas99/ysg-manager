@@ -1,12 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'ysg-skills',
   templateUrl: 'skills-data.component.html',
   styleUrls: []
 })
-export class SkillsDataComponent implements OnInit {
+export class SkillsDataComponent {
   constructor() {}
-
-  ngOnInit(): void {}
 }

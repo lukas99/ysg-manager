@@ -1,12 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'ysg-masterdata',
   templateUrl: 'masterdata.component.html',
   styleUrls: []
 })
-export class MasterdataComponent implements OnInit {
+export class MasterdataComponent {
   constructor() {}
-
-  ngOnInit(): void {}
 }
