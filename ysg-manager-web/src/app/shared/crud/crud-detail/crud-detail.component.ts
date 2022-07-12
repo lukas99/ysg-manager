@@ -5,7 +5,7 @@ import {
   OnInit,
   TemplateRef
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { EMPTY, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
@@ -16,7 +16,7 @@ import { ShortcutService } from '../../../core/services/shortcut.service';
  * The options for to pass to the CrudDetailComponent.
  */
 export interface CrudDetailOptions {
-  form: FormGroup;
+  form: UntypedFormGroup;
   crudService: CrudService;
   /**
    * The url to the list overview page.
@@ -37,7 +37,7 @@ export class CrudDetailComponent implements OnInit, AfterContentInit {
   @Input() fieldsTemplate!: TemplateRef<any>;
 
   private title = '';
-  form = new FormGroup({});
+  form = new UntypedFormGroup({});
   item$: Observable<any> = EMPTY;
 
   constructor(

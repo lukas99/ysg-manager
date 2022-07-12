@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { SkillsService } from '../../../../core/services/skills.service';
 import { PlayerPosition, Skill, SkillType } from '../../../../types';
 import { TranslateService } from '@ngx-translate/core';
@@ -67,7 +67,7 @@ export class SkillDetailComponent {
   constructor(
     private skillsService: SkillsService,
     private skillTypeService: SkillTypeService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
     private router: Router
   ) {

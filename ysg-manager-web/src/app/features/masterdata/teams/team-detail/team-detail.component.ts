@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { TeamsService } from '../../../../core/services/teams.service';
 import { Router } from '@angular/router';
 
@@ -14,7 +14,7 @@ export class TeamDetailComponent {
 
   constructor(
     private teamsService: TeamsService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private router: Router
   ) {
     this.crudDetailOptions = {

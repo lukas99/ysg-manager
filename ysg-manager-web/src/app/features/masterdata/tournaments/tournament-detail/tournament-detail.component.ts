@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TournamentsService } from '../../../../core/services/tournaments.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
 
 @Component({
@@ -13,7 +13,7 @@ export class TournamentDetailComponent {
 
   constructor(
     private tournamentsService: TournamentsService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {
     this.crudDetailOptions = {
       form: this.formBuilder.group({

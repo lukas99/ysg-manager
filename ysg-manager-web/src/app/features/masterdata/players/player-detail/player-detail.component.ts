@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { PlayersService } from '../../../../core/services/players.service';
 import { PlayerPosition } from '../../../../types';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,7 +31,7 @@ export class PlayerDetailComponent {
 
   constructor(
     private playersService: PlayersService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService
   ) {
     this.crudDetailOptions = {

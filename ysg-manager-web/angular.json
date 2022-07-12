@@ -115,9 +115,10 @@
       }
     }
   },
-  "defaultProject": "ysg-manager-web",
   "cli": {
     "analytics": false,
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

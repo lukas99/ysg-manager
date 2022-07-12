@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
 import { SkillResultsService } from '../../../../core/services/skill-results.service';
 import { TeamsService } from '../../../../core/services/teams.service';
@@ -28,14 +28,14 @@ export class SkillResultDetailComponent implements OnInit {
     private playerService: PlayersService,
     private skillsService: SkillsService,
     private skillTypeService: SkillTypeService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {
     this.selectedSkill = this.skillsService.getSelectedItemValue();
     this.crudDetailOptions = {
       form: this.formBuilder.group({
         // fields only needed for form but not for model
-        team: new FormControl(),
-        player: new FormControl(),
+        team: new UntypedFormControl(),
+        player: new UntypedFormControl(),
         // fields also needed for model
         time: [
           { value: '', disabled: !this.isWithTime() },

@@ -5,7 +5,7 @@ import { SkillRatingsService } from '../../../../core/services/skill-ratings.ser
 import { TeamsService } from '../../../../core/services/teams.service';
 import { PlayersService } from '../../../../core/services/players.service';
 import { SkillsService } from '../../../../core/services/skills.service';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { filter, take } from 'rxjs/operators';
 import { SkillTypeService } from '../../../../core/services/skill-type.service';
 
@@ -28,14 +28,14 @@ export class SkillRatingDetailComponent implements OnInit {
     private playerService: PlayersService,
     private skillsService: SkillsService,
     private skillTypeService: SkillTypeService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {
     this.selectedSkill = this.skillsService.getSelectedItemValue();
     this.crudDetailOptions = {
       form: this.formBuilder.group({
         // fields only needed for form but not for model
-        team: new FormControl(),
-        player: new FormControl(),
+        team: new UntypedFormControl(),
+        player: new UntypedFormControl(),
         // fields also needed for model
         score: [{ value: '' }, Validators.required],
         _links: ['']
