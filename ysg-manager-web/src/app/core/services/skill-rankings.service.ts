@@ -16,8 +16,10 @@ import { TournamentsService } from './tournaments.service';
 @Injectable({
   providedIn: 'root'
 })
-export class SkillRankingsService extends CrudStateService
-  implements CrudService {
+export class SkillRankingsService
+  extends CrudStateService
+  implements CrudService
+{
   private applicationTournament!: Tournament;
 
   constructor(

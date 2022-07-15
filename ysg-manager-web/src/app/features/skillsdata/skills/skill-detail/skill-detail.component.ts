@@ -89,12 +89,10 @@ export class SkillDetailComponent {
 
     const selectedSkill: Skill = this.skillsService.getSelectedItemValue();
     if (selectedSkill && selectedSkill.name) {
-      this.enableSkillResults = this.skillTypeService.canRecordResultForSkill(
-        selectedSkill
-      );
-      this.enableSkillRatings = this.skillTypeService.canRecordRatingForSkill(
-        selectedSkill
-      );
+      this.enableSkillResults =
+        this.skillTypeService.canRecordResultForSkill(selectedSkill);
+      this.enableSkillRatings =
+        this.skillTypeService.canRecordRatingForSkill(selectedSkill);
     }
   }
 

@@ -10,8 +10,10 @@ import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
 @Injectable({
   providedIn: 'root'
 })
-export class TournamentsService extends CrudStateService
-  implements CrudService {
+export class TournamentsService
+  extends CrudStateService
+  implements CrudService
+{
   /**
    * Base URL of the application. All other requests are done by following the tournament links.
    */

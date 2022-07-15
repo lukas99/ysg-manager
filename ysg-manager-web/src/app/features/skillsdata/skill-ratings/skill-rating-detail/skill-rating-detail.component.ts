@@ -5,7 +5,11 @@ import { SkillRatingsService } from '../../../../core/services/skill-ratings.ser
 import { TeamsService } from '../../../../core/services/teams.service';
 import { PlayersService } from '../../../../core/services/players.service';
 import { SkillsService } from '../../../../core/services/skills.service';
-import { UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  Validators
+} from '@angular/forms';
 import { filter, take } from 'rxjs/operators';
 import { SkillTypeService } from '../../../../core/services/skill-type.service';
 

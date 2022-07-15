@@ -10,8 +10,10 @@ import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
 @Injectable({
   providedIn: 'root'
 })
-export class SkillResultsService extends CrudStateService
-  implements CrudService {
+export class SkillResultsService
+  extends CrudStateService
+  implements CrudService
+{
   constructor(private http: HttpClient, private skillsService: SkillsService) {
     super();
   }

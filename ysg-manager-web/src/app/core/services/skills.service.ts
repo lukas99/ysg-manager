@@ -79,8 +79,8 @@ export class SkillsService extends CrudStateService implements CrudService {
   }
 
   calculateSkillRankings(): Observable<void> {
-    const rankingCalculationLink = this.applicationTournament._links
-      .calculateskillrankings;
+    const rankingCalculationLink =
+      this.applicationTournament._links.calculateskillrankings;
     return this.http.post<void>(rankingCalculationLink.href, {});
   }
 }
