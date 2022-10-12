@@ -1,8 +1,15 @@
+/**
+ * Types should extend from CacheSupport when caching should be possible for them.
+ */
+export interface CacheSupport {
+  isCached?: boolean;
+}
+
 export interface Link {
   href: string;
 }
 
-export interface Tournament {
+export interface Tournament extends CacheSupport {
   name: string;
   dateDescription: string;
   _links: {
@@ -21,7 +28,7 @@ export interface TournamentList {
   };
 }
 
-export interface Team {
+export interface Team extends CacheSupport {
   name: string;
   _links: {
     self: Link;
@@ -58,7 +65,7 @@ export interface PlayerList {
   };
 }
 
-export interface Skill {
+export interface Skill extends CacheSupport {
   typeForPlayers: SkillType;
   typeForGoaltenders: SkillType;
   tournamentRankingPlayerPosition: PlayerPosition;

@@ -30,6 +30,7 @@
   (gridReady)="onGridReady($event)"
   (rowDoubleClicked)="edit($event)"
   (rowSelected)="onRowSelected($event)"
+  [getRowStyle]="getRowStyle"
   rowSelection="single"
 >
 </ag-grid-angular>

@@ -7,11 +7,13 @@ import {
 import { Team, TeamList, Tournament, TournamentList } from '../../types';
 import { TournamentsService } from './tournaments.service';
 import DoneCallback = jest.DoneCallback;
+import { CacheService } from './cache.service';
 
 describe('TeamsService', () => {
   let service: TeamsService;
   let tournamentService: TournamentsService;
   let httpMock: HttpTestingController;
+  let cacheService: CacheService;
 
   let tournament: Tournament = {
     name: 'YSG 2019',
@@ -38,6 +40,7 @@ describe('TeamsService', () => {
     service = TestBed.inject(TeamsService);
     tournamentService = TestBed.inject(TournamentsService);
     httpMock = TestBed.inject(HttpTestingController);
+    cacheService = TestBed.inject(CacheService);
 
     const getDefaultTournament = httpMock.expectOne(
       tournamentService['tournamentsUrl']
@@ -59,12 +62,18 @@ describe('TeamsService', () => {
   });
 
   describe('getTeams', () => {
-    it('should get the teams of a tournament', (done: DoneCallback) => {
-      const teams = [
-        <Team>{ name: 'EHC Engelberg' },
-        <Team>{ name: 'SC Bern' }
-      ];
+    let teams: Team[];
 
+    beforeEach(() => {
+      teams = [<Team>{ name: 'EHC Engelberg' }, <Team>{ name: 'SC Bern' }];
+      localStorage.removeItem('ysg-teams');
+    });
+
+    afterEach(() => {
+      localStorage.removeItem('ysg-teams');
+    });
+
+    it('should get the teams of a tournament  and store them to cache', (done: DoneCallback) => {
       service.getTeams().subscribe((result) => {
         expect(result).toHaveLength(2);
         expect(result).toEqual(teams);
@@ -78,6 +87,11 @@ describe('TeamsService', () => {
           teamModelList: teams
         }
       });
+
+      expect(cacheService.getCache('ysg-teams')).toMatchObject([
+        { name: 'EHC Engelberg', isCached: true },
+        { name: 'SC Bern', isCached: true }
+      ]);
     });
 
     it('should return an empty list when no teams are available', (done: DoneCallback) => {
@@ -89,6 +103,23 @@ describe('TeamsService', () => {
       const testRequest = httpMock.expectOne('tournaments/1/teams');
       expect(testRequest.request.method).toBe('GET');
       testRequest.flush(<TeamList>{});
+    });
+
+    it('loads the cached tournaments when loading failed', (done: DoneCallback) => {
+      cacheService.replaceCache(teams, 'ysg-teams');
+
+      service.getTeams().subscribe((result) => {
+        expect(result).toHaveLength(2);
+        expect(result).toMatchObject([
+          { name: 'EHC Engelberg', isCached: true },
+          { name: 'SC Bern', isCached: true }
+        ]);
+        done();
+      });
+
+      const testRequest = httpMock.expectOne('tournaments/1/teams');
+      expect(testRequest.request.method).toBe('GET');
+      testRequest.flush('', { status: 504, statusText: 'Timeout' });
     });
   });
 

@@ -7,11 +7,13 @@ import {
 import { Skill, SkillList, Tournament, TournamentList } from '../../types';
 import { TournamentsService } from './tournaments.service';
 import DoneCallback = jest.DoneCallback;
+import { CacheService } from './cache.service';
 
 describe('SkillsService', () => {
   let service: SkillsService;
   let tournamentSerivce: TournamentsService;
   let httpMock: HttpTestingController;
+  let cacheService: CacheService;
 
   let tournament: Tournament = {
     name: 'YSG 2019',
@@ -38,6 +40,7 @@ describe('SkillsService', () => {
     service = TestBed.inject(SkillsService);
     tournamentSerivce = TestBed.inject(TournamentsService);
     httpMock = TestBed.inject(HttpTestingController);
+    cacheService = TestBed.inject(CacheService);
 
     const getDefaultTournament = httpMock.expectOne(
       tournamentSerivce['tournamentsUrl']
@@ -59,12 +62,21 @@ describe('SkillsService', () => {
   });
 
   describe('getSkills', () => {
-    it('should get the skills of a tournament', (done: DoneCallback) => {
-      const skills = [
+    let skills: Skill[];
+
+    beforeEach(() => {
+      skills = [
         <Skill>{ name: 'Magic Transitions' },
         <Skill>{ name: 'Best Shot' }
       ];
+      localStorage.removeItem('ysg-skills');
+    });
 
+    afterEach(() => {
+      localStorage.removeItem('ysg-skills');
+    });
+
+    it('should get the skills of a tournament and store them to cache', (done: DoneCallback) => {
       service.getSkills().subscribe((result) => {
         expect(result).toHaveLength(2);
         expect(result).toEqual(skills);
@@ -78,6 +90,11 @@ describe('SkillsService', () => {
           skillModelList: skills
         }
       });
+
+      expect(cacheService.getCache('ysg-skills')).toMatchObject([
+        { name: 'Magic Transitions', isCached: true },
+        { name: 'Best Shot', isCached: true }
+      ]);
     });
 
     it('should return an empty list when no skills are available', (done: DoneCallback) => {
@@ -89,6 +106,23 @@ describe('SkillsService', () => {
       const testRequest = httpMock.expectOne('tournaments/1/skills');
       expect(testRequest.request.method).toBe('GET');
       testRequest.flush(<SkillList>{});
+    });
+
+    it('loads the cached tournaments when loading failed', (done: DoneCallback) => {
+      cacheService.replaceCache(skills, 'ysg-skills');
+
+      service.getSkills().subscribe((result) => {
+        expect(result.length).toBe(2);
+        expect(result).toMatchObject([
+          { name: 'Magic Transitions', isCached: true },
+          { name: 'Best Shot', isCached: true }
+        ]);
+        done();
+      });
+
+      const testRequest = httpMock.expectOne('tournaments/1/skills');
+      expect(testRequest.request.method).toBe('GET');
+      testRequest.flush('', { status: 504, statusText: 'Timeout' });
     });
   });
 
