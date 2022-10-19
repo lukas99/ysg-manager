@@ -32,11 +32,32 @@ describe('TournamentsService', () => {
   });
 
   describe('getApplicationTournament', () => {
-    const tournament1 = <Tournament>{ name: 'YSG 2019' };
-    const tournament2 = <Tournament>{ name: 'YSG 2020' };
+    const tournament1 = <Tournament>{ name: 'YSG 2019', active: false };
+    const tournament2 = <Tournament>{ name: 'YSG 2020', active: true };
     const tournaments = [tournament1, tournament2];
 
+    it('should set the active tournament when no application tournament exists', (done: DoneCallback) => {
+      service
+        .getApplicationTournament()
+        .pipe(skip(1)) // skip initial empty value
+        .subscribe((result) => {
+          expect(result).toBe(tournament2);
+          done();
+        });
+
+      const testRequest = httpMock.expectOne(service['tournamentsUrl']);
+      expect(testRequest.request.method).toBe('GET');
+      testRequest.flush(<TournamentList>{
+        _embedded: {
+          tournamentModelList: tournaments
+        }
+      });
+    });
+
     it('should set the first tournament when no application tournament exists', (done: DoneCallback) => {
+      tournament1.active = false;
+      tournament2.active = false;
+
       service
         .getApplicationTournament()
         .pipe(skip(1)) // skip initial empty value

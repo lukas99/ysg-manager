@@ -19,6 +19,7 @@ export class TournamentDetailComponent {
       form: this.formBuilder.group({
         name: ['', Validators.required],
         dateDescription: [''],
+        active: [false],
         _links: ['']
       }),
       crudService: tournamentsService,

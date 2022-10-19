@@ -26,6 +26,7 @@ describe('CrudListAgComponent', () => {
     tournament1 = {
       name: 'YSG 2019',
       dateDescription: '2019',
+      active: false,
       _links: {
         self: { href: '' },
         teams: { href: '' },
@@ -38,6 +39,7 @@ describe('CrudListAgComponent', () => {
     tournament2 = {
       name: 'YSG 2020',
       dateDescription: '2020',
+      active: false,
       _links: {
         self: { href: '' },
         teams: { href: '' },

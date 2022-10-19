@@ -9,6 +9,11 @@ mat-form-field {
   width: 100%;
 }
 
+mat-checkbox {
+  padding-left: 10px;
+  margin-bottom: 15px;
+}
+
 mat-card {
   margin-bottom: 20px;
 }

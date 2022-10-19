@@ -22,7 +22,7 @@ describe('TournamentListComponent', () => {
   it('can be created', () => {
     const options = component.crudListOptions;
 
-    expect(options.columnDefs.length).toBe(2);
+    expect(options.columnDefs.length).toBe(3);
     expect(translateService.instant).toHaveBeenCalled();
 
     expect(options.crudService).toBe(tournamentsService);

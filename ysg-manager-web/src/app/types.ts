@@ -12,6 +12,7 @@ export interface Link {
 export interface Tournament extends CacheSupport {
   name: string;
   dateDescription: string;
+  active: boolean;
   _links: {
     self: Link;
     teams: Link;

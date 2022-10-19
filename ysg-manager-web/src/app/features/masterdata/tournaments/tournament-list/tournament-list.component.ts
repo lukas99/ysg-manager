@@ -27,10 +27,21 @@ export class TournamentListComponent {
             'TOURNAMENT_DATE_DESCRIPTION'
           ),
           sort: 'asc'
+        },
+        {
+          field: 'active',
+          headerName: this.translateService.instant('TOURNAMENT_ACTIVE'),
+          cellRenderer: (params) => this.translateActive(params.value),
+          filterValueGetter: (params) =>
+            this.translateActive(params.data.active)
         }
       ],
       crudService: tournamentsService,
       routerDetailUrl: '/tournaments/detail'
     };
+  }
+
+  private translateActive(active: boolean) {
+    return active ? 'X' : '';
   }
 }

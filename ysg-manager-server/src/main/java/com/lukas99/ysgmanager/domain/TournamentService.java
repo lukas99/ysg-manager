@@ -30,6 +30,17 @@ public class TournamentService {
    */
   public Tournament save(Tournament tournament) {
     log.debug("Request to save Tournament : {}", tournament);
+    if (tournament.isActive()) {
+      // When changing the active tournament and the active tournaments are retrieved from DB,
+      // the old active tournament and the tournament to save are both active. We need therefore
+      // a list instead of an Optional when quering the active tournaments.
+      tournamentRepository.findByActiveTrue().stream()
+          .filter(t -> !t.getName().equals(tournament.getName()))
+          .forEach(t -> {
+            t.setActive(false);
+            tournamentRepository.save(t);
+          });
+    }
     return tournamentRepository.save(tournament);
   }
 

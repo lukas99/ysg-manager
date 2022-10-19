@@ -22,6 +22,7 @@ public class TournamentModelAssembler
 
     model.setName(tournament.getName());
     model.setDateDescription(tournament.getDateDescription());
+    model.setActive(tournament.isActive());
 
     model.add(
         linkTo(methodOn(TournamentRestController.class).getTournament(tournament.getId()))

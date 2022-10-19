@@ -18,6 +18,8 @@ public class TournamentModel extends RepresentationModel<TournamentModel> {
 
   private String dateDescription;
 
+  private boolean active;
+
   /**
    * Creates an entity of this model.
    *
@@ -27,6 +29,7 @@ public class TournamentModel extends RepresentationModel<TournamentModel> {
     Tournament tournament = new Tournament();
     tournament.setName(getName());
     tournament.setDateDescription(getDateDescription());
+    tournament.setActive(isActive());
     return tournament;
   }
 

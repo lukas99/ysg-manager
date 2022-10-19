@@ -80,6 +80,7 @@ public class TournamentRestControllerIT extends IntegrationTest {
     Tournament testTournament = tournamentList.get(tournamentList.size() - 1);
     assertThat(testTournament.getName()).isEqualTo(YSG_2019);
     assertThat(testTournament.getDateDescription()).isEqualTo(YSG_2019_DATE_DESCRIPTION);
+    assertThat(testTournament.isActive()).isTrue();
   }
 
   @Test
@@ -112,12 +113,14 @@ public class TournamentRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content", hasSize(2)))
         .andExpect(jsonPath("$.content.[0].name").value(is(YSG_2019)))
         .andExpect(jsonPath("$.content.[0].dateDescription").value(is(YSG_2019_DATE_DESCRIPTION)))
+        .andExpect(jsonPath("$.content.[0].active").value(is(true)))
         .andExpect(jsonPath("$.content.[0].links", hasSize(6)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href").value(
             endsWith(ysg2019.getId().toString())))
         .andExpect(jsonPath("$.content.[1].name").value(is(YSG_2020)))
         .andExpect(jsonPath("$.content.[1].dateDescription").value(is(YSG_2020_DATE_DESCRIPTION)))
+        .andExpect(jsonPath("$.content.[1].active").value(is(false)))
         .andExpect(jsonPath("$.content.[1].links", hasSize(6)))
         .andExpect(jsonPath("$.content.[1].links.[0].rel").value(is("self"))).andExpect(
             jsonPath("$.content.[1].links.[0].href").value(endsWith(ysg2020.getId().toString())));

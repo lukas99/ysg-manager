@@ -26,6 +26,7 @@ describe('CrudDetailComponent', () => {
     existingTournament = {
       name: 'YSG 2019',
       dateDescription: '2019',
+      active: false,
       _links: {
         self: { href: 'tournaments/1' },
         teams: { href: 'tournaments/1/teams' },
@@ -60,6 +61,7 @@ describe('CrudDetailComponent', () => {
       form: new FormGroup({
         name: new FormControl('', Validators.required),
         dateDescription: new FormControl(''),
+        active: new FormControl(false),
         _links: new FormControl('')
       }),
       crudService: tournamentService,

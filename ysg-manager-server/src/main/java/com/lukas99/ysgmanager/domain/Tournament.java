@@ -35,6 +35,8 @@ public class Tournament extends Auditable {
 
   private String dateDescription;
 
+  private boolean active;
+
   @OneToMany(mappedBy = "tournament")
   @ToString.Exclude
   private List<Team> teams;
@@ -45,12 +47,13 @@ public class Tournament extends Auditable {
 
   /**
    * Updates this tournament with the given tournament.
-   * 
+   *
    * @param tournament The tournament to use for update.
    */
   public void update(Tournament tournament) {
     this.name = tournament.getName();
     this.dateDescription = tournament.getDateDescription();
+    this.active = tournament.isActive();
   }
 
 }

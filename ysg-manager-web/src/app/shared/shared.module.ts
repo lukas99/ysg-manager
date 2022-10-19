@@ -20,6 +20,7 @@ import { MoreActionsComponent } from './more-actions/more-actions.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { A11yModule } from '@angular/cdk/a11y';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -66,6 +67,7 @@ import { A11yModule } from '@angular/cdk/a11y';
     MatInputModule,
     MatCardModule,
     MatDialogModule,
+    MatCheckboxModule,
 
     // agGrid
     AgGridModule.withComponents([])
@@ -92,6 +94,7 @@ import { A11yModule } from '@angular/cdk/a11y';
     MatInputModule,
     MatCardModule,
     MatSelectModule,
+    MatCheckboxModule,
 
     // agGrid
     AgGridModule,

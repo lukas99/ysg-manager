@@ -11,9 +11,13 @@ public class TournamentTemplates {
   public static final String YSG_2020_DATE_DESCRIPTION = "2020";
 
   public static Tournament ysg2019() {
-    return Tournament.builder().name(YSG_2019).dateDescription(YSG_2019_DATE_DESCRIPTION).build();
+    return Tournament.builder()
+        .name(YSG_2019)
+        .dateDescription(YSG_2019_DATE_DESCRIPTION)
+        .active(true)
+        .build();
   }
-  
+
   public static Tournament ysg2019(EntityManager em) {
     Tournament ysg2019 = ysg2019();
     em.persist(ysg2019);
@@ -21,7 +25,11 @@ public class TournamentTemplates {
   }
 
   public static Tournament ysg2020() {
-    return Tournament.builder().name(YSG_2020).dateDescription(YSG_2020_DATE_DESCRIPTION).build();
+    return Tournament.builder()
+        .name(YSG_2020)
+        .dateDescription(YSG_2020_DATE_DESCRIPTION)
+        .active(false)
+        .build();
   }
 
 }

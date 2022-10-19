@@ -49,7 +49,14 @@ export class TournamentsService
     if (!this.applicationTournament$.value._links) {
       this.getTournaments().subscribe((tournaments) => {
         if (tournaments.length > 0) {
-          this.setApplicationTournament(tournaments[0]);
+          let activeTournament = tournaments.find(
+            (tournament) => tournament.active
+          );
+          if (activeTournament) {
+            this.setApplicationTournament(activeTournament);
+          } else {
+            this.setApplicationTournament(tournaments[0]);
+          }
         }
       });
     }
