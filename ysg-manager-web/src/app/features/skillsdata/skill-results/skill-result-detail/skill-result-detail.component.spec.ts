@@ -88,9 +88,7 @@ describe('SkillResultDetailComponent', () => {
     it('creates the options', fakeAsync(() => {
       expect(component.crudDetailOptions.form).not.toBeNull();
       expect(component.crudDetailOptions.crudService).toBe(skillResultsService);
-      expect(component.crudDetailOptions.routerListUrl).toBe(
-        '/skillsdata/skillresults'
-      );
+      expect(component.crudDetailOptions.routerListUrl).toBe('/skillresults');
     }));
   });
 

@@ -44,7 +44,7 @@ export class PlayerListComponent {
         }
       ],
       crudService: playersService,
-      routerDetailUrl: '/masterdata/players/detail'
+      routerDetailUrl: '/players/detail'
     };
   }
 

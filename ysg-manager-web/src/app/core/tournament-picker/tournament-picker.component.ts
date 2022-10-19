@@ -67,9 +67,7 @@ export class TournamentPickerComponent implements OnInit, OnDestroy {
       )
       .subscribe((navigationEndEvent) => {
         const currentRoute = (<NavigationEnd>navigationEndEvent).url;
-        this.isEditable =
-          currentRoute === '/masterdata' ||
-          currentRoute === '/masterdata/tournaments';
+        this.isEditable = currentRoute === '/tournaments';
       });
   }
 }

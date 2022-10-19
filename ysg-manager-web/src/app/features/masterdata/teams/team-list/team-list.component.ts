@@ -23,7 +23,7 @@ export class TeamListComponent {
         }
       ],
       crudService: teamsService,
-      routerDetailUrl: '/masterdata/teams/detail'
+      routerDetailUrl: '/teams/detail'
     };
   }
 }

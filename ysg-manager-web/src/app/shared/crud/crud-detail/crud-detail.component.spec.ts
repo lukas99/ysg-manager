@@ -63,7 +63,7 @@ describe('CrudDetailComponent', () => {
         _links: new FormControl('')
       }),
       crudService: tournamentService,
-      routerListUrl: '/masterdata/tournaments'
+      routerListUrl: '/tournaments'
     };
   });
 
@@ -150,9 +150,7 @@ describe('CrudDetailComponent', () => {
       component.save();
       tick();
 
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
-        '/masterdata/tournaments'
-      );
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/tournaments');
     }));
   });
 
@@ -182,9 +180,7 @@ describe('CrudDetailComponent', () => {
       component.save();
       tick();
 
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
-        '/masterdata/tournaments'
-      );
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/tournaments');
     }));
   });
 
@@ -216,18 +212,14 @@ describe('CrudDetailComponent', () => {
       component.save();
       tick();
 
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
-        '/masterdata/tournaments'
-      );
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/tournaments');
     }));
   });
 
   describe('cancel', () => {
     it('navigates to the list overview page', () => {
       component.cancel();
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
-        '/masterdata/tournaments'
-      );
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/tournaments');
     });
   });
 });

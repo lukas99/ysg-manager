@@ -30,7 +30,7 @@ export class TournamentListComponent {
         }
       ],
       crudService: tournamentsService,
-      routerDetailUrl: '/masterdata/tournaments/detail'
+      routerDetailUrl: '/tournaments/detail'
     };
   }
 }

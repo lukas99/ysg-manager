@@ -19,9 +19,7 @@ describe('TournamentDetailComponent', () => {
     it('creates the options', fakeAsync(() => {
       expect(component.crudDetailOptions.form).not.toBeNull();
       expect(component.crudDetailOptions.crudService).toBe(tournamentService);
-      expect(component.crudDetailOptions.routerListUrl).toBe(
-        '/masterdata/tournaments'
-      );
+      expect(component.crudDetailOptions.routerListUrl).toBe('/tournaments');
     }));
   });
 });

@@ -24,6 +24,7 @@
 </div>
 <ag-grid-angular
   class="ag-theme-alpine"
+  [ngClass]="hasMoreActions ? 'ag-grid-with-more-actions' : 'ag-grid-standard'"
   [rowData]="items$ | async"
   [defaultColDef]="defaultColDef"
   [columnDefs]="options.columnDefs"

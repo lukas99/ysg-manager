@@ -2,6 +2,6 @@
   [button1Text]="'SKILLS_PAGE_SKILL_CALCULATE_RANKINGS'"
   (button1Click)="calculateSkillRankings()"
 ></ysg-more-actions>
-<ysg-crud-list [options]="crudListOptions">
+<ysg-crud-list [options]="crudListOptions" [hasMoreActions]="true">
   {{ 'SKILLS_PAGE_TITLE' | translate }}
 </ysg-crud-list>

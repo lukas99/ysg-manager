@@ -84,7 +84,7 @@ export class SkillDetailComponent {
         _links: ['']
       }),
       crudService: skillsService,
-      routerListUrl: '/skillsdata/skills'
+      routerListUrl: '/skills'
     };
 
     const selectedSkill: Skill = this.skillsService.getSelectedItemValue();
@@ -97,10 +97,10 @@ export class SkillDetailComponent {
   }
 
   navigateToResultsOfSkill() {
-    this.router.navigateByUrl('/skillsdata/skillresults');
+    this.router.navigateByUrl('/skillresults');
   }
 
   navigateToRatingsOfSkill() {
-    this.router.navigateByUrl('/skillsdata/skillratings');
+    this.router.navigateByUrl('/skillratings');
   }
 }

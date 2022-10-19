@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 interface AppLanguage {
   code: string;
   name: string;
+  abbreviation: string;
 }
 
 /**
@@ -16,10 +17,10 @@ interface AppLanguage {
 })
 export class LanguagePickerComponent implements OnInit {
   languages: AppLanguage[] = [
-    { code: 'de', name: 'Deutsch' },
-    { code: 'en', name: 'English' }
+    { code: 'de', name: 'Deutsch', abbreviation: 'DE' },
+    { code: 'en', name: 'English', abbreviation: 'EN' }
   ];
-  currentLanguage = this.languages[0].name;
+  currentLanguage = this.languages[0];
 
   constructor(private translateService: TranslateService) {}
 
@@ -41,6 +42,6 @@ export class LanguagePickerComponent implements OnInit {
 
   useLanguage(language: AppLanguage) {
     this.translateService.setDefaultLang(language.code);
-    this.currentLanguage = language.name;
+    this.currentLanguage = language;
   }
 }

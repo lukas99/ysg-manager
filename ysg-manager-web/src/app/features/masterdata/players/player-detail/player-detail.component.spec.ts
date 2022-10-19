@@ -37,9 +37,7 @@ describe('PlayerDetailComponent', () => {
     it('creates the options', fakeAsync(() => {
       expect(component.crudDetailOptions.form).not.toBeNull();
       expect(component.crudDetailOptions.crudService).toBe(playerService);
-      expect(component.crudDetailOptions.routerListUrl).toBe(
-        '/masterdata/players'
-      );
+      expect(component.crudDetailOptions.routerListUrl).toBe('/players');
     }));
   });
 });

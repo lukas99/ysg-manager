@@ -22,14 +22,12 @@ describe('TeamDetailComponent', () => {
     it('creates the options', fakeAsync(() => {
       expect(component.crudDetailOptions.form).not.toBeNull();
       expect(component.crudDetailOptions.crudService).toBe(teamService);
-      expect(component.crudDetailOptions.routerListUrl).toBe(
-        '/masterdata/teams'
-      );
+      expect(component.crudDetailOptions.routerListUrl).toBe('/teams');
     }));
   });
 
   it('navigates to the players of a team', () => {
     component.navigateToPlayersOfTeam();
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/masterdata/players');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/players');
   });
 });

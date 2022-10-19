@@ -50,6 +50,7 @@ export interface CrudService {
 })
 export class CrudListComponent implements OnInit {
   @Input() options!: CrudListOptions;
+  @Input() hasMoreActions = false;
 
   private gridApi!: GridApi;
 

@@ -1,36 +1,100 @@
 <mat-toolbar color="primary">
   <button
-    routerLink="home"
-    mat-flat-button
-    color="primary"
-    routerLinkActive="active"
+    mat-icon-button
+    *ngIf="sidenav.mode === 'over'"
+    (click)="sidenav.toggle()"
   >
-    {{ 'APP_TITLE' | translate }}
+    <mat-icon *ngIf="!sidenav.opened"> menu</mat-icon>
+    <mat-icon *ngIf="sidenav.opened"> close</mat-icon>
   </button>
-  <button
-    *ngIf="isAuthenticated"
-    routerLink="masterdata"
-    mat-flat-button
-    color="primary"
-    routerLinkActive="active"
-  >
-    {{ 'NAVIGATION_MASTERDATA' | translate }}
-  </button>
-  <button
-    *ngIf="isAuthenticated"
-    routerLink="skillsdata"
-    mat-flat-button
-    color="primary"
-    routerLinkActive="active"
-  >
-    {{ 'NAVIGATION_SKILLS' | translate }}
-  </button>
-  <span class="spacer"></span>
+
+  <span *ngIf="sidenav.mode === 'side'">{{
+    'YOUNG_STAR_GAMES' | translate
+  }}</span>
+  <span *ngIf="sidenav.mode === 'over'">{{
+    'YOUNG_STAR_GAMES_ABBREVIATION' | translate
+  }}</span>
+
+  <span class="show-menu-content-top-right"></span>
   <ysg-tournament-picker></ysg-tournament-picker>
   <ysg-language-picker></ysg-language-picker>
   <ysg-login></ysg-login>
 </mat-toolbar>
 
-<main>
-  <router-outlet></router-outlet>
-</main>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8">
+    <img
+      class="avatar mat-elevation-z8"
+      src="assets/images/ysg-logo.JPG"
+      alt="YSG logo"
+    />
+
+    <h4 class="appTitle">{{ 'YOUNG_STAR_GAMES' | translate }}</h4>
+    <p class="appSubTitle">{{ 'ENGELBERG' | translate }}</p>
+
+    <mat-divider></mat-divider>
+
+    <button mat-button class="menu-button" routerLink="home">
+      <mat-icon>home</mat-icon>
+      <span>{{ 'NAVIGATION_HOME' | translate }}</span>
+    </button>
+
+    <mat-divider *ngIf="isAuthenticated"></mat-divider>
+
+    <button
+      mat-button
+      class="menu-button"
+      routerLink="tournaments"
+      *ngIf="isAuthenticated"
+    >
+      <mat-icon>calendar_month</mat-icon>
+      <span>{{ 'NAVIGATION_TOURNAMENTS' | translate }}</span>
+    </button>
+    <button
+      mat-button
+      class="menu-button"
+      routerLink="teams"
+      *ngIf="isAuthenticated"
+    >
+      <mat-icon>group</mat-icon>
+      <span>{{ 'NAVIGATION_TEAMS' | translate }}</span>
+    </button>
+
+    <mat-divider *ngIf="isAuthenticated"></mat-divider>
+
+    <button
+      mat-button
+      class="menu-button"
+      routerLink="skills"
+      *ngIf="isAuthenticated"
+    >
+      <mat-icon>assessment</mat-icon>
+      <span>{{ 'NAVIGATION_SKILLS' | translate }}</span>
+    </button>
+    <button
+      mat-button
+      class="menu-button"
+      routerLink="skillrankings"
+      *ngIf="isAuthenticated"
+    >
+      <mat-icon>list</mat-icon>
+      <span>{{ 'NAVIGATION_SKILL_RANKINGS' | translate }}</span>
+    </button>
+    <button
+      mat-button
+      class="menu-button"
+      routerLink="skilltournamentrankings"
+      *ngIf="isAuthenticated"
+    >
+      <mat-icon>format_list_numbered_rtl</mat-icon>
+      <span>{{ 'NAVIGATION_TOURNAMENT_SKILL_RANKINGS' | translate }}</span>
+    </button>
+  </mat-sidenav>
+  <mat-sidenav-content
+    [ngClass]="{ 'sidenav-content-mobile': sidenav.mode === 'over' }"
+  >
+    <div class="content mat-elevation-z8">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

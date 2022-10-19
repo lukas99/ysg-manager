@@ -17,7 +17,7 @@ describe('LanguageSelectionComponent', () => {
 
     component.ngOnInit();
 
-    expect(component.currentLanguage).toBe('English');
+    expect(component.currentLanguage.name).toBe('English');
     expect(translateService.setDefaultLang).toHaveBeenCalledWith('en');
   });
 
@@ -26,14 +26,14 @@ describe('LanguageSelectionComponent', () => {
 
     component.ngOnInit();
 
-    expect(component.currentLanguage).toBe('Deutsch');
+    expect(component.currentLanguage.name).toBe('Deutsch');
     expect(translateService.setDefaultLang).toHaveBeenCalledWith('de');
   });
 
   it('can use a given language', () => {
-    component.useLanguage({ code: 'fr', name: 'French' });
+    component.useLanguage({ code: 'fr', name: 'French', abbreviation: 'FR' });
 
-    expect(component.currentLanguage).toBe('French');
+    expect(component.currentLanguage.name).toBe('French');
     expect(translateService.setDefaultLang).toHaveBeenCalledWith('fr');
   });
 });

@@ -1,11 +1,74 @@
-.spacer {
+mat-sidenav {
+  margin: 12px;
+  width: 200px;
+  border-right: none;
+  background: #002b5c;
+  color: white;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.content {
+  height: calc(100vh - 130px);
+  border-radius: 10px;
+  margin-left: 10px;
+
+  padding: 16px 16px 21px;
+
+  overflow: auto;
+}
+
+mat-sidenav-container {
+  height: calc(100vh - 65px);
+}
+
+mat-sidenav-content {
+  padding: 13px 13px 13px 20px;
+}
+
+/* when sidenav is not visible, move content to the left */
+.sidenav-content-mobile {
+  padding-left: 5px;
+}
+
+.menu-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 1rem;
+  margin-bottom: 3.5px;
+  padding: 0 2px;
+}
+.menu-button mat-icon {
+  margin-right: 8px;
+}
+
+.avatar {
+  margin-top: 16px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.appTitle {
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-weight: normal;
+}
+
+.appSubTitle {
+  font-size: 0.7rem;
+  color: lightgrey;
+}
+
+mat-divider {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.show-menu-content-top-right {
   flex: 1 0 auto;
-}
-
-button {
-  margin: 0 10px;
-}
-
-button.active {
-  filter: brightness(120%);
 }

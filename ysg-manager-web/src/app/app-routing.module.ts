@@ -39,18 +39,60 @@ export const routes: Routes = [
       import('./features/home/home.module').then((m) => m.HomeModule)
   },
   {
-    path: 'masterdata',
+    path: 'tournaments',
     loadChildren: () =>
-      import('./features/masterdata/masterdata.module').then(
-        (m) => m.MasterdataModule
+      import('./features/masterdata/tournaments/tournaments.module').then(
+        (m) => m.TournamentsModule
       )
   },
   {
-    path: 'skillsdata',
+    path: 'teams',
     loadChildren: () =>
-      import('./features/skillsdata/skills-data.module').then(
-        (m) => m.SkillsDataModule
+      import('./features/masterdata/teams/teams.module').then(
+        (m) => m.TeamsModule
       )
+  },
+  {
+    path: 'players',
+    loadChildren: () =>
+      import('./features/masterdata/players/players.module').then(
+        (m) => m.PlayersModule
+      )
+  },
+  {
+    path: 'skills',
+    loadChildren: () =>
+      import('./features/skillsdata/skills/skills.module').then(
+        (m) => m.SkillsModule
+      )
+  },
+  {
+    path: 'skillresults',
+    loadChildren: () =>
+      import('./features/skillsdata/skill-results/skill-results.module').then(
+        (m) => m.SkillResultsModule
+      )
+  },
+  {
+    path: 'skillratings',
+    loadChildren: () =>
+      import('./features/skillsdata/skill-ratings/skill-ratings.module').then(
+        (m) => m.SkillRatingsModule
+      )
+  },
+  {
+    path: 'skillrankings',
+    loadChildren: () =>
+      import('./features/skillsdata/skill-rankings/skill-rankings.module').then(
+        (m) => m.SkillRankingsModule
+      )
+  },
+  {
+    path: 'skilltournamentrankings',
+    loadChildren: () =>
+      import(
+        './features/skillsdata/skill-tournament-rankings/skill-tournament-rankings.module'
+      ).then((m) => m.SkillTournamentRankingsModule)
   },
   {
     // redirect to home when a route doesn't exist (or or redirect to dedicated "not found" route)

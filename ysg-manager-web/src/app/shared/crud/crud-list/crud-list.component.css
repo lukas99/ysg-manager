@@ -11,6 +11,10 @@
   text-align: right;
 }
 
-ag-grid-angular {
-  height: 80%;
+.ag-grid-standard {
+  height: 92%;
+}
+
+.ag-grid-with-more-actions {
+  height: 75%;
 }

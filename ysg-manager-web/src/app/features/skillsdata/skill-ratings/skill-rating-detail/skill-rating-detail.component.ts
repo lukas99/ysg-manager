@@ -45,7 +45,7 @@ export class SkillRatingDetailComponent implements OnInit {
         _links: ['']
       }),
       crudService: skillRatingsService,
-      routerListUrl: '/skillsdata/skillratings'
+      routerListUrl: '/skillratings'
     };
   }
 

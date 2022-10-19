@@ -23,11 +23,11 @@ export class TeamDetailComponent {
         _links: ['']
       }),
       crudService: teamsService,
-      routerListUrl: '/masterdata/teams'
+      routerListUrl: '/teams'
     };
   }
 
   navigateToPlayersOfTeam() {
-    this.router.navigateByUrl('/masterdata/players');
+    this.router.navigateByUrl('/players');
   }
 }

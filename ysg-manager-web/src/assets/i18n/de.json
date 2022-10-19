@@ -1,5 +1,7 @@
 {
-  "APP_TITLE": "YSG Manager",
+  "YOUNG_STAR_GAMES": "Young Star Games",
+  "YOUNG_STAR_GAMES_ABBREVIATION": "YSG",
+  "ENGELBERG": "Engelberg",
 
   "CANCEL": "Abbrechen",
   "YES": "Ja",
@@ -10,13 +12,14 @@
   "DELETE_CONFIRMATION_DIALOG_TITLE": "Element löschen",
   "DELETE_CONFIRMATION_DIALOG_TEXT": "Willst du '{{itemName}}' wirklich löschen?",
 
+  "NAVIGATION_HOME": "Home",
   "NAVIGATION_MASTERDATA": "Stammdaten",
   "NAVIGATION_SKILL_RESULTS": "Resultate",
   "NAVIGATION_TOURNAMENTS": "Turniere",
   "NAVIGATION_TEAMS": "Mannschaften",
   "NAVIGATION_SKILLS": "Skills",
-  "NAVIGATION_SKILL_RANKINGS": "Skill-Ranklisten",
-  "NAVIGATION_TOURNAMENT_SKILL_RANKINGS": "Skill-Ranklisten Turnier",
+  "NAVIGATION_SKILL_RANKINGS": "Ranglisten",
+  "NAVIGATION_TOURNAMENT_SKILL_RANKINGS": "Turnier-Ranglisten",
 
   "TOURNAMENTS_PAGE_TITLE": "Turniere",
   "TOURNAMENT_NAME": "Name",
@@ -71,8 +74,8 @@
   "SKILL_RATING_PLAYER_SHIRT_NUMBER": "Nummer",
   "SKILL_RATING_SCORE": "Bewertung",
 
-  "SKILL_RANKINGS_PAGE_TITLE": "Skill-Ranglisten",
-  "SKILL_TOURNAMENT_RANKINGS_PAGE_TITLE": "Skill-Ranglisten Turnier",
+  "SKILL_RANKINGS_PAGE_TITLE": "Skills Ranglisten",
+  "SKILL_TOURNAMENT_RANKINGS_PAGE_TITLE": "Skills Turnier-Ranglisten",
   "SKILL_RANKING_SKILL_NAME": "Skill",
   "SKILL_RANKING_SKILL_NUMBER": "Skill Nummer",
   "SKILL_RANKING_SEQUENCE": "Sequenz",

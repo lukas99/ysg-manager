@@ -53,7 +53,7 @@ export class SkillResultDetailComponent implements OnInit {
         _links: ['']
       }),
       crudService: skillResultsService,
-      routerListUrl: '/skillsdata/skillresults'
+      routerListUrl: '/skillresults'
     };
   }
 

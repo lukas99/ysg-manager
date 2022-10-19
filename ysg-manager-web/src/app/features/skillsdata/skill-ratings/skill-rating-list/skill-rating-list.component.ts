@@ -52,7 +52,7 @@ export class SkillRatingListComponent {
         }
       ],
       crudService: skillRatingsService,
-      routerDetailUrl: '/skillsdata/skillratings/detail'
+      routerDetailUrl: '/skillratings/detail'
     };
   }
 }

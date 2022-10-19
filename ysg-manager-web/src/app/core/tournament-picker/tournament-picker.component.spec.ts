@@ -46,23 +46,9 @@ describe('TournamentPickerComponent', () => {
   });
 
   describe('is editable', () => {
-    it('is editable on route master data', fakeAsync(() => {
-      router = <Router>{
-        events: of(<RouterEvent>new NavigationEnd(1, '/masterdata', ''))
-      };
-      component = new TournamentPickerComponent(tournamentService, router);
-
-      component.ngOnInit();
-      tick();
-
-      expect(component.isEditable).toBeTruthy();
-    }));
-
     it('is editable on route tournaments', fakeAsync(() => {
       router = <Router>{
-        events: of(
-          <RouterEvent>new NavigationEnd(1, '/masterdata/tournaments', '')
-        )
+        events: of(<RouterEvent>new NavigationEnd(1, '/tournaments', ''))
       };
       component = new TournamentPickerComponent(tournamentService, router);
 

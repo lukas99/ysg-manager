@@ -22,7 +22,7 @@ export class TournamentDetailComponent {
         _links: ['']
       }),
       crudService: tournamentsService,
-      routerListUrl: '/masterdata/tournaments'
+      routerListUrl: '/tournaments'
     };
   }
 }

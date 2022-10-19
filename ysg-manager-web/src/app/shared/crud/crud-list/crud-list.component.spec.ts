@@ -80,7 +80,7 @@ describe('CrudListAgComponent', () => {
         }
       ],
       crudService: tournamentsService,
-      routerDetailUrl: '/masterdata/tournaments/detail'
+      routerDetailUrl: '/tournaments/detail'
     };
   });
 
@@ -105,18 +105,14 @@ describe('CrudListAgComponent', () => {
     expect(tournamentsService.setSelectedItem).toHaveBeenCalledWith(
       tournament1
     );
-    expect(router.navigateByUrl).toHaveBeenCalledWith(
-      '/masterdata/tournaments/detail'
-    );
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/tournaments/detail');
   });
 
   it('handles the create event', () => {
     component.createItem();
 
     expect(tournamentsService.removeSelectedItem).toHaveBeenCalled();
-    expect(router.navigateByUrl).toHaveBeenCalledWith(
-      '/masterdata/tournaments/detail'
-    );
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/tournaments/detail');
   });
 
   it('handles the delete event', (done: DoneCallback) => {
