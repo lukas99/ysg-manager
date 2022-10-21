@@ -18,6 +18,7 @@
   "NAVIGATION_TOURNAMENTS": "Tournaments",
   "NAVIGATION_TEAMS": "Teams",
   "NAVIGATION_SKILLS": "Skills",
+  "NAVIGATION_SKILLS_ON_ICE": "Skills On Ice",
   "NAVIGATION_SKILL_RANKINGS": "Rankings",
   "NAVIGATION_TOURNAMENT_SKILL_RANKINGS": "Tournament Rankings",
 
@@ -85,5 +86,12 @@
   "SKILL_RANKING_PLAYER_SHIRT_NUMBER": "Shirt number",
   "SKILL_RANKING_PLAYER_FIRST_NAME": "First name",
   "SKILL_RANKING_PLAYER_LAST_NAME": "Last name",
-  "SKILL_RANKING_PLAYER_POSITION": "Player position"
+  "SKILL_RANKING_PLAYER_POSITION": "Player position",
+
+  "SKILLS_ON_ICE_PAGE_TITLE": "Skill Selection",
+  "SKILLS_ON_ICE_NO_DATA_HINT": "Skills and teams need to be loaded",
+  "SKILLS_ON_ICE_NO_SKILLS_HINT": "No skills available",
+  "SKILLS_ON_ICE_NO_TEAMS_HINT": "No teams available",
+  "SKILLS_ON_ICE_SKILL_CHEF": "Skill chef",
+  "SKILLS_ON_ICE_SKILL_EXPERT": "Skill expert"
 }

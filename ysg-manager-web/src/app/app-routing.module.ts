@@ -67,6 +67,13 @@ export const routes: Routes = [
       )
   },
   {
+    path: 'skillsonice',
+    loadChildren: () =>
+      import('./features/skillsonice/skills-on-ice.module').then(
+        (m) => m.SkillsOnIceModule
+      )
+  },
+  {
     path: 'skillresults',
     loadChildren: () =>
       import('./features/skillsdata/skill-results/skill-results.module').then(

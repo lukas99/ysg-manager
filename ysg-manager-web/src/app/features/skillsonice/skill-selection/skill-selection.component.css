@@ -1,0 +1,12 @@
+mat-button-toggle-group {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+mat-button-toggle {
+  width: 50%;
+}
+
+mat-card {
+  margin-bottom: 12px;
+}

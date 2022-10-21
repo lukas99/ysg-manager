@@ -21,6 +21,8 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { MatDialogModule } from '@angular/material/dialog';
 import { A11yModule } from '@angular/cdk/a11y';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MobilePageTitleComponent } from './mobile/page-title/mobile-page-title.component';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -43,7 +45,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     CrudListComponent,
     CrudDetailComponent,
     MoreActionsComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    MobilePageTitleComponent
   ],
   imports: [
     // angular
@@ -68,6 +71,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatCardModule,
     MatDialogModule,
     MatCheckboxModule,
+    MatButtonToggleModule,
 
     // agGrid
     AgGridModule.withComponents([])
@@ -95,6 +99,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatCardModule,
     MatSelectModule,
     MatCheckboxModule,
+    MatButtonToggleModule,
 
     // agGrid
     AgGridModule,
@@ -102,7 +107,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     // declared components
     CrudListComponent,
     CrudDetailComponent,
-    MoreActionsComponent
+    MoreActionsComponent,
+    MobilePageTitleComponent
   ],
   providers: [] // should stay empty
 })
