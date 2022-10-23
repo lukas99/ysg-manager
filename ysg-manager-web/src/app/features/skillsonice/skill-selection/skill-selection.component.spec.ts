@@ -2,16 +2,32 @@ import { SkillSelectionComponent } from './skill-selection.component';
 import { SkillsService } from '../../../core/services/skills.service';
 import { TeamsService } from '../../../core/services/teams.service';
 import { Skill, SkillType } from '../../../types';
+import { Router } from '@angular/router';
+import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 
 describe('SkillSelectionComponent', () => {
   let component: SkillSelectionComponent;
 
   let skillsService: SkillsService;
   let teamsService: TeamsService;
+  let stateService: SkillsOnIceStateService;
+  let router: Router;
 
   beforeEach(() => {
     skillsService = <any>{};
-    component = new SkillSelectionComponent(skillsService, teamsService);
+    teamsService = <any>{};
+    router = <any>{ navigateByUrl: jest.fn() };
+    stateService = <any>{
+      setIsSkillChef: jest.fn(),
+      setSelectedSkill: jest.fn()
+    };
+
+    component = new SkillSelectionComponent(
+      skillsService,
+      teamsService,
+      stateService,
+      router
+    );
   });
 
   it('toggles role selection', () => {
@@ -21,10 +37,12 @@ describe('SkillSelectionComponent', () => {
     component.roleToggleClicked();
     expect(component.isRoleSelected).toBeTruthy();
     expect(component.isSkillChef).toBeTruthy();
+    expect(stateService.setIsSkillChef).toHaveBeenCalledWith(true);
 
     component.roleToggleClicked();
     expect(component.isRoleSelected).toBeTruthy();
     expect(component.isSkillChef).toBeFalsy();
+    expect(stateService.setIsSkillChef).toHaveBeenCalledWith(false);
   });
 
   describe('showSkill', () => {
@@ -72,5 +90,15 @@ describe('SkillSelectionComponent', () => {
       expect(component.showSkill(hitTheRoad)).toBeTruthy();
       expect(component.showSkill(goaltenders)).toBeFalsy();
     });
+  });
+
+  it('handles the selection of a skill', () => {
+    const skill = {} as Skill;
+    component.skillSelected(skill);
+
+    expect(stateService.setSelectedSkill).toHaveBeenCalledWith(skill);
+    expect(router.navigateByUrl).toHaveBeenCalledWith(
+      'skillsonice/teamselection'
+    );
   });
 });

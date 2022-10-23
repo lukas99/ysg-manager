@@ -1,24 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MobilePageTitleComponent } from './mobile-page-title.component';
+import { Router } from '@angular/router';
 
 describe('MobilePageTitleComponent', () => {
   let component: MobilePageTitleComponent;
-  let fixture: ComponentFixture<MobilePageTitleComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [MobilePageTitleComponent]
-    }).compileComponents();
-  });
+  let router: Router;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MobilePageTitleComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    router = <any>{ navigateByUrl: jest.fn() };
+    component = new MobilePageTitleComponent(router);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('navigate back', () => {
+    const backRoute = 'skillsonice/skillselection';
+    component.backRoute = backRoute;
+    component.navigateBack();
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith(backRoute);
   });
 });

@@ -3,6 +3,8 @@ import { SkillsService } from '../../../core/services/skills.service';
 import { Observable, of } from 'rxjs';
 import { Skill, SkillType, Team } from '../../../types';
 import { TeamsService } from '../../../core/services/teams.service';
+import { Router } from '@angular/router';
+import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 
 @Component({
   selector: 'ysg-skill-selection',
@@ -18,7 +20,9 @@ export class SkillSelectionComponent implements OnInit {
 
   constructor(
     private skillsService: SkillsService,
-    private teamsService: TeamsService
+    private teamsService: TeamsService,
+    private stateService: SkillsOnIceStateService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -29,6 +33,7 @@ export class SkillSelectionComponent implements OnInit {
   roleToggleClicked() {
     this.isRoleSelected = true;
     this.isSkillChef = !this.isSkillChef;
+    this.stateService.setIsSkillChef(this.isSkillChef);
   }
 
   showSkill(skill: Skill): boolean {
@@ -62,6 +67,7 @@ export class SkillSelectionComponent implements OnInit {
   }
 
   skillSelected(skill: Skill) {
-    console.info('selected skill ' + skill.number);
+    this.stateService.setSelectedSkill(skill);
+    this.router.navigateByUrl('skillsonice/teamselection');
   }
 }

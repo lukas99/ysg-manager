@@ -1,3 +1,15 @@
-h1 {
+.header-container {
+  display: grid;
+  grid-template-columns: 10% 80% 10%;
+}
+
+.back-button {
+  grid-column: 1;
+  justify-content: flex-start;
+}
+
+.page-title {
+  grid-column: 2;
   text-align: center;
+  justify-content: center;
 }

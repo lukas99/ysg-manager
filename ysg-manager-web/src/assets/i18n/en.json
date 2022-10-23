@@ -93,5 +93,6 @@
   "SKILLS_ON_ICE_NO_SKILLS_HINT": "No skills available",
   "SKILLS_ON_ICE_NO_TEAMS_HINT": "No teams available",
   "SKILLS_ON_ICE_SKILL_CHEF": "Skill chef",
-  "SKILLS_ON_ICE_SKILL_EXPERT": "Skill expert"
+  "SKILLS_ON_ICE_SKILL_EXPERT": "Skill expert",
+  "SKILLS_ON_ICE_TEAM_SELECTION": "Team Selection"
 }

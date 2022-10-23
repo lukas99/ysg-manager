@@ -10,3 +10,8 @@ mat-button-toggle {
 mat-card {
   margin-bottom: 12px;
 }
+
+mat-card-title {
+  font-weight: normal;
+  font-size: medium;
+}

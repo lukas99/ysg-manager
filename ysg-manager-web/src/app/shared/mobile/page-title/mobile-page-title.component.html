@@ -1,3 +1,13 @@
-<h1>
-  <ng-content></ng-content>
-</h1>
+<div class="header-container">
+  <button
+    mat-icon-button
+    class="back-button"
+    *ngIf="!!backRoute"
+    (click)="navigateBack()"
+  >
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h1 class="page-title">
+    <ng-content></ng-content>
+  </h1>
+</div>
