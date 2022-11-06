@@ -1,30 +1,56 @@
 import { SkillSelectionComponent } from './skill-selection.component';
-import { SkillsService } from '../../../core/services/skills.service';
 import { TeamsService } from '../../../core/services/teams.service';
 import { Skill, SkillType } from '../../../types';
 import { Router } from '@angular/router';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
+import { SkillResultsService } from '../../../core/services/skill-results.service';
+import { SkillsService } from '../../../core/services/skills.service';
 
 describe('SkillSelectionComponent', () => {
   let component: SkillSelectionComponent;
 
   let skillsService: SkillsService;
   let teamsService: TeamsService;
+  let skillResultsService: SkillResultsService;
   let stateService: SkillsOnIceStateService;
   let router: Router;
+
+  let magicTransitions: Skill = {
+    typeForPlayers: SkillType.TIME_WITH_RATING,
+    typeForGoaltenders: SkillType.TIME_WITH_RATING
+  } as Skill;
+  let bestShot: Skill = {
+    typeForPlayers: SkillType.POINTS,
+    typeForGoaltenders: SkillType.POINTS
+  } as Skill;
+  let passAndGo: Skill = {
+    typeForPlayers: SkillType.TIME_WITH_POINTS,
+    typeForGoaltenders: SkillType.TIME_WITH_POINTS
+  } as Skill;
+  let controlledJumble: Skill = {
+    typeForPlayers: SkillType.TIME,
+    typeForGoaltenders: SkillType.RATING
+  } as Skill;
+  let hitTheRoad: Skill = {
+    typeForPlayers: SkillType.TIME_WITH_RATING,
+    typeForGoaltenders: SkillType.RATING
+  } as Skill;
+  let goaltenders: Skill = {
+    typeForPlayers: SkillType.NO_RESULTS,
+    typeForGoaltenders: SkillType.GOALTENDERS_OVERALL
+  } as Skill;
 
   beforeEach(() => {
     skillsService = <any>{};
     teamsService = <any>{};
+    skillResultsService = <any>{ pushCachedSkillResultsToServer: jest.fn() };
     router = <any>{ navigateByUrl: jest.fn() };
-    stateService = <any>{
-      setIsSkillChef: jest.fn(),
-      setSelectedSkill: jest.fn()
-    };
+    stateService = new SkillsOnIceStateService();
 
     component = new SkillSelectionComponent(
       skillsService,
       teamsService,
+      skillResultsService,
       stateService,
       router
     );
@@ -32,47 +58,20 @@ describe('SkillSelectionComponent', () => {
 
   it('toggles role selection', () => {
     expect(component.isRoleSelected).toBeFalsy();
-    expect(component.isSkillChef).toBeFalsy();
+    expect(stateService.isSkillChef()).toBeFalsy();
 
-    component.roleToggleClicked();
+    component.roleToggleClicked(true);
     expect(component.isRoleSelected).toBeTruthy();
-    expect(component.isSkillChef).toBeTruthy();
-    expect(stateService.setIsSkillChef).toHaveBeenCalledWith(true);
+    expect(stateService.isSkillChef()).toBeTruthy();
 
-    component.roleToggleClicked();
+    component.roleToggleClicked(false);
     expect(component.isRoleSelected).toBeTruthy();
-    expect(component.isSkillChef).toBeFalsy();
-    expect(stateService.setIsSkillChef).toHaveBeenCalledWith(false);
+    expect(stateService.isSkillChef()).toBeFalsy();
   });
 
   describe('showSkill', () => {
-    let magicTransitions: Skill = {
-      typeForPlayers: SkillType.TIME_WITH_RATING,
-      typeForGoaltenders: SkillType.TIME_WITH_RATING
-    } as Skill;
-    let bestShot: Skill = {
-      typeForPlayers: SkillType.POINTS,
-      typeForGoaltenders: SkillType.POINTS
-    } as Skill;
-    let passAndGo: Skill = {
-      typeForPlayers: SkillType.TIME_WITH_POINTS,
-      typeForGoaltenders: SkillType.TIME_WITH_POINTS
-    } as Skill;
-    let controlledJumble: Skill = {
-      typeForPlayers: SkillType.TIME,
-      typeForGoaltenders: SkillType.RATING
-    } as Skill;
-    let hitTheRoad: Skill = {
-      typeForPlayers: SkillType.TIME_WITH_RATING,
-      typeForGoaltenders: SkillType.RATING
-    } as Skill;
-    let goaltenders: Skill = {
-      typeForPlayers: SkillType.NO_RESULTS,
-      typeForGoaltenders: SkillType.GOALTENDERS_OVERALL
-    } as Skill;
-
     it('shows the correct skills for a skill chef', () => {
-      component.isSkillChef = true;
+      stateService.setSkillChef(true);
       expect(component.showSkill(magicTransitions)).toBeTruthy();
       expect(component.showSkill(bestShot)).toBeTruthy();
       expect(component.showSkill(passAndGo)).toBeTruthy();
@@ -82,7 +81,7 @@ describe('SkillSelectionComponent', () => {
     });
 
     it('shows the correct skills for a skill chef', () => {
-      component.isSkillChef = false;
+      stateService.setSkillChef(false);
       expect(component.showSkill(magicTransitions)).toBeTruthy();
       expect(component.showSkill(bestShot)).toBeFalsy();
       expect(component.showSkill(passAndGo)).toBeFalsy();
@@ -93,12 +92,18 @@ describe('SkillSelectionComponent', () => {
   });
 
   it('handles the selection of a skill', () => {
-    const skill = {} as Skill;
-    component.skillSelected(skill);
+    component.skillSelected(magicTransitions);
 
-    expect(stateService.setSelectedSkill).toHaveBeenCalledWith(skill);
+    expect(stateService.getSelectedSkill()).toEqual(magicTransitions);
     expect(router.navigateByUrl).toHaveBeenCalledWith(
       'skillsonice/teamselection'
     );
+  });
+
+  it('uploads skill results and skill ratings', () => {
+    component.uploadSkillResultsAndRatings();
+    expect(
+      skillResultsService.pushCachedSkillResultsToServer
+    ).toHaveBeenCalledTimes(1);
   });
 });

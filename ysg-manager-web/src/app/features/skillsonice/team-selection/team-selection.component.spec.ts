@@ -11,19 +11,19 @@ describe('TeamSelectionComponent', () => {
   let stateService: SkillsOnIceStateService;
   let router: Router;
 
+  const ehcEngelberg = { name: 'EHC Engelberg' } as Team;
+  const hcLuzern = { name: 'HC Luzern' } as Team;
+  const teams = [ehcEngelberg, hcLuzern];
+
   beforeEach(() => {
     teamsService = <any>{ getTeams: jest.fn() };
-    stateService = <any>{ setSelectedTeam: jest.fn() };
+    stateService = new SkillsOnIceStateService();
     router = <any>{ navigateByUrl: jest.fn() };
 
     component = new TeamSelectionComponent(teamsService, stateService, router);
   });
 
   it('loads the teams', () => {
-    const teams = [
-      { name: 'EHC Engelberg' } as Team,
-      { name: 'HC Luzern' } as Team
-    ];
     const teamsObservable = of(teams);
     teamsService.getTeams = jest.fn(() => teamsObservable);
 
@@ -32,12 +32,27 @@ describe('TeamSelectionComponent', () => {
     expect(component.teams$).toEqual(teamsObservable);
   });
 
-  it('selects a team', () => {
-    const team = {} as Team;
+  describe('navigate', () => {
+    it('skill chef selects a team and navigates to the result list', () => {
+      stateService.setSkillChef(true);
 
-    component.teamSelected(team);
+      component.teamSelected(ehcEngelberg);
 
-    expect(stateService.setSelectedTeam).toHaveBeenCalledWith(team);
-    expect(router.navigateByUrl).toHaveBeenCalledWith('skillsonice/todo');
+      expect(stateService.getSelectedTeam()).toEqual(ehcEngelberg);
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        'skillsonice/resultlist'
+      );
+    });
+
+    it('skill expert selects a team and navigates to the rating list', () => {
+      stateService.setSkillChef(false);
+
+      component.teamSelected(ehcEngelberg);
+
+      expect(stateService.getSelectedTeam()).toEqual(ehcEngelberg);
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        'skillsonice/ratinglist'
+      );
+    });
   });
 });

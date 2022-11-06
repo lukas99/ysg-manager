@@ -5,6 +5,7 @@ import { Skill, SkillType, Team } from '../../../types';
 import { TeamsService } from '../../../core/services/teams.service';
 import { Router } from '@angular/router';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
+import { SkillResultsService } from '../../../core/services/skill-results.service';
 
 @Component({
   selector: 'ysg-skill-selection',
@@ -14,13 +15,14 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 export class SkillSelectionComponent implements OnInit {
   skills$: Observable<Skill[]> = of([]);
   teams$: Observable<Team[]> = of([]);
+  isSkillChef$: Observable<boolean> = of(false);
 
   isRoleSelected: boolean = false;
-  isSkillChef: boolean = false;
 
   constructor(
     private skillsService: SkillsService,
     private teamsService: TeamsService,
+    private skillResultsService: SkillResultsService,
     private stateService: SkillsOnIceStateService,
     private router: Router
   ) {}
@@ -28,16 +30,16 @@ export class SkillSelectionComponent implements OnInit {
   ngOnInit(): void {
     this.skills$ = this.skillsService.getSkills();
     this.teams$ = this.teamsService.getTeams();
+    this.isSkillChef$ = this.stateService.isSkillChefObservable();
   }
 
-  roleToggleClicked() {
+  roleToggleClicked(isSkillChef: boolean) {
     this.isRoleSelected = true;
-    this.isSkillChef = !this.isSkillChef;
-    this.stateService.setIsSkillChef(this.isSkillChef);
+    this.stateService.setSkillChef(isSkillChef);
   }
 
   showSkill(skill: Skill): boolean {
-    if (this.isSkillChef) {
+    if (this.stateService.isSkillChef()) {
       return (
         this.skillTypeNeedsResults(skill.typeForPlayers) ||
         this.skillTypeNeedsResults(skill.typeForGoaltenders)
@@ -69,5 +71,9 @@ export class SkillSelectionComponent implements OnInit {
   skillSelected(skill: Skill) {
     this.stateService.setSelectedSkill(skill);
     this.router.navigateByUrl('skillsonice/teamselection');
+  }
+
+  uploadSkillResultsAndRatings() {
+    this.skillResultsService.pushCachedSkillResultsToServer();
   }
 }

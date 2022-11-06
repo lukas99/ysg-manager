@@ -1,0 +1,26 @@
+<div class="footer-buttons">
+  <button
+    mat-flat-button
+    color="warn"
+    [disabled]="deleteDisabled"
+    (click)="delete()"
+  >
+    {{ 'SKILLS_ON_ICE_DETAIL_DELETE' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    color="accent"
+    [disabled]="cancelDisabled"
+    (click)="cancel()"
+  >
+    {{ 'SKILLS_ON_ICE_DETAIL_CANCEL' | translate }}
+  </button>
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="saveDisabled"
+    (click)="save()"
+  >
+    {{ 'SKILLS_ON_ICE_DETAIL_SAVE' | translate }}
+  </button>
+</div>

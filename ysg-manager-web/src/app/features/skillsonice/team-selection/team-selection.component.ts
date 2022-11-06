@@ -25,6 +25,14 @@ export class TeamSelectionComponent implements OnInit {
 
   teamSelected(team: Team) {
     this.stateService.setSelectedTeam(team);
-    this.router.navigateByUrl('skillsonice/todo');
+    this.navigate();
+  }
+
+  private navigate() {
+    if (this.stateService.isSkillChef()) {
+      this.router.navigateByUrl('skillsonice/resultlist');
+    } else {
+      this.router.navigateByUrl('skillsonice/ratinglist');
+    }
   }
 }

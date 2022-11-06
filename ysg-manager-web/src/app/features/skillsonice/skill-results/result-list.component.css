@@ -1,0 +1,28 @@
+.row-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.row-content:first-child > span {
+  margin-right: auto;
+}
+
+.row-content:last-child > span {
+  margin-left: auto;
+}
+
+.skill-result-player {
+  margin-top: 5px;
+}
+
+.row-content mat-icon {
+  margin-right: 5px;
+  vertical-align: bottom;
+}
+
+.add-button {
+  position: fixed;
+  bottom: 30px;
+  right: 20px;
+}

@@ -1,6 +1,10 @@
 <ysg-mobile-page-title>
   {{ 'SKILLS_ON_ICE_SKILL_SELECTION' | translate }}
 </ysg-mobile-page-title>
+<button mat-flat-button class="upload" (click)="uploadSkillResultsAndRatings()">
+  <mat-icon>upload</mat-icon>
+  {{ 'SKILLS_ON_ICE_UPLOAD_RESULTS_AND_RATINGS' | translate }}
+</button>
 <ng-container *ngIf="skills$ | async as skills">
   <ng-container *ngIf="teams$ | async as teams">
     <ng-container *ngIf="skills.length == 0 || teams.length == 0">
@@ -16,10 +20,16 @@
     </ng-container>
     <ng-container *ngIf="skills.length > 0 && teams.length > 0">
       <mat-button-toggle-group>
-        <mat-button-toggle (click)="roleToggleClicked()" [value]="isSkillChef">
+        <mat-button-toggle
+          (click)="roleToggleClicked(true)"
+          [value]="isSkillChef$ | async"
+        >
           {{ 'SKILLS_ON_ICE_SKILL_CHEF' | translate }}
         </mat-button-toggle>
-        <mat-button-toggle (click)="roleToggleClicked()" [value]="!isSkillChef">
+        <mat-button-toggle
+          (click)="roleToggleClicked(false)"
+          [value]="!(isSkillChef$ | async)"
+        >
           {{ 'SKILLS_ON_ICE_SKILL_EXPERT' | translate }}
         </mat-button-toggle>
       </mat-button-toggle-group>

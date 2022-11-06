@@ -3,6 +3,7 @@
  */
 export interface CacheSupport {
   isCached?: boolean;
+  cacheId?: string;
 }
 
 export interface Link {
@@ -96,7 +97,7 @@ export interface SkillList {
   };
 }
 
-export interface SkillResult {
+export interface SkillResult extends CacheSupport {
   time: number;
   failures: number;
   points: number;

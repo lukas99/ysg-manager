@@ -1,0 +1,23 @@
+<mat-form-field appearance="fill">
+  <mat-label>{{ 'SKILLS_ON_ICE_DETAIL_PLAYER_NUMBER' | translate }}</mat-label>
+  <input
+    matInput
+    type="number"
+    [(ngModel)]="player.shirtNumber"
+    (change)="shirtNumberChanged()"
+  />
+</mat-form-field>
+<mat-button-toggle-group [value]="player.position">
+  <mat-button-toggle
+    (click)="playerPositionSelected(true)"
+    [value]="positionSkater"
+  >
+    {{ 'SKILLS_ON_ICE_DETAIL_POSITION_SKATER' | translate }}
+  </mat-button-toggle>
+  <mat-button-toggle
+    (click)="playerPositionSelected(false)"
+    [value]="positionGoaltender"
+  >
+    {{ 'SKILLS_ON_ICE_DETAIL_POSITION_GOALTENDER' | translate }}
+  </mat-button-toggle>
+</mat-button-toggle-group>

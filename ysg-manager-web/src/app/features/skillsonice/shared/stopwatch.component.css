@@ -1,0 +1,10 @@
+.stopwatch-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stopwatch-time {
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
+}

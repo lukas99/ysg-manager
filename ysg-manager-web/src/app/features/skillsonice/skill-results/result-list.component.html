@@ -1,0 +1,38 @@
+<ysg-mobile-page-title [backRoute]="'skillsonice/teamselection'">
+  {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
+  {{ selectedTeam?.name }}
+</ysg-mobile-page-title>
+
+<mat-selection-list [multiple]="false">
+  <mat-list-option
+    *ngFor="let skillResult of skillResults"
+    [value]="skillResult"
+  >
+    <div class="row-content" (click)="editResult(skillResult)">
+      <div class="row-content skill-result-player">
+        <span
+          >#{{ skillResult.player.shirtNumber }}
+          <span *ngIf="skillResult.player.position === 'GOALTENDER'"
+            >TH</span
+          ></span
+        >
+      </div>
+      <div class="row-content">
+        <span
+          ><mat-icon>timer</mat-icon>
+          <span>{{ skillResult.time | number: '1.2-2' }}</span></span
+        >
+      </div>
+      <div class="row-content">
+        <span
+          ><mat-icon>error</mat-icon>
+          <span>{{ skillResult.failures }}</span></span
+        >
+      </div>
+    </div>
+  </mat-list-option>
+</mat-selection-list>
+
+<button mat-fab color="primary" class="add-button" (click)="createResult()">
+  <mat-icon>add</mat-icon>
+</button>

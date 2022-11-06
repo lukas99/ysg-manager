@@ -1,6 +1,7 @@
 package com.lukas99.ysgmanager.domain;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PlayerRepository
     extends JpaRepository<Player, Long>, JpaSpecificationExecutor<Player> {
+
+  /**
+   * @param shirtNumber the shirt number of the player
+   * @param team        the team of the player
+   * @return an Optional of the player with the given shirt number and team
+   */
+  Optional<Player> findByShirtNumberAndTeam(Integer shirtNumber, Team team);
 
   /**
    * @param team The team for which the players should be retrieved.

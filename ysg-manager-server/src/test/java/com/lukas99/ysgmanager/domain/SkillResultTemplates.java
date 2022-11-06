@@ -8,7 +8,7 @@ public class SkillResultTemplates {
   public static final BigDecimal THIRTY_SECONDS = new BigDecimal("30.00");
   public static final Integer ONE = 1;
 
-  public static final Integer SIX = 2;
+  public static final Integer SIX = 6;
 
   public static SkillResult magicTransitionsResult(Skill skill, Player player) {
     return SkillResult.builder().skill(skill).player(player).time(THIRTY_SECONDS).failures(ONE)

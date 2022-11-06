@@ -10,8 +10,8 @@ public class PlayerTemplates {
   public static final String JOSI = "Josi";
   public static final int FIFITY_NINE = 59;
 
-  public static final String TIMO = "Roman";
-  public static final String MEIER = "Josi";
+  public static final String TIMO = "Timo";
+  public static final String MEIER = "Meier";
   public static final int TWENTY_EIGHT = 28;
 
   public static final String MARTIN = "Martin";

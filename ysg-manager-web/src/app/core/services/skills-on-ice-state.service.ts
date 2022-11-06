@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Skill, Team } from '../../types';
 
@@ -9,33 +9,45 @@ import { Skill, Team } from '../../types';
   providedIn: 'root'
 })
 export class SkillsOnIceStateService {
-  private isSkillChef$ = new Subject<boolean>();
-  private selectedSkill$ = new Subject<Skill>();
-  private selectedTeam$ = new Subject<Team>();
+  private isSkillChef$ = new BehaviorSubject<boolean>(false);
+  private selectedSkill$ = new BehaviorSubject<Skill>({} as Skill);
+  private selectedTeam$ = new BehaviorSubject<Team>({} as Team);
 
   constructor() {}
 
-  setIsSkillChef(isSkillChef: boolean) {
+  setSkillChef(isSkillChef: boolean) {
     this.isSkillChef$.next(isSkillChef);
   }
 
-  getIsSkillChef(): Observable<boolean> {
+  isSkillChefObservable(): Observable<boolean> {
     return this.isSkillChef$;
+  }
+
+  isSkillChef(): boolean {
+    return this.isSkillChef$.getValue();
   }
 
   setSelectedSkill(skill: Skill) {
     this.selectedSkill$.next(skill);
   }
 
-  getSelectedSkill(): Observable<Skill> {
+  getSelectedSkillObservable(): Observable<Skill> {
     return this.selectedSkill$;
+  }
+
+  getSelectedSkill(): Skill {
+    return this.selectedSkill$.getValue();
   }
 
   setSelectedTeam(team: Team) {
     this.selectedTeam$.next(team);
   }
 
-  getSelectedTeam(): Observable<Team> {
+  getSelectedTeamObservable(): Observable<Team> {
     return this.selectedTeam$;
+  }
+
+  getSelectedTeam(): Team {
+    return this.selectedTeam$.getValue();
   }
 }

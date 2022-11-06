@@ -89,10 +89,21 @@
   "SKILL_RANKING_PLAYER_POSITION": "Spieler Position",
 
   "SKILLS_ON_ICE_SKILL_SELECTION": "Skill-Auswahl",
+  "SKILLS_ON_ICE_UPLOAD_RESULTS_AND_RATINGS": "Resultate und Bewertungen übertragen",
   "SKILLS_ON_ICE_NO_DATA_HINT": "Skills und Teams müssen geladen sein",
   "SKILLS_ON_ICE_NO_SKILLS_HINT": "Keine Skills verfügbar",
   "SKILLS_ON_ICE_NO_TEAMS_HINT": "Keine Teams verfügbar",
   "SKILLS_ON_ICE_SKILL_CHEF": "Skill-Chef",
   "SKILLS_ON_ICE_SKILL_EXPERT": "Skill-Experte",
-  "SKILLS_ON_ICE_TEAM_SELECTION": "Team-Auswahl"
+  "SKILLS_ON_ICE_TEAM_SELECTION": "Team-Auswahl",
+  "SKILLS_ON_ICE_SKILL": "Skill",
+  "SKILLS_ON_ICE_DETAIL_PLAYER_NUMBER": "Spieler-Nummer",
+  "SKILLS_ON_ICE_DETAIL_POSITION_SKATER": "Spieler",
+  "SKILLS_ON_ICE_DETAIL_POSITION_GOALTENDER": "Torhüter",
+  "SKILLS_ON_ICE_DETAIL_TIME": "Zeit",
+  "SKILLS_ON_ICE_DETAIL_FAILURES": "Fehler",
+  "SKILLS_ON_ICE_DETAIL_DELETE": "Löschen",
+  "SKILLS_ON_ICE_DETAIL_DELETE_QUESTION": "Willst du diesen Eintrag wirklich löschen?",
+  "SKILLS_ON_ICE_DETAIL_CANCEL": "Abbrechen",
+  "SKILLS_ON_ICE_DETAIL_SAVE": "Speichern"
 }

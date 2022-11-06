@@ -58,6 +58,18 @@ public class PlayerService {
   }
 
   /**
+   * Get a player by shirt number and team.
+   *
+   * @param shirtNumber the shirt number of the player
+   * @param team        the team of the player
+   * @return an Optional of the player with the given shirt number and team
+   */
+  @Transactional(readOnly = true)
+  public Optional<Player> findByShirtNumberAndTeam(Integer shirtNumber, Team team) {
+    return playerRepository.findByShirtNumberAndTeam(shirtNumber, team);
+  }
+
+  /**
    * Delete the player by id.
    *
    * @param id the id of the entity.

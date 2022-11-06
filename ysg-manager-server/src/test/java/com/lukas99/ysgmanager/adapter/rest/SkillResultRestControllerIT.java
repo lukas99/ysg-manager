@@ -1,5 +1,6 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
+import static com.lukas99.ysgmanager.domain.PlayerPosition.SKATER;
 import static com.lukas99.ysgmanager.domain.SkillResultTemplates.bestShotResult;
 import static com.lukas99.ysgmanager.domain.SkillResultTemplates.magicTransitionsResult;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.lukas99.ysgmanager.domain.Player;
+import com.lukas99.ysgmanager.domain.PlayerRepository;
 import com.lukas99.ysgmanager.domain.PlayerService;
 import com.lukas99.ysgmanager.domain.PlayerTemplates;
 import com.lukas99.ysgmanager.domain.Skill;
@@ -27,6 +29,7 @@ import com.lukas99.ysgmanager.domain.SkillResultTemplates;
 import com.lukas99.ysgmanager.domain.SkillService;
 import com.lukas99.ysgmanager.domain.SkillTemplates;
 import com.lukas99.ysgmanager.domain.Team;
+import com.lukas99.ysgmanager.domain.TeamService;
 import com.lukas99.ysgmanager.domain.TeamTemplates;
 import com.lukas99.ysgmanager.domain.Tournament;
 import com.lukas99.ysgmanager.domain.TournamentTemplates;
@@ -62,13 +65,21 @@ public class SkillResultRestControllerIT extends IntegrationTest {
   private SkillService skillService;
 
   @Autowired
+  private PlayerRepository playerRepository;
+
+  @Autowired
+  private TeamService teamService;
+
+  @Autowired
   private EntityManager em;
 
   private MockMvc restSkillResultMockMvc;
 
+  private Team ehcEngelberg;
   private Player romanJosi;
   private Player martinGerber;
   private Skill magicTransitions;
+  private Skill bestShot;
   private SkillResult magicTransitionsResult;
   private SkillResult bestShotResult;
   private SkillResultModel magicTransitionsResultModel;
@@ -77,18 +88,18 @@ public class SkillResultRestControllerIT extends IntegrationTest {
   public void setup() {
     MockitoAnnotations.openMocks(this);
     final SkillResultRestController skillResultResource =
-        new SkillResultRestController(skillResultService, playerService, skillService);
+        new SkillResultRestController(skillResultService, playerService, skillService, teamService);
     this.restSkillResultMockMvc = MockMvcBuilders.standaloneSetup(skillResultResource).build();
   }
 
   @BeforeEach
   public void initTest() {
     Tournament ysg2019 = TournamentTemplates.ysg2019(em);
-    Team ehcEngelberg = TeamTemplates.ehcEngelberg(ysg2019, em);
+    ehcEngelberg = TeamTemplates.ehcEngelberg(ysg2019, em);
     romanJosi = PlayerTemplates.romanJosi(ehcEngelberg, em);
     martinGerber = PlayerTemplates.martinGerber(ehcEngelberg, em);
     magicTransitions = SkillTemplates.magicTransitions(ysg2019, em);
-    Skill bestShot = SkillTemplates.bestShot(ysg2019, em);
+    bestShot = SkillTemplates.bestShot(ysg2019, em);
     magicTransitionsResult = magicTransitionsResult(magicTransitions, romanJosi);
     bestShotResult = bestShotResult(bestShot, martinGerber);
     magicTransitionsResultModel = new SkillResultModelAssembler().toModel(magicTransitionsResult);
@@ -137,6 +148,72 @@ public class SkillResultRestControllerIT extends IntegrationTest {
     assertThat(testSkillResult.getTime()).isEqualTo(SkillResultTemplates.THIRTY_SECONDS);
     assertThat(testSkillResult.getFailures()).isEqualTo(SkillResultTemplates.ONE);
     assertThat(testSkillResult.getPoints()).isNull();
+  }
+
+  @Test
+  @Transactional
+  public void createSkillResultBySkill_createPlayerIfNotExists() throws Exception {
+    var player = Player.builder().position(SKATER).shirtNumber(99).team(ehcEngelberg).build();
+    var skillResult1 = magicTransitionsResult(magicTransitions, player);
+    var skillResult2 = bestShotResult(bestShot, player);
+    var skillResultModel1 = new SkillResultModelAssembler().toModel(skillResult1);
+    var skillResultModel2 = new SkillResultModelAssembler().toModel(skillResult2);
+    var skillLink1 = skillResultModel1.getRequiredLink("skill");
+    var skillLink2 = skillResultModel2.getRequiredLink("skill");
+    // remove player link, it must not be available because player doesn't exist yet
+    skillResultModel1 = skillResultModel1.removeLinks().add(skillLink1);
+    skillResultModel2 = skillResultModel2.removeLinks().add(skillLink2);
+
+    int databaseSizeBeforeCreate = skillResultRepository.findAll().size();
+    int playerAmountBeforeCreate = playerRepository.findAll().size();
+
+    // Create a SkillResult -> player doesn't exist yet and will be created
+    restSkillResultMockMvc
+        .perform(post("/api/skills/{skillId}/skill-results", magicTransitions.getId())
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(skillResultModel1)))
+        .andExpect(status().isOk());
+
+    // Validate that player was created in the database
+    List<Player> playerResultList = playerRepository.findAll();
+    assertThat(playerResultList).hasSize(playerAmountBeforeCreate + 1);
+    Player createdPlayer = playerResultList.get(playerResultList.size() - 1);
+    assertThat(createdPlayer.getFirstName()).isNull();
+    assertThat(createdPlayer.getLastName()).isNull();
+    assertThat(createdPlayer.getShirtNumber()).isEqualTo(player.getShirtNumber());
+    assertThat(createdPlayer.getPosition()).isEqualTo(player.getPosition());
+    assertThat(createdPlayer.getTeam()).isEqualTo(ehcEngelberg);
+
+    // Validate the first SkillResult in the database
+    List<SkillResult> skillResultList = skillResultRepository.findAll();
+    assertThat(skillResultList).hasSize(databaseSizeBeforeCreate + 1);
+    SkillResult testSkillResult = skillResultList.get(skillResultList.size() - 1);
+    assertThat(testSkillResult.getPlayer().getId()).isEqualTo(createdPlayer.getId());
+    assertThat(testSkillResult.getSkill()).isEqualTo(magicTransitions);
+    assertThat(testSkillResult.getTime()).isEqualTo(SkillResultTemplates.THIRTY_SECONDS);
+    assertThat(testSkillResult.getFailures()).isEqualTo(SkillResultTemplates.ONE);
+    assertThat(testSkillResult.getPoints()).isNull();
+
+    // Create another SkillResult for same player -> player exists and will be loaded by NK
+    restSkillResultMockMvc
+        .perform(post("/api/skills/{skillId}/skill-results", bestShot.getId())
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(skillResultModel2)))
+        .andExpect(status().isOk());
+
+    // Validate that player was not created one more time
+    playerResultList = playerRepository.findAll();
+    assertThat(playerResultList).hasSize(playerAmountBeforeCreate + 1);
+
+    // Validate the second SkillResult in the database
+    skillResultList = skillResultRepository.findAll();
+    assertThat(skillResultList).hasSize(databaseSizeBeforeCreate + 2);
+    testSkillResult = skillResultList.get(skillResultList.size() - 1);
+    assertThat(testSkillResult.getPlayer().getId()).isEqualTo(createdPlayer.getId());
+    assertThat(testSkillResult.getSkill()).isEqualTo(bestShot);
+    assertThat(testSkillResult.getPoints()).isEqualTo(SkillResultTemplates.SIX);
+    assertThat(testSkillResult.getTime()).isNull();
+    assertThat(testSkillResult.getFailures()).isNull();
   }
 
   @Test

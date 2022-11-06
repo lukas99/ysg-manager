@@ -1,0 +1,20 @@
+<mat-card>
+  <mat-card-subtitle>{{
+    'SKILLS_ON_ICE_DETAIL_FAILURES' | translate
+  }}</mat-card-subtitle>
+  <div class="failures-content">
+    <button
+      mat-icon-button
+      (click)="decreaseFailures()"
+      [disabled]="failures <= 0"
+    >
+      <mat-icon>remove</mat-icon>
+    </button>
+    <div class="failures-count">
+      {{ failures }}
+    </div>
+    <button mat-icon-button (click)="increaseFailures()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</mat-card>
