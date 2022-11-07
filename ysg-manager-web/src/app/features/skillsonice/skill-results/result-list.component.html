@@ -29,6 +29,11 @@
           <span>{{ skillResult.failures }}</span></span
         >
       </div>
+      <div class="row-content" *ngIf="isASkillResultUploaded">
+        <span>
+          <mat-icon *ngIf="skillResult.isUploaded">cloud_done</mat-icon>
+        </span>
+      </div>
     </div>
   </mat-list-option>
 </mat-selection-list>

@@ -4,6 +4,10 @@ import { SkillResultsService } from '../../../core/services/skill-results.servic
 import { Skill, SkillResult, Team } from '../../../types';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 
+interface SkillResultView extends SkillResult {
+  isUploaded: boolean;
+}
+
 @Component({
   selector: 'ysg-result-list',
   templateUrl: './result-list.component.html',
@@ -13,7 +17,11 @@ export class ResultListComponent implements OnInit {
   selectedSkill!: Skill;
   selectedTeam!: Team;
 
-  skillResults: SkillResult[] = [];
+  skillResults: SkillResultView[] = [];
+  /**
+   * Whether at least one skill result of the skillResults array is uploaded to the server.
+   */
+  isASkillResultUploaded = false;
 
   constructor(
     private stateService: SkillsOnIceStateService,
@@ -25,10 +33,19 @@ export class ResultListComponent implements OnInit {
     this.selectedSkill = this.stateService.getSelectedSkill();
     this.selectedTeam = this.stateService.getSelectedTeam();
 
-    this.skillResults = this.skillResultsService.getCachedSkillResults(
-      this.selectedSkill,
-      this.selectedTeam
-    );
+    this.skillResults = this.skillResultsService
+      .getCachedSkillResults(this.selectedSkill, this.selectedTeam)
+      .map((skillResult) => {
+        let skillResultView = skillResult as SkillResultView;
+        skillResultView.isUploaded = this.isUploaded(skillResult);
+        return skillResultView;
+      });
+    this.isASkillResultUploaded =
+      this.skillResults.findIndex((result) => result.isUploaded) > -1;
+  }
+
+  private isUploaded(skillResult: SkillResult): boolean {
+    return !!skillResult._links.self;
   }
 
   editResult(skillResult: SkillResult) {
