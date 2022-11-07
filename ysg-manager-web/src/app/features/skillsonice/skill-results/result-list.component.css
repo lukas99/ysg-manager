@@ -2,6 +2,7 @@
   flex: 1;
   display: flex;
   justify-content: center;
+  font-size: 0.9em !important;
 }
 
 .row-content:first-child > span {
@@ -14,10 +15,11 @@
 
 .skill-result-player {
   margin-top: 5px;
+  font-size: 1.08em !important;
 }
 
 .row-content mat-icon {
-  margin-right: 5px;
+  margin-right: 4px;
   vertical-align: bottom;
 }
 
@@ -25,4 +27,8 @@
   position: fixed;
   bottom: 30px;
   right: 20px;
+}
+
+.uploaded {
+  color: green;
 }

@@ -1,7 +1,8 @@
 <mat-card>
-  <mat-card-subtitle>{{
-    'SKILLS_ON_ICE_DETAIL_TIME' | translate
-  }}</mat-card-subtitle>
+  <mat-card-subtitle>
+    <mat-icon>timer</mat-icon>
+    {{ 'SKILLS_ON_ICE_DETAIL_TIME' | translate }}</mat-card-subtitle
+  >
   <div class="stopwatch-content">
     <button mat-icon-button color="warn" (click)="clearTimer()">
       <mat-icon>delete</mat-icon>

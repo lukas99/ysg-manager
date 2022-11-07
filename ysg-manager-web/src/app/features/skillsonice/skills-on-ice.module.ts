@@ -11,6 +11,8 @@ import { PlayerComponent } from './shared/player.component';
 import { StopwatchComponent } from './shared/stopwatch.component';
 import { FailuresComponent } from './shared/failures.component';
 import { CrudButtonsComponent } from './shared/crud-buttons.component';
+import { ResultDetailForTimeWithPointsComponent } from './skill-results/result-detail-for-time-with-points.component';
+import { PointsComponent } from './shared/points.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { CrudButtonsComponent } from './shared/crud-buttons.component';
     PlayerComponent,
     StopwatchComponent,
     FailuresComponent,
-    CrudButtonsComponent
+    CrudButtonsComponent,
+    ResultDetailForTimeWithPointsComponent,
+    PointsComponent
   ],
   imports: [SharedModule, SkillsOnIceRoutingModule]
 })

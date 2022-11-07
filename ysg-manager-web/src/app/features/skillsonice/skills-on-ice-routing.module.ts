@@ -5,12 +5,17 @@ import { TeamSelectionComponent } from './team-selection/team-selection.componen
 import { RatingListComponent } from './skill-ratings/rating-list.component';
 import { ResultListComponent } from './skill-results/result-list.component';
 import { ResultDetailForTimeComponent } from './skill-results/result-detail-for-time.component';
+import { ResultDetailForTimeWithPointsComponent } from './skill-results/result-detail-for-time-with-points.component';
 
 const routes: Routes = [
   { path: '', component: SkillSelectionComponent },
   { path: 'teamselection', component: TeamSelectionComponent },
   { path: 'resultlist', component: ResultListComponent },
   { path: 'resultdetailfortime', component: ResultDetailForTimeComponent },
+  {
+    path: 'resultdetailfortimewithpoints',
+    component: ResultDetailForTimeWithPointsComponent
+  },
   { path: 'ratinglist', component: RatingListComponent }
 ];
 

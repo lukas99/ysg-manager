@@ -2,7 +2,8 @@ import { ResultListComponent } from './result-list.component';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { Router } from '@angular/router';
-import { Skill, SkillResult, Team } from '../../../types';
+import { Skill, SkillResult, SkillType, Team } from '../../../types';
+import { SkillTypeService } from '../../../core/services/skill-type.service';
 
 describe('ResultListComponent', () => {
   let component: ResultListComponent;
@@ -25,6 +26,7 @@ describe('ResultListComponent', () => {
     component = new ResultListComponent(
       stateService,
       skillResultsService,
+      new SkillTypeService(),
       router
     );
   });
@@ -34,6 +36,8 @@ describe('ResultListComponent', () => {
     let team: Team;
 
     beforeEach(() => {
+      skill = { typeForPlayers: SkillType.TIME_WITH_POINTS } as Skill;
+
       stateService.setSelectedSkill(skill);
       stateService.setSelectedTeam(team);
     });
@@ -87,9 +91,60 @@ describe('ResultListComponent', () => {
 
       expect(component.isASkillResultUploaded).toBeTruthy();
     });
+
+    describe('isASkillResultUploaded', () => {
+      it('should set isASkillResultUploaded to true', () => {
+        const result1 = {
+          _links: { self: { href: 'results/1' } }
+        } as SkillResult;
+        const result2 = { _links: {} } as SkillResult; // is not yet uploaded (no self link)
+        skillResultsService.getCachedSkillResults = jest.fn(() => [
+          result1,
+          result2
+        ]);
+
+        component.ngOnInit();
+
+        expect(component.isASkillResultUploaded).toBeTruthy();
+      });
+
+      it('should set isASkillResultUploaded to false', () => {
+        const result1 = { _links: {} } as SkillResult; // is not yet uploaded (no self link)
+        const result2 = { _links: {} } as SkillResult; // is not yet uploaded (no self link)
+        skillResultsService.getCachedSkillResults = jest.fn(() => [
+          result1,
+          result2
+        ]);
+
+        component.ngOnInit();
+
+        expect(component.isASkillResultUploaded).toBeFalsy();
+      });
+    });
+
+    describe('showPoints', () => {
+      it('should set showPoints to true', () => {
+        skill = { typeForPlayers: SkillType.TIME_WITH_POINTS } as Skill;
+        stateService.setSelectedSkill(skill);
+
+        component.ngOnInit();
+        expect(component.showPoints).toBeTruthy();
+      });
+
+      it('should set showPoints to false', () => {
+        skill = { typeForPlayers: SkillType.TIME_WITH_RATING } as Skill;
+        stateService.setSelectedSkill(skill);
+
+        component.ngOnInit();
+        expect(component.showPoints).toBeFalsy();
+      });
+    });
   });
 
   it('should edit a result', () => {
+    component.selectedSkill = {
+      typeForPlayers: SkillType.TIME_WITH_RATING
+    } as Skill;
     const result = {} as SkillResult;
 
     component.editResult(result);
@@ -99,9 +154,35 @@ describe('ResultListComponent', () => {
   });
 
   it('should create a result', () => {
+    component.selectedSkill = {
+      typeForPlayers: SkillType.TIME_WITH_RATING
+    } as Skill;
+
     component.createResult();
 
     expect(skillResultsService.removeSelectedItem).toHaveBeenCalled();
     expect(router.navigateByUrl).toHaveBeenCalled();
+  });
+
+  describe('navigateToDetailView', () => {
+    it('should navigate to the page "result detail for time"', () => {
+      component.selectedSkill = {
+        typeForPlayers: SkillType.TIME_WITH_RATING
+      } as Skill;
+      component['navigateToDetailView']();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        'skillsonice/resultdetailfortime'
+      );
+    });
+
+    it('should navigate to the page "result detail for time with points"', () => {
+      component.selectedSkill = {
+        typeForPlayers: SkillType.TIME_WITH_POINTS
+      } as Skill;
+      component['navigateToDetailView']();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        'skillsonice/resultdetailfortimewithpoints'
+      );
+    });
   });
 });

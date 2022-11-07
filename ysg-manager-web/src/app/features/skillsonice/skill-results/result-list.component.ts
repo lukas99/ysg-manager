@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
-import { Skill, SkillResult, Team } from '../../../types';
+import { Skill, SkillResult, SkillType, Team } from '../../../types';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
+import { SkillTypeService } from '../../../core/services/skill-type.service';
 
 interface SkillResultView extends SkillResult {
   isUploaded: boolean;
@@ -18,6 +19,7 @@ export class ResultListComponent implements OnInit {
   selectedTeam!: Team;
 
   skillResults: SkillResultView[] = [];
+  showPoints = false;
   /**
    * Whether at least one skill result of the skillResults array is uploaded to the server.
    */
@@ -26,6 +28,7 @@ export class ResultListComponent implements OnInit {
   constructor(
     private stateService: SkillsOnIceStateService,
     private skillResultsService: SkillResultsService,
+    private skillTypeService: SkillTypeService,
     private router: Router
   ) {}
 
@@ -40,6 +43,7 @@ export class ResultListComponent implements OnInit {
         skillResultView.isUploaded = this.isUploaded(skillResult);
         return skillResultView;
       });
+    this.showPoints = this.skillTypeService.isWithPoints(this.selectedSkill);
     this.isASkillResultUploaded =
       this.skillResults.findIndex((result) => result.isUploaded) > -1;
   }
@@ -59,6 +63,11 @@ export class ResultListComponent implements OnInit {
   }
 
   private navigateToDetailView() {
-    this.router.navigateByUrl('skillsonice/resultdetailfortime');
+    const skillTypeForPlayers = this.selectedSkill.typeForPlayers;
+    if (skillTypeForPlayers === SkillType.TIME_WITH_RATING) {
+      this.router.navigateByUrl('skillsonice/resultdetailfortime');
+    } else if (skillTypeForPlayers === SkillType.TIME_WITH_POINTS) {
+      this.router.navigateByUrl('skillsonice/resultdetailfortimewithpoints');
+    }
   }
 }

@@ -1,0 +1,17 @@
+<mat-card>
+  <mat-card-subtitle>
+    <mat-icon>check_circle</mat-icon>
+    {{ 'SKILLS_ON_ICE_DETAIL_POINTS' | translate }}</mat-card-subtitle
+  >
+  <div class="points-content">
+    <button mat-icon-button (click)="decreasePoints()" [disabled]="points <= 0">
+      <mat-icon>remove</mat-icon>
+    </button>
+    <div class="points-count">
+      {{ points }}
+    </div>
+    <button mat-icon-button (click)="increasePoints()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</mat-card>

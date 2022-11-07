@@ -1,14 +1,19 @@
+mat-card {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 mat-card-subtitle mat-icon {
   margin-right: 5px;
   vertical-align: bottom;
 }
 
-.failures-content {
+.points-content {
   display: flex;
   justify-content: space-between;
 }
 
-.failures-count {
+.points-count {
   font-size: 35px;
   text-align: center;
 }
