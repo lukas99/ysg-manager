@@ -6,6 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./points.component.css']
 })
 export class PointsComponent {
+  @Input() allow3PointsAddition: boolean = false;
   @Input() points: number = 0;
   @Output() pointsChange = new EventEmitter<number>();
 
@@ -14,8 +15,18 @@ export class PointsComponent {
     this.emitPointsValue();
   }
 
+  decreasePointsBy3() {
+    this.points = this.points - 3;
+    this.emitPointsValue();
+  }
+
   increasePoints() {
     this.points = this.points + 1;
+    this.emitPointsValue();
+  }
+
+  increasePointsBy3() {
+    this.points = this.points + 3;
     this.emitPointsValue();
   }
 

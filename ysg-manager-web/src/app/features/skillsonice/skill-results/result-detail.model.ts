@@ -21,9 +21,9 @@ export abstract class ResultDetailModel {
   stopWatchRunning: boolean = false;
 
   constructor(
-    private stateService: SkillsOnIceStateService,
-    private skillResultsService: SkillResultsService,
-    private router: Router
+    protected stateService: SkillsOnIceStateService,
+    protected skillResultsService: SkillResultsService,
+    protected router: Router
   ) {}
 
   ngOnInit(): void {
@@ -48,10 +48,7 @@ export abstract class ResultDetailModel {
     }
   }
 
-  private shouldUpdate() {
-    // all values of selected item are undefined, we use time here for testing
-    return this.skillResultsService.getSelectedItemValue().time;
-  }
+  abstract shouldUpdate(): boolean;
 
   delete() {
     this.skillResultsService.removeSkillResultFromCache(this.skillResult);

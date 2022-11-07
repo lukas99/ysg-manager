@@ -3,15 +3,58 @@
     <mat-icon>check_circle</mat-icon>
     {{ 'SKILLS_ON_ICE_DETAIL_POINTS' | translate }}</mat-card-subtitle
   >
-  <div class="points-content">
-    <button mat-icon-button (click)="decreasePoints()" [disabled]="points <= 0">
-      <mat-icon>remove</mat-icon>
-    </button>
-    <div class="points-count">
-      {{ points }}
+
+  <ng-container *ngIf="!allow3PointsAddition">
+    <div class="points-content">
+      <button
+        mat-icon-button
+        (click)="decreasePoints()"
+        [disabled]="points <= 0"
+      >
+        <mat-icon>remove</mat-icon>
+      </button>
+      <div class="points-count">
+        {{ points }}
+      </div>
+      <button mat-icon-button (click)="increasePoints()">
+        <mat-icon>add</mat-icon>
+      </button>
     </div>
-    <button mat-icon-button (click)="increasePoints()">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
+  </ng-container>
+
+  <ng-container *ngIf="allow3PointsAddition">
+    <div class="points-content">
+      <button
+        mat-icon-button
+        (click)="decreasePointsBy3()"
+        [disabled]="points <= 2"
+      >
+        <mat-icon>remove</mat-icon> 3
+      </button>
+      <div></div>
+      <button mat-icon-button (click)="increasePointsBy3()">
+        <mat-icon>add</mat-icon> 3
+      </button>
+    </div>
+    <div class="points-content additional-margin">
+      <div></div>
+      <div class="points-count">
+        {{ points }}
+      </div>
+      <div></div>
+    </div>
+    <div class="points-content">
+      <button
+        mat-icon-button
+        (click)="decreasePoints()"
+        [disabled]="points <= 0"
+      >
+        <mat-icon>remove</mat-icon> 1
+      </button>
+      <div></div>
+      <button mat-icon-button (click)="increasePoints()">
+        <mat-icon>add</mat-icon> 1
+      </button>
+    </div>
+  </ng-container>
 </mat-card>

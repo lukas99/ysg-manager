@@ -19,6 +19,7 @@ export class ResultListComponent implements OnInit {
   selectedTeam!: Team;
 
   skillResults: SkillResultView[] = [];
+  showTime = false;
   showPoints = false;
   /**
    * Whether at least one skill result of the skillResults array is uploaded to the server.
@@ -43,6 +44,7 @@ export class ResultListComponent implements OnInit {
         skillResultView.isUploaded = this.isUploaded(skillResult);
         return skillResultView;
       });
+    this.showTime = this.skillTypeService.isWithTime(this.selectedSkill);
     this.showPoints = this.skillTypeService.isWithPoints(this.selectedSkill);
     this.isASkillResultUploaded =
       this.skillResults.findIndex((result) => result.isUploaded) > -1;
@@ -68,6 +70,8 @@ export class ResultListComponent implements OnInit {
       this.router.navigateByUrl('skillsonice/resultdetailfortime');
     } else if (skillTypeForPlayers === SkillType.TIME_WITH_POINTS) {
       this.router.navigateByUrl('skillsonice/resultdetailfortimewithpoints');
+    } else if (skillTypeForPlayers === SkillType.POINTS) {
+      this.router.navigateByUrl('skillsonice/resultdetailforpoints');
     }
   }
 }

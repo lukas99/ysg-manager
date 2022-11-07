@@ -122,22 +122,20 @@ describe('ResultListComponent', () => {
       });
     });
 
-    describe('showPoints', () => {
-      it('should set showPoints to true', () => {
-        skill = { typeForPlayers: SkillType.TIME_WITH_POINTS } as Skill;
-        stateService.setSelectedSkill(skill);
+    it('should set showTime to true', () => {
+      skill = { typeForPlayers: SkillType.TIME_WITH_POINTS } as Skill;
+      stateService.setSelectedSkill(skill);
 
-        component.ngOnInit();
-        expect(component.showPoints).toBeTruthy();
-      });
+      component.ngOnInit();
+      expect(component.showTime).toBeTruthy();
+    });
 
-      it('should set showPoints to false', () => {
-        skill = { typeForPlayers: SkillType.TIME_WITH_RATING } as Skill;
-        stateService.setSelectedSkill(skill);
+    it('should set showPoints to true', () => {
+      skill = { typeForPlayers: SkillType.TIME_WITH_POINTS } as Skill;
+      stateService.setSelectedSkill(skill);
 
-        component.ngOnInit();
-        expect(component.showPoints).toBeFalsy();
-      });
+      component.ngOnInit();
+      expect(component.showPoints).toBeTruthy();
     });
   });
 
@@ -182,6 +180,16 @@ describe('ResultListComponent', () => {
       component['navigateToDetailView']();
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         'skillsonice/resultdetailfortimewithpoints'
+      );
+    });
+
+    it('should navigate to the page "result detail for points"', () => {
+      component.selectedSkill = {
+        typeForPlayers: SkillType.POINTS
+      } as Skill;
+      component['navigateToDetailView']();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        'skillsonice/resultdetailforpoints'
       );
     });
   });

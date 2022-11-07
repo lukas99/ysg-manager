@@ -17,3 +17,8 @@ mat-card-subtitle mat-icon {
   font-size: 35px;
   text-align: center;
 }
+
+.additional-margin {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

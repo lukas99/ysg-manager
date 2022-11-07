@@ -8,4 +8,10 @@ import { ResultDetailModel } from './result-detail.model';
 })
 export class ResultDetailForTimeWithPointsComponent
   extends ResultDetailModel
-  implements OnInit {}
+  implements OnInit
+{
+  shouldUpdate(): boolean {
+    // all values of selected item are undefined, we use time here for testing
+    return this.skillResultsService.getSelectedItemValue().time;
+  }
+}

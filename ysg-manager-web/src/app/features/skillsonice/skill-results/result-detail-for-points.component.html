@@ -1,0 +1,17 @@
+<ysg-mobile-page-title [backRoute]="'skillsonice/resultlist'">
+  {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
+  {{ selectedTeam?.name }}
+</ysg-mobile-page-title>
+<ysg-player [(player)]="skillResult.player"></ysg-player>
+<ysg-points
+  [(points)]="skillResult.points"
+  [allow3PointsAddition]="true"
+></ysg-points>
+<ysg-failures [(failures)]="skillResult.failures"></ysg-failures>
+<ysg-crud-buttons
+  (deleteClicked)="delete()"
+  (cancelClicked)="cancel()"
+  (saveClicked)="save()"
+  [saveDisabled]="!(skillResult.player.shirtNumber > 0)"
+>
+</ysg-crud-buttons>

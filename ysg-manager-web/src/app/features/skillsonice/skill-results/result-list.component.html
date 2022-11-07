@@ -16,7 +16,7 @@
           <span *ngIf="skillResult.player.position === 'GOALTENDER'"> TH </span>
         </span>
       </div>
-      <div class="row-content">
+      <div class="row-content" *ngIf="showTime">
         <span>
           <mat-icon>timer</mat-icon>
           <span>{{ skillResult.time | number: '1.2-2' }}</span>
