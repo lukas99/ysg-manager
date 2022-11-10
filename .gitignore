@@ -1,5 +1,10 @@
-# Created by https://www.toptal.com/developers/gitignore/api/git,node,maven,angular,windows,intellij+iml
-# Edit at https://www.toptal.com/developers/gitignore?templates=git,node,maven,angular,windows,intellij+iml
+# manual added entries
+
+# certificates
+*.p12
+
+# Created by https://www.toptal.com/developers/gitignore/api/git,node,maven,angular,windows,intellij+iml,certificates
+# Edit at https://www.toptal.com/developers/gitignore?templates=git,node,maven,angular,windows,intellij+iml,certificates
 
 ### Angular ###
 ## Angular ##
@@ -32,6 +37,14 @@ e2e/*.map
 
 # System Files
 .DS_Store/
+
+### certificates ###
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.priv
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
@@ -319,4 +332,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/git,node,maven,angular,windows,intellij+iml
+# End of https://www.toptal.com/developers/gitignore/api/git,node,maven,angular,windows,intellij+iml,certificates
