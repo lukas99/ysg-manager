@@ -3,8 +3,11 @@
   <input
     matInput
     type="number"
+    inputmode="numeric"
+    pattern="[0-9]*"
+    autocomplete="off"
     [(ngModel)]="player.shirtNumber"
-    (change)="shirtNumberChanged()"
+    (keyup)="shirtNumberChanged()"
   />
 </mat-form-field>
 <mat-button-toggle-group [value]="player.position">
