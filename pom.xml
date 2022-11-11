@@ -23,6 +23,19 @@
     <module>ysg-manager-web</module>
   </modules>
 
+  <properties>
+    <tests.skip>false</tests.skip>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>skip-tests</id>
+      <properties>
+        <tests.skip>true</tests.skip>
+      </properties>
+    </profile>
+  </profiles>
+
   <dependencies>
   </dependencies>
 </project>
