@@ -24,7 +24,7 @@ describe('TimeManuelComponent', () => {
   describe('keyUp', () => {
     it('emits the time', () => {
       let emittedTime;
-      component.timeChange.subscribe(time => emittedTime = time);
+      component.timeChange.subscribe((time) => (emittedTime = time));
       component.time = 13.6;
       component.ngOnInit();
       component.keyUp();
@@ -35,7 +35,7 @@ describe('TimeManuelComponent', () => {
 
     it('emits zero when component time is undefined', () => {
       let emittedTime;
-      component.timeChange.subscribe(time => emittedTime = time);
+      component.timeChange.subscribe((time) => (emittedTime = time));
       component.time = 0;
       component.ngOnInit();
       component.keyUp();
@@ -45,11 +45,10 @@ describe('TimeManuelComponent', () => {
     });
   });
 
-
   describe('inputFieldLeft', () => {
     it('emits the rounded time', () => {
       let emittedTime;
-      component.timeChange.subscribe(time => emittedTime = time);
+      component.timeChange.subscribe((time) => (emittedTime = time));
       component.time = 13.8999;
       component.ngOnInit();
       component.inputFieldLeft();
@@ -60,7 +59,7 @@ describe('TimeManuelComponent', () => {
 
     it('emits zero when component time is undefined', () => {
       let emittedTime;
-      component.timeChange.subscribe(time => emittedTime = time);
+      component.timeChange.subscribe((time) => (emittedTime = time));
       component.time = 0;
       component.ngOnInit();
       component.inputFieldLeft();
