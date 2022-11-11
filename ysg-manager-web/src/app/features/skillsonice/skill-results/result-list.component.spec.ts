@@ -141,7 +141,8 @@ describe('ResultListComponent', () => {
 
   it('should edit a result', () => {
     component.selectedSkill = {
-      typeForPlayers: SkillType.TIME_WITH_RATING
+      typeForPlayers: SkillType.TIME_WITH_RATING,
+      name: 'Magic Transitions'
     } as Skill;
     const result = {} as SkillResult;
 
@@ -153,7 +154,8 @@ describe('ResultListComponent', () => {
 
   it('should create a result', () => {
     component.selectedSkill = {
-      typeForPlayers: SkillType.TIME_WITH_RATING
+      typeForPlayers: SkillType.TIME_WITH_RATING,
+      name: 'Magic Transitions'
     } as Skill;
 
     component.createResult();
@@ -163,8 +165,9 @@ describe('ResultListComponent', () => {
   });
 
   describe('navigateToDetailView', () => {
-    it('should navigate to the page "result detail for time"', () => {
+    it('should navigate to the page for skill Magic Transitions', () => {
       component.selectedSkill = {
+        name: 'Magic Transitions',
         typeForPlayers: SkillType.TIME_WITH_RATING
       } as Skill;
       component['navigateToDetailView']();
@@ -173,8 +176,19 @@ describe('ResultListComponent', () => {
       );
     });
 
-    it('should navigate to the page "result detail for time with points"', () => {
+    it('should navigate to the page for skill Best Shot', () => {
       component.selectedSkill = {
+        typeForPlayers: SkillType.POINTS
+      } as Skill;
+      component['navigateToDetailView']();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        'skillsonice/resultdetailforpoints'
+      );
+    });
+
+    it('should navigate to the page for skill Pass and Go', () => {
+      component.selectedSkill = {
+        name: 'Pass and Go',
         typeForPlayers: SkillType.TIME_WITH_POINTS
       } as Skill;
       component['navigateToDetailView']();
@@ -183,13 +197,25 @@ describe('ResultListComponent', () => {
       );
     });
 
-    it('should navigate to the page "result detail for points"', () => {
+    it('should navigate to the page for skill Controlled Jumble', () => {
       component.selectedSkill = {
-        typeForPlayers: SkillType.POINTS
+        name: 'Controlled Jumble',
+        typeForPlayers: SkillType.TIME
       } as Skill;
       component['navigateToDetailView']();
       expect(router.navigateByUrl).toHaveBeenCalledWith(
-        'skillsonice/resultdetailforpoints'
+        'skillsonice/resultdetailfortime'
+      );
+    });
+
+    it('should navigate to the page for skill Hit the Road', () => {
+      component.selectedSkill = {
+        name: 'hit the road',
+        typeForPlayers: SkillType.TIME_WITH_RATING
+      } as Skill;
+      component['navigateToDetailView']();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        'skillsonice/resultdetailfortimemanual'
       );
     });
   });

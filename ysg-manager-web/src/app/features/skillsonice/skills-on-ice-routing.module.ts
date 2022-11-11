@@ -7,13 +7,18 @@ import { ResultListComponent } from './skill-results/result-list.component';
 import { ResultDetailForTimeComponent } from './skill-results/result-detail-for-time.component';
 import { ResultDetailForTimeWithPointsComponent } from './skill-results/result-detail-for-time-with-points.component';
 import { ResultDetailForPointsComponent } from './skill-results/result-detail-for-points.component';
+import { ResultDetailForTimeManualComponent } from './skill-results/result-detail-for-time-manual.component';
 
 const routes: Routes = [
   { path: '', component: SkillSelectionComponent },
   { path: 'teamselection', component: TeamSelectionComponent },
   { path: 'resultlist', component: ResultListComponent },
-  { path: 'resultdetailfortime', component: ResultDetailForTimeComponent },
   { path: 'resultdetailforpoints', component: ResultDetailForPointsComponent },
+  { path: 'resultdetailfortime', component: ResultDetailForTimeComponent },
+  {
+    path: 'resultdetailfortimemanual',
+    component: ResultDetailForTimeManualComponent
+  },
   {
     path: 'resultdetailfortimewithpoints',
     component: ResultDetailForTimeWithPointsComponent

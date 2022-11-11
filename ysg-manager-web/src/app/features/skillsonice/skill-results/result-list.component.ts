@@ -38,12 +38,12 @@ export class ResultListComponent implements OnInit {
     this.selectedTeam = this.stateService.getSelectedTeam();
 
     this.skillResults = this.skillResultsService
-      .getCachedSkillResults(this.selectedSkill, this.selectedTeam)
-      .map((skillResult) => {
-        let skillResultView = skillResult as SkillResultView;
-        skillResultView.isUploaded = this.isUploaded(skillResult);
-        return skillResultView;
-      });
+    .getCachedSkillResults(this.selectedSkill, this.selectedTeam)
+    .map((skillResult) => {
+      let skillResultView = skillResult as SkillResultView;
+      skillResultView.isUploaded = this.isUploaded(skillResult);
+      return skillResultView;
+    });
     this.showTime = this.skillTypeService.isWithTime(this.selectedSkill);
     this.showPoints = this.skillTypeService.isWithPoints(this.selectedSkill);
     this.isASkillResultUploaded =
@@ -66,12 +66,20 @@ export class ResultListComponent implements OnInit {
 
   private navigateToDetailView() {
     const skillTypeForPlayers = this.selectedSkill.typeForPlayers;
-    if (skillTypeForPlayers === SkillType.TIME_WITH_RATING) {
-      this.router.navigateByUrl('skillsonice/resultdetailfortime');
+    const skillName = this.selectedSkill.name;
+    let url = '';
+    if (skillTypeForPlayers === SkillType.TIME_WITH_RATING
+      || skillTypeForPlayers === SkillType.TIME) {
+      if ('hit the road' === skillName.toLowerCase()) {
+        url = 'skillsonice/resultdetailfortimemanual';
+      } else {
+        url = 'skillsonice/resultdetailfortime';
+      }
     } else if (skillTypeForPlayers === SkillType.TIME_WITH_POINTS) {
-      this.router.navigateByUrl('skillsonice/resultdetailfortimewithpoints');
+      url = 'skillsonice/resultdetailfortimewithpoints';
     } else if (skillTypeForPlayers === SkillType.POINTS) {
-      this.router.navigateByUrl('skillsonice/resultdetailforpoints');
+      url = 'skillsonice/resultdetailforpoints';
     }
+    this.router.navigateByUrl(url);
   }
 }

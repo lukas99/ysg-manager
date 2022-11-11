@@ -1,0 +1,18 @@
+<mat-card>
+  <mat-card-subtitle>
+    <mat-icon>timer</mat-icon>
+    {{ 'SKILLS_ON_ICE_DETAIL_TIME' | translate }}
+  </mat-card-subtitle>
+  <mat-form-field appearance="fill">
+    <mat-label>{{ 'SKILLS_ON_ICE_DETAIL_TIME' | translate }}</mat-label>
+    <input
+      matInput
+      type="number"
+      inputmode="numeric"
+      autocomplete="off"
+      [(ngModel)]="componentTime"
+      (keyup)="keyUp()"
+      (change)="inputFieldLeft()"
+    />
+  </mat-form-field>
+</mat-card>

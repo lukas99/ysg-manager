@@ -14,6 +14,8 @@ import { CrudButtonsComponent } from './shared/crud-buttons.component';
 import { ResultDetailForTimeWithPointsComponent } from './skill-results/result-detail-for-time-with-points.component';
 import { PointsComponent } from './shared/points.component';
 import { ResultDetailForPointsComponent } from './skill-results/result-detail-for-points.component';
+import { ResultDetailForTimeManualComponent } from './skill-results/result-detail-for-time-manual.component';
+import { TimeManualComponent } from './shared/time-manual.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { ResultDetailForPointsComponent } from './skill-results/result-detail-fo
     CrudButtonsComponent,
     ResultDetailForTimeWithPointsComponent,
     PointsComponent,
-    ResultDetailForPointsComponent
+    ResultDetailForPointsComponent,
+    ResultDetailForTimeManualComponent,
+    TimeManualComponent
   ],
   imports: [SharedModule, SkillsOnIceRoutingModule]
 })
