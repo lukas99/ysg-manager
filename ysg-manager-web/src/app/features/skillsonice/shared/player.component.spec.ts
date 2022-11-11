@@ -3,9 +3,11 @@ import { Player, PlayerPosition } from '../../../types';
 
 describe('PlayerComponent', () => {
   let component: PlayerComponent;
+  let ngZone: any;
 
   beforeEach(() => {
-    component = new PlayerComponent();
+    ngZone = {};
+    component = new PlayerComponent(ngZone);
   });
 
   it('emits the player when the shirt number has changed', (done) => {
