@@ -50,6 +50,13 @@ export abstract class ResultDetailModel {
 
   abstract shouldUpdate(): boolean;
 
+  playerChanged() {
+    if (this.resultForSkillExists()) {
+      this.skillResult.player.shirtNumber = 0;
+      this.showAlertDialogResultForSkillAlreadyExists();
+    }
+  }
+
   delete() {
     this.skillResultsService.removeSkillResultFromCache(this.skillResult);
     this.navigateToResultList();
@@ -60,6 +67,13 @@ export abstract class ResultDetailModel {
   }
 
   save() {
+    if (this.resultForSkillExists()) {
+      // check for existing result although check is also done when player shirt number has changed
+      // check again here in case component <ysg-player> would be used without (playerChange)
+      // output validation
+      this.showAlertDialogResultForSkillAlreadyExists();
+      return;
+    }
     if (this.shouldUpdate()) {
       this.skillResultsService.updateSkillResultInCache(this.skillResult);
     } else {
@@ -71,5 +85,20 @@ export abstract class ResultDetailModel {
   private navigateToResultList() {
     this.skillResultsService.removeSelectedItem();
     this.router.navigateByUrl('skillsonice/resultlist');
+  }
+
+  private resultForSkillExists(): boolean {
+    let existingCacheResult = this.skillResultsService.getCachedSkillResult(
+      this.selectedSkill,
+      this.selectedTeam,
+      this.skillResult.player
+    );
+    return !!existingCacheResult;
+  }
+
+  showAlertDialogResultForSkillAlreadyExists() {
+    window.alert(
+      'Skill Resultat für diesen Spieler und für diesen Skill existiert bereits!'
+    );
   }
 }

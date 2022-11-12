@@ -18,11 +18,14 @@ describe('ResultDetailModel', () => {
   let removeSelectedSkill: any;
   let updateSkillResultInCache: any;
   let addSkillResultToCache: any;
+  let getCachedSkillResult: any;
 
   let selectedTeamLink: Link;
   let selectedSkillLink: Link;
   let selectedTeam: Team;
   let selectedSkill: Skill;
+
+  let showAlertDialogResultAlreadyExists: any;
 
   beforeEach(() => {
     stateService = new SkillsOnIceStateService();
@@ -49,6 +52,13 @@ describe('ResultDetailModel', () => {
       skillResultsService,
       'addSkillResultToCache'
     );
+    getCachedSkillResult = jest.spyOn(
+      skillResultsService,
+      'getCachedSkillResult'
+    );
+    // result for same player does not yet exist in cache
+    getCachedSkillResult.mockImplementation(() => {});
+
     router = <any>{ navigateByUrl: jest.fn() };
     component = new ResultDetailForTimeComponent(
       stateService,
@@ -62,6 +72,12 @@ describe('ResultDetailModel', () => {
     selectedSkill = { _links: { self: selectedSkillLink } } as Skill;
     stateService.setSelectedTeam(selectedTeam);
     stateService.setSelectedSkill(selectedSkill);
+
+    showAlertDialogResultAlreadyExists = jest.spyOn(
+      component,
+      'showAlertDialogResultForSkillAlreadyExists'
+    );
+    showAlertDialogResultAlreadyExists.mockImplementation(() => {});
   });
 
   describe('ngOnInit', () => {
@@ -124,6 +140,10 @@ describe('ResultDetailModel', () => {
       expect(skillResultsService.updateSkillResultInCache).toHaveBeenCalledWith(
         existingResult
       );
+      expect(removeSelectedSkill).toHaveBeenCalled();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        'skillsonice/resultlist'
+      );
     });
 
     it('should create new result', () => {
@@ -135,6 +155,60 @@ describe('ResultDetailModel', () => {
       expect(skillResultsService.addSkillResultToCache).toHaveBeenCalledWith(
         component.skillResult
       );
+      expect(removeSelectedSkill).toHaveBeenCalled();
+      expect(router.navigateByUrl).toHaveBeenCalledWith(
+        'skillsonice/resultlist'
+      );
+    });
+
+    it('should prevent to create a new result when a result already exists in cache', () => {
+      expect(skillResultsService.getSelectedItemValue()).toEqual({});
+      component.ngOnInit();
+      // result for this player already exists in cache
+      getCachedSkillResult.mockImplementation(() => ({} as SkillResult));
+
+      component.save();
+
+      expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(1);
+
+      expect(
+        skillResultsService.updateSkillResultInCache
+      ).toHaveBeenCalledTimes(0);
+      expect(skillResultsService.addSkillResultToCache).toHaveBeenCalledTimes(
+        0
+      );
+      expect(removeSelectedSkill).toHaveBeenCalledTimes(0);
+      expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('playerChanged', () => {
+    beforeEach(() => {
+      // create new result
+      expect(skillResultsService.getSelectedItemValue()).toEqual({});
+      component.ngOnInit();
+      // set shirt number
+      component.skillResult.player.shirtNumber = 20;
+    });
+
+    it('detects that a skill result for a player already exists', () => {
+      // result for this player already exists in cache
+      getCachedSkillResult.mockImplementation(() => ({} as SkillResult));
+
+      component.playerChanged();
+
+      expect(component.skillResult.player.shirtNumber).toBe(0);
+      expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(1);
+    });
+
+    it('detects that a skill result for a player not yet exists', () => {
+      // result for this player already exists in cache
+      getCachedSkillResult.mockImplementation(() => null);
+
+      component.playerChanged();
+
+      expect(component.skillResult.player.shirtNumber).toBe(20);
+      expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(0);
     });
   });
 });

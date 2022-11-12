@@ -1,5 +1,7 @@
 <mat-form-field appearance="fill">
   <mat-label>{{ 'SKILLS_ON_ICE_DETAIL_PLAYER_NUMBER' | translate }}</mat-label>
+  <!-- do not use (keyup) instead of (change) to not trigger detection if result/rating
+       already exists for this player -->
   <input
     #shirtNumber
     matInput
@@ -8,7 +10,7 @@
     pattern="[0-9]*"
     autocomplete="off"
     [(ngModel)]="player.shirtNumber"
-    (keyup)="shirtNumberChanged()"
+    (change)="shirtNumberChanged()"
   />
 </mat-form-field>
 <mat-button-toggle-group [value]="player.position">

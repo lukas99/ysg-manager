@@ -2,7 +2,10 @@
   {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
   {{ selectedTeam?.name }}
 </ysg-mobile-page-title>
-<ysg-player [(player)]="skillResult.player"></ysg-player>
+<ysg-player
+  [(player)]="skillResult.player"
+  (playerChange)="playerChanged()"
+></ysg-player>
 <ysg-points
   [(points)]="skillResult.points"
   [allow3PointsAddition]="true"

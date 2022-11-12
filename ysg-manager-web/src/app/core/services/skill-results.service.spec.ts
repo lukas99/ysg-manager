@@ -245,12 +245,14 @@ describe('SkillResultsService', () => {
       // skills to create (no self link)
       resultSkill1Team1 = <SkillResult>{
         player: {
+          shirtNumber: 10,
           team: { _links: { self: team1Link } } as Team
         } as Player,
         _links: { skill: skill1Link }
       };
       resultSkill1Team2 = <SkillResult>{
         player: {
+          shirtNumber: 20,
           team: { _links: { self: team2Link } } as Team
         } as Player,
         _links: { skill: skill1Link }
@@ -258,12 +260,14 @@ describe('SkillResultsService', () => {
       // skills to update (with self link)
       resultSkill2Team1 = <SkillResult>{
         player: {
+          shirtNumber: 30,
           team: { _links: { self: team1Link } } as Team
         } as Player,
         _links: { self: resultSkill2Team1Link, skill: skill2Link }
       };
       resultSkill2Team2 = <SkillResult>{
         player: {
+          shirtNumber: 40,
           team: { _links: { self: team2Link } } as Team
         } as Player,
         _links: { self: resultSkill2Team2Link, skill: skill2Link }
@@ -289,6 +293,29 @@ describe('SkillResultsService', () => {
         resultSkill2Team1,
         resultSkill2Team2
       );
+    });
+
+    it('should return cached single skill result', () => {
+      let anotherSkillResultForSkill1Team1 = <SkillResult>{
+        player: {
+          shirtNumber: 20,
+          team: { _links: { self: team1Link } } as Team
+        } as Player,
+        _links: { skill: skill1Link }
+      };
+      service.addSkillResultToCache(anotherSkillResultForSkill1Team1);
+
+      expect(
+        service.getCachedSkillResult(
+          skill1,
+          team1,
+          anotherSkillResultForSkill1Team1.player
+        )
+      ).toEqual({
+        ...anotherSkillResultForSkill1Team1,
+        isCached: true,
+        cacheId: '1111'
+      });
     });
 
     describe('pushCachedSkillResultsToServer', () => {

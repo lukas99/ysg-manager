@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, map, take } from 'rxjs/operators';
-import { Skill, SkillResult, SkillResultList, Team } from '../../types';
+import { Player, Skill, SkillResult, SkillResultList, Team } from '../../types';
 import { CrudStateService } from './crud-state.service';
 import { SkillsService } from './skills.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
@@ -108,6 +108,17 @@ export class SkillResultsService
           skillResult.player.team._links.self.href === team._links.self.href &&
           skillResult._links.skill.href === skill._links.self.href
       );
+  }
+
+  getCachedSkillResult(
+    skill: Skill,
+    team: Team,
+    player: Player
+  ): SkillResult | null {
+    let skillResults = this.getCachedSkillResults(skill, team).filter(
+      (skillResult) => skillResult.player.shirtNumber === player.shirtNumber
+    );
+    return skillResults.length > 0 ? skillResults[0] : null;
   }
 
   pushCachedSkillResultsToServer(): void {
