@@ -1,5 +1,6 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
+import static com.lukas99.ysgmanager.domain.PlayerPosition.SKATER;
 import static com.lukas99.ysgmanager.domain.SkillRatingTemplates.controlledJumbleRating;
 import static com.lukas99.ysgmanager.domain.SkillRatingTemplates.magicTransitionsRating;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.lukas99.ysgmanager.domain.Player;
+import com.lukas99.ysgmanager.domain.PlayerRepository;
 import com.lukas99.ysgmanager.domain.PlayerService;
 import com.lukas99.ysgmanager.domain.PlayerTemplates;
 import com.lukas99.ysgmanager.domain.Skill;
@@ -26,6 +28,7 @@ import com.lukas99.ysgmanager.domain.SkillRatingTemplates;
 import com.lukas99.ysgmanager.domain.SkillService;
 import com.lukas99.ysgmanager.domain.SkillTemplates;
 import com.lukas99.ysgmanager.domain.Team;
+import com.lukas99.ysgmanager.domain.TeamService;
 import com.lukas99.ysgmanager.domain.TeamTemplates;
 import com.lukas99.ysgmanager.domain.Tournament;
 import com.lukas99.ysgmanager.domain.TournamentTemplates;
@@ -61,13 +64,21 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
   private SkillService skillService;
 
   @Autowired
+  private PlayerRepository playerRepository;
+
+  @Autowired
+  private TeamService teamService;
+
+  @Autowired
   private EntityManager em;
 
   private MockMvc restSkillRatingMockMvc;
 
+  private Team ehcEngelberg;
   private Player romanJosi;
   private Player martinGerber;
   private Skill magicTransitions;
+  private Skill controlledJumble;
   private SkillRating magicTransitionsRating;
   private SkillRating controlledJumbleRating;
   private SkillRatingModel magicTransitionsRatingModel;
@@ -76,7 +87,7 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
   public void setup() {
     MockitoAnnotations.openMocks(this);
     final SkillRatingRestController skillRatingRestController =
-        new SkillRatingRestController(skillRatingService, playerService, skillService);
+        new SkillRatingRestController(skillRatingService, playerService, skillService, teamService);
     this.restSkillRatingMockMvc =
         MockMvcBuilders.standaloneSetup(skillRatingRestController).build();
   }
@@ -84,11 +95,11 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
   @BeforeEach
   public void initTest() {
     Tournament ysg2019 = TournamentTemplates.ysg2019(em);
-    Team ehcEngelberg = TeamTemplates.ehcEngelberg(ysg2019, em);
+    ehcEngelberg = TeamTemplates.ehcEngelberg(ysg2019, em);
     romanJosi = PlayerTemplates.romanJosi(ehcEngelberg, em);
     martinGerber = PlayerTemplates.martinGerber(ehcEngelberg, em);
     magicTransitions = SkillTemplates.magicTransitions(ysg2019, em);
-    Skill controlledJumble = SkillTemplates.controlledJumble(ysg2019, em);
+    controlledJumble = SkillTemplates.controlledJumble(ysg2019, em);
     magicTransitionsRating = magicTransitionsRating(magicTransitions, romanJosi);
     controlledJumbleRating = controlledJumbleRating(controlledJumble, martinGerber);
     magicTransitionsRatingModel = new SkillRatingModelAssembler().toModel(magicTransitionsRating);
@@ -133,6 +144,68 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
     assertThat(testSkillRating.getPlayer()).isEqualTo(romanJosi);
     assertThat(testSkillRating.getSkill()).isEqualTo(magicTransitions);
     assertThat(testSkillRating.getScore()).isEqualTo(SkillRatingTemplates.NINTY);
+  }
+
+  @Test
+  @Transactional
+  public void createSkillRatingBySkill_createPlayerIfNotExists() throws Exception {
+    var player = Player.builder().position(SKATER).shirtNumber(99).team(ehcEngelberg).build();
+    var skillRating1 = magicTransitionsRating(magicTransitions, player);
+    var skillRating2 = controlledJumbleRating(controlledJumble, player);
+    var skillRatingModel1 = new SkillRatingModelAssembler().toModel(skillRating1);
+    var skillRatingModel2 = new SkillRatingModelAssembler().toModel(skillRating2);
+    var skillLink1 = skillRatingModel1.getRequiredLink("skill");
+    var skillLink2 = skillRatingModel2.getRequiredLink("skill");
+    // remove player link, it must not be available because player doesn't exist yet
+    skillRatingModel1 = skillRatingModel1.removeLinks().add(skillLink1);
+    skillRatingModel2 = skillRatingModel2.removeLinks().add(skillLink2);
+
+    int databaseSizeBeforeCreate = skillRatingRepository.findAll().size();
+    int playerAmountBeforeCreate = playerRepository.findAll().size();
+
+    // Create a SkillRating -> player doesn't exist yet and will be created
+    restSkillRatingMockMvc
+        .perform(post("/api/skills/{skillId}/skill-ratings", magicTransitions.getId())
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(skillRatingModel1)))
+        .andExpect(status().isOk());
+
+    // Validate that player was created in the database
+    List<Player> playerRatingList = playerRepository.findAll();
+    assertThat(playerRatingList).hasSize(playerAmountBeforeCreate + 1);
+    Player createdPlayer = playerRatingList.get(playerRatingList.size() - 1);
+    assertThat(createdPlayer.getFirstName()).isNull();
+    assertThat(createdPlayer.getLastName()).isNull();
+    assertThat(createdPlayer.getShirtNumber()).isEqualTo(player.getShirtNumber());
+    assertThat(createdPlayer.getPosition()).isEqualTo(player.getPosition());
+    assertThat(createdPlayer.getTeam()).isEqualTo(ehcEngelberg);
+
+    // Validate the first SkillRating in the database
+    List<SkillRating> skillRatingList = skillRatingRepository.findAll();
+    assertThat(skillRatingList).hasSize(databaseSizeBeforeCreate + 1);
+    SkillRating testSkillRating = skillRatingList.get(skillRatingList.size() - 1);
+    assertThat(testSkillRating.getPlayer().getId()).isEqualTo(createdPlayer.getId());
+    assertThat(testSkillRating.getSkill()).isEqualTo(magicTransitions);
+    assertThat(testSkillRating.getScore()).isEqualTo(SkillRatingTemplates.NINTY);
+
+    // Create another SkillRating for same player -> player exists and will be loaded by NK
+    restSkillRatingMockMvc
+        .perform(post("/api/skills/{skillId}/skill-ratings", controlledJumble.getId())
+            .contentType(TestUtils.APPLICATION_JSON)
+            .content(TestUtils.convertObjectToJsonBytes(skillRatingModel2)))
+        .andExpect(status().isOk());
+
+    // Validate that player was not created one more time
+    playerRatingList = playerRepository.findAll();
+    assertThat(playerRatingList).hasSize(playerAmountBeforeCreate + 1);
+
+    // Validate the second SkillRating in the database
+    skillRatingList = skillRatingRepository.findAll();
+    assertThat(skillRatingList).hasSize(databaseSizeBeforeCreate + 2);
+    testSkillRating = skillRatingList.get(skillRatingList.size() - 1);
+    assertThat(testSkillRating.getPlayer().getId()).isEqualTo(createdPlayer.getId());
+    assertThat(testSkillRating.getSkill()).isEqualTo(controlledJumble);
+    assertThat(testSkillRating.getScore()).isEqualTo(SkillRatingTemplates.EIGHTY);
   }
 
   @Test

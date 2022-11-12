@@ -6,6 +6,7 @@ import com.lukas99.ysgmanager.domain.Skill;
 import com.lukas99.ysgmanager.domain.SkillRating;
 import com.lukas99.ysgmanager.domain.SkillRatingService;
 import com.lukas99.ysgmanager.domain.SkillService;
+import com.lukas99.ysgmanager.domain.TeamService;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
@@ -32,12 +33,14 @@ public class SkillRatingRestController {
   private final SkillRatingService skillRatingService;
   private final PlayerService playerService;
   private final SkillService skillService;
+  private final TeamService teamService;
 
   public SkillRatingRestController(SkillRatingService skillRatingService,
-      PlayerService playerService, SkillService skillService) {
+      PlayerService playerService, SkillService skillService, TeamService teamService) {
     this.skillRatingService = skillRatingService;
     this.playerService = playerService;
     this.skillService = skillService;
+    this.teamService = teamService;
   }
 
   /**
@@ -76,6 +79,15 @@ public class SkillRatingRestController {
 
   private ResponseEntity<SkillRatingModel> createSkillRating(
       SkillRatingModel skillRatingModel, Optional<Skill> skill, Optional<Player> player) {
+    if (player.isEmpty()) {
+      var playerModel = skillRatingModel.getPlayer();
+      player = playerModel.getTeam().getLink("self")
+          .map(teamLink -> RestUtils.getLastPathSegment(teamLink))
+          .flatMap(teamId -> teamService.findOne(teamId))
+          .map(team ->
+              playerService.findByShirtNumberAndTeam(playerModel.getShirtNumber(), team)
+                  .orElseGet(() -> playerService.save(playerModel.toEntity(team))));
+    }
     if (player.isPresent() && skill.isPresent()) {
       SkillRating skillRating = skillRatingModel.toEntity(player.get(), skill.get());
       skillRating = skillRatingService.save(skillRating);
