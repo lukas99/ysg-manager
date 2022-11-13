@@ -19,6 +19,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
+    // disable CSRF protection for now, otherwise POST requests do not work with https
+    http.csrf().disable();
     http.authorizeRequests()
         .antMatchers("/", "/index.html", "/**.js", "/**.css").permitAll()
         .antMatchers("manifest.webmanifest", "ngsw.json").permitAll() // to support PWA
