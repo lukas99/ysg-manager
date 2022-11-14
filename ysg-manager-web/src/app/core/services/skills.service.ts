@@ -19,7 +19,7 @@ export class SkillsService extends CrudStateService implements CrudService {
   constructor(
     private http: HttpClient,
     private tournamentService: TournamentsService,
-    private cacheService: CacheService
+    private cacheService: CacheService<Skill>
   ) {
     super();
     this.tournamentService
@@ -42,7 +42,7 @@ export class SkillsService extends CrudStateService implements CrudService {
             return [];
           }
         }),
-        catchError(() => of(this.cacheService.getCache(STORAGE_KEY) as Skill[]))
+        catchError(() => of(this.cacheService.getCache(STORAGE_KEY)))
       );
   }
 

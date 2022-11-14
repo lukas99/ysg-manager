@@ -2,10 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Skill, SkillRating, SkillRatingList } from '../../types';
+import { Player, Skill, SkillRating, SkillRatingList, Team } from '../../types';
 import { CrudStateService } from './crud-state.service';
 import { SkillsService } from './skills.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
+import { SkillScoresService } from './skill-scores.service';
+
+export const STORAGE_KEY = 'ysg-skill-ratings';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +17,11 @@ export class SkillRatingsService
   extends CrudStateService
   implements CrudService
 {
-  constructor(private http: HttpClient, private skillsService: SkillsService) {
+  constructor(
+    private http: HttpClient,
+    private skillsService: SkillsService,
+    private skillScoresService: SkillScoresService<SkillRating>
+  ) {
     super();
   }
 
@@ -79,5 +86,48 @@ export class SkillRatingsService
 
   getItemTitle(item: any): string {
     return this.getSkillRatingTitle(item);
+  }
+
+  addSkillRatingToCache(skillRating: SkillRating): void {
+    this.skillScoresService.addToCache(skillRating, STORAGE_KEY);
+  }
+
+  updateSkillRatingInCache(skillRating: SkillRating): void {
+    this.skillScoresService.updateInCache(skillRating, STORAGE_KEY);
+  }
+
+  removeSkillRatingFromCache(skillRating: SkillRating): void {
+    this.skillScoresService.removeFromCache(skillRating, STORAGE_KEY);
+  }
+
+  getCachedSkillRatings(skill: Skill, team: Team): SkillRating[] {
+    return this.skillScoresService.getCachedSkillScores(
+      skill,
+      team,
+      STORAGE_KEY
+    );
+  }
+
+  getCachedSkillRating(
+    skill: Skill,
+    team: Team,
+    player: Player
+  ): SkillRating | null {
+    return this.skillScoresService.getCachedSkillScore(
+      skill,
+      team,
+      player,
+      STORAGE_KEY
+    );
+  }
+
+  pushCachedSkillRatingsToServer(): void {
+    this.skillScoresService.pushCachedSkillScoresToServer(
+      this.skillsService.getSkills(),
+      STORAGE_KEY,
+      (rating: SkillRating) => this.updateSkillRating(rating),
+      (rating: SkillRating, skill: Skill) =>
+        this.createSkillRating(rating, skill)
+    );
   }
 }

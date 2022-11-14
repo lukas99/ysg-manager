@@ -17,14 +17,9 @@ interface SkillResultView extends SkillResult {
 export class ResultListComponent implements OnInit {
   selectedSkill!: Skill;
   selectedTeam!: Team;
-
   skillResults: SkillResultView[] = [];
   showTime = false;
   showPoints = false;
-  /**
-   * Whether at least one skill result of the skillResults array is uploaded to the server.
-   */
-  isASkillResultUploaded = false;
 
   constructor(
     private stateService: SkillsOnIceStateService,
@@ -46,8 +41,6 @@ export class ResultListComponent implements OnInit {
       });
     this.showTime = this.skillTypeService.isWithTime(this.selectedSkill);
     this.showPoints = this.skillTypeService.isWithPoints(this.selectedSkill);
-    this.isASkillResultUploaded =
-      this.skillResults.findIndex((result) => result.isUploaded) > -1;
   }
 
   private isUploaded(skillResult: SkillResult): boolean {

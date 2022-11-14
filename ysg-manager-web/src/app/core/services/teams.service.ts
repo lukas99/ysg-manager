@@ -19,7 +19,7 @@ export class TeamsService extends CrudStateService implements CrudService {
   constructor(
     private http: HttpClient,
     private tournamentService: TournamentsService,
-    private cacheService: CacheService
+    private cacheService: CacheService<Team>
   ) {
     super();
     this.tournamentService
@@ -46,7 +46,7 @@ export class TeamsService extends CrudStateService implements CrudService {
             return [];
           }
         }),
-        catchError(() => of(this.cacheService.getCache(STORAGE_KEY) as Team[]))
+        catchError(() => of(this.cacheService.getCache(STORAGE_KEY)))
       );
   }
 

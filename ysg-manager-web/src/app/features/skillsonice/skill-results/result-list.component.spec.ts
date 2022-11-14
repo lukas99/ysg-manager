@@ -47,7 +47,6 @@ describe('ResultListComponent', () => {
 
       expect(component.selectedSkill).toBe(skill);
       expect(component.selectedTeam).toBe(team);
-      expect(component.isASkillResultUploaded).toBeFalsy();
     });
 
     it('should load the skill result view records', () => {
@@ -87,38 +86,6 @@ describe('ResultListComponent', () => {
       expect(component.skillResults[2]).toEqual({
         ...result3,
         isUploaded: true
-      });
-
-      expect(component.isASkillResultUploaded).toBeTruthy();
-    });
-
-    describe('isASkillResultUploaded', () => {
-      it('should set isASkillResultUploaded to true', () => {
-        const result1 = {
-          _links: { self: { href: 'results/1' } }
-        } as SkillResult;
-        const result2 = { _links: {} } as SkillResult; // is not yet uploaded (no self link)
-        skillResultsService.getCachedSkillResults = jest.fn(() => [
-          result1,
-          result2
-        ]);
-
-        component.ngOnInit();
-
-        expect(component.isASkillResultUploaded).toBeTruthy();
-      });
-
-      it('should set isASkillResultUploaded to false', () => {
-        const result1 = { _links: {} } as SkillResult; // is not yet uploaded (no self link)
-        const result2 = { _links: {} } as SkillResult; // is not yet uploaded (no self link)
-        skillResultsService.getCachedSkillResults = jest.fn(() => [
-          result1,
-          result2
-        ]);
-
-        component.ngOnInit();
-
-        expect(component.isASkillResultUploaded).toBeFalsy();
       });
     });
 

@@ -6,6 +6,7 @@ import { TeamsService } from '../../../core/services/teams.service';
 import { Router } from '@angular/router';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
+import { SkillRatingsService } from '../../../core/services/skill-ratings.service';
 
 @Component({
   selector: 'ysg-skill-selection',
@@ -23,6 +24,7 @@ export class SkillSelectionComponent implements OnInit {
     private skillsService: SkillsService,
     private teamsService: TeamsService,
     private skillResultsService: SkillResultsService,
+    private skillRatingsService: SkillRatingsService,
     private stateService: SkillsOnIceStateService,
     private router: Router
   ) {}
@@ -75,5 +77,6 @@ export class SkillSelectionComponent implements OnInit {
 
   uploadSkillResultsAndRatings() {
     this.skillResultsService.pushCachedSkillResultsToServer();
+    this.skillRatingsService.pushCachedSkillRatingsToServer();
   }
 }

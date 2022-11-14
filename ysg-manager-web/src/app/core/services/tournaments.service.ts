@@ -29,7 +29,10 @@ export class TournamentsService
     {} as Tournament
   );
 
-  constructor(private http: HttpClient, private cacheService: CacheService) {
+  constructor(
+    private http: HttpClient,
+    private cacheService: CacheService<Tournament>
+  ) {
     super();
     this.tournamentsUrl = environment.apiUrl + '/api/tournaments';
   }
@@ -76,9 +79,7 @@ export class TournamentsService
           return [];
         }
       }),
-      catchError(() =>
-        of(this.cacheService.getCache(STORAGE_KEY) as Tournament[])
-      )
+      catchError(() => of(this.cacheService.getCache(STORAGE_KEY)))
     );
   }
 

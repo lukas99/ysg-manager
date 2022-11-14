@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-subtitle>
+    <mat-icon>star</mat-icon>
+    {{ 'SKILLS_ON_ICE_DETAIL_RATING' | translate }}</mat-card-subtitle
+  >
+  <div class="rating-content">
+    <button mat-icon-button (click)="decreaseRating()" [disabled]="rating <= 0">
+      <mat-icon>remove</mat-icon>
+    </button>
+    <div class="rating-count">
+      {{ rating }}
+    </div>
+    <button mat-icon-button (click)="increaseRating()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <div class="usual-ratings">
+    <button mat-stroked-button (click)="setRating(70)">70</button>
+    <button mat-stroked-button (click)="setRating(75)">75</button>
+    <button mat-stroked-button (click)="setRating(80)">80</button>
+    <button mat-stroked-button (click)="setRating(85)">85</button>
+    <button mat-stroked-button (click)="setRating(90)">90</button>
+    <button mat-stroked-button (click)="setRating(95)">95</button>
+  </div>
+</mat-card>

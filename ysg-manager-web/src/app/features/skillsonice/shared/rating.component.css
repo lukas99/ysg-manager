@@ -1,0 +1,28 @@
+mat-card {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+mat-card-subtitle mat-icon {
+  margin-right: 5px;
+  vertical-align: bottom;
+}
+
+.rating-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rating-count {
+  font-size: 35px;
+  text-align: center;
+}
+
+.usual-ratings {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  row-gap: 15px;
+  column-gap: 25px;
+}

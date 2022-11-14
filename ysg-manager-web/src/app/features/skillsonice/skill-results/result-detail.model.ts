@@ -88,17 +88,24 @@ export abstract class ResultDetailModel {
   }
 
   private resultForSkillExists(): boolean {
-    let existingCacheResult = this.skillResultsService.getCachedSkillResult(
+    const existingCacheResult = this.skillResultsService.getCachedSkillResult(
       this.selectedSkill,
       this.selectedTeam,
       this.skillResult.player
     );
-    return !!existingCacheResult;
+    if (existingCacheResult) {
+      const isCurrentRating =
+        !!this.skillResult.cacheId &&
+        this.skillResult.cacheId === existingCacheResult?.cacheId;
+      return !isCurrentRating; // allow to update own result (this.skillResult)
+    } else {
+      return false;
+    }
   }
 
   showAlertDialogResultForSkillAlreadyExists() {
     window.alert(
-      'Skill Resultat für diesen Spieler und für diesen Skill existiert bereits!'
+      'Ein Resultat für diesen Spieler und für diesen Skill existiert bereits!'
     );
   }
 }

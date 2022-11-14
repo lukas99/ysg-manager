@@ -9,15 +9,15 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable({
   providedIn: 'root'
 })
-export class CacheService {
+export class CacheService<T extends CacheSupport> {
   /**
    * Replaces the whole cache with the items passed as parameter.
    *
    * @param items items to put into the cache (existing items will be replaced)
    * @param storageKey key of the cache
    */
-  replaceCache(items: CacheSupport[], storageKey: string): void {
-    const copiedItems: CacheSupport[] = JSON.parse(JSON.stringify(items));
+  replaceCache(items: T[], storageKey: string): void {
+    const copiedItems: T[] = JSON.parse(JSON.stringify(items));
     copiedItems.forEach((cached) => {
       cached.isCached = true;
       cached.cacheId = uuidv4();
@@ -32,8 +32,8 @@ export class CacheService {
    * @param item the item to add to the cache
    * @param storageKey key of the cache
    */
-  addToCache(item: CacheSupport, storageKey: string): void {
-    const copiedItem: CacheSupport = JSON.parse(JSON.stringify(item));
+  addToCache(item: T, storageKey: string): void {
+    const copiedItem: T = JSON.parse(JSON.stringify(item));
     copiedItem.isCached = true;
     copiedItem.cacheId = uuidv4();
 
@@ -49,7 +49,7 @@ export class CacheService {
    * @param item the item to remove from the cache
    * @param storageKey key of the cache
    */
-  removeFromCache(item: CacheSupport, storageKey: string): void {
+  removeFromCache(item: T, storageKey: string): void {
     let existingItems = this.getCache(storageKey);
     existingItems = existingItems.filter(
       (existingItem) => existingItem.cacheId !== item.cacheId
@@ -64,8 +64,8 @@ export class CacheService {
    * @param item the item to update in the cache
    * @param storageKey key of the cache
    */
-  updateInCache(item: CacheSupport, storageKey: string): void {
-    const copiedItem: CacheSupport = JSON.parse(JSON.stringify(item));
+  updateInCache(item: T, storageKey: string): void {
+    const copiedItem: T = JSON.parse(JSON.stringify(item));
 
     let existingItems = this.getCache(storageKey);
     existingItems = existingItems.map((existingItem) =>
@@ -81,7 +81,7 @@ export class CacheService {
    * @param storageKey key of the cache
    * @return the cache for the given key
    */
-  getCache(storageKey: string): any[] {
+  getCache(storageKey: string): T[] {
     let existingValue = localStorage.getItem(storageKey);
     return existingValue ? JSON.parse(existingValue) : [];
   }

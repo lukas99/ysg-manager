@@ -1,3 +1,31 @@
 <ysg-mobile-page-title [backRoute]="'skillsonice/teamselection'">
-  Bewertungen
+  {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
+  {{ selectedTeam?.name }}
 </ysg-mobile-page-title>
+
+<mat-selection-list [multiple]="false">
+  <mat-list-option
+    *ngFor="let skillRating of skillRatings"
+    [value]="skillRating"
+    [ngClass]="{ uploaded: skillRating.isUploaded }"
+  >
+    <div class="row-content" (click)="editRating(skillRating)">
+      <div class="row-content skill-rating-player">
+        <span>
+          #{{ skillRating.player.shirtNumber }}
+          <span *ngIf="skillRating.player.position === 'GOALTENDER'"> TH </span>
+        </span>
+      </div>
+      <div class="row-content">
+        <span>
+          <mat-icon>star</mat-icon>
+          <span>{{ skillRating.score }}</span>
+        </span>
+      </div>
+    </div>
+  </mat-list-option>
+</mat-selection-list>
+
+<button mat-fab color="primary" class="add-button" (click)="createRating()">
+  <mat-icon>add</mat-icon>
+</button>

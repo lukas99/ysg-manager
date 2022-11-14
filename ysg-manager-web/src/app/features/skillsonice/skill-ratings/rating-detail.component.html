@@ -1,0 +1,18 @@
+<ysg-mobile-page-title [backRoute]="'skillsonice/ratinglist'">
+  {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
+  {{ selectedTeam?.name }}
+</ysg-mobile-page-title>
+<ysg-player
+  [(player)]="skillRating.player"
+  (playerChange)="playerChanged()"
+></ysg-player>
+<ysg-rating [(rating)]="skillRating.score"></ysg-rating>
+<ysg-crud-buttons
+  (deleteClicked)="delete()"
+  (cancelClicked)="cancel()"
+  (saveClicked)="save()"
+  [saveDisabled]="
+    !(skillRating.player.shirtNumber > 0 && skillRating.score > 0)
+  "
+>
+</ysg-crud-buttons>

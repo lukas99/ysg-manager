@@ -7,7 +7,7 @@ jest.mock('uuid');
 const TEST_STORAGE_KEY = 'ysg-tournaments-test';
 
 describe('CacheService', () => {
-  let service: CacheService;
+  let service: CacheService<Tournament>;
 
   let tournament21: Tournament;
   let tournament22: Tournament;

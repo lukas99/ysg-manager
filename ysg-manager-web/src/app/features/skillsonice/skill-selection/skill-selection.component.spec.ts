@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { SkillsService } from '../../../core/services/skills.service';
+import { SkillRatingsService } from '../../../core/services/skill-ratings.service';
 
 describe('SkillSelectionComponent', () => {
   let component: SkillSelectionComponent;
@@ -12,6 +13,7 @@ describe('SkillSelectionComponent', () => {
   let skillsService: SkillsService;
   let teamsService: TeamsService;
   let skillResultsService: SkillResultsService;
+  let skillRatingsService: SkillRatingsService;
   let stateService: SkillsOnIceStateService;
   let router: Router;
 
@@ -44,6 +46,7 @@ describe('SkillSelectionComponent', () => {
     skillsService = <any>{};
     teamsService = <any>{};
     skillResultsService = <any>{ pushCachedSkillResultsToServer: jest.fn() };
+    skillRatingsService = <any>{ pushCachedSkillRatingsToServer: jest.fn() };
     router = <any>{ navigateByUrl: jest.fn() };
     stateService = new SkillsOnIceStateService();
 
@@ -51,6 +54,7 @@ describe('SkillSelectionComponent', () => {
       skillsService,
       teamsService,
       skillResultsService,
+      skillRatingsService,
       stateService,
       router
     );
@@ -104,6 +108,9 @@ describe('SkillSelectionComponent', () => {
     component.uploadSkillResultsAndRatings();
     expect(
       skillResultsService.pushCachedSkillResultsToServer
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      skillRatingsService.pushCachedSkillRatingsToServer
     ).toHaveBeenCalledTimes(1);
   });
 });

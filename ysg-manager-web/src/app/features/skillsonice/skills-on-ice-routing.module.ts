@@ -8,6 +8,7 @@ import { ResultDetailForTimeComponent } from './skill-results/result-detail-for-
 import { ResultDetailForTimeWithPointsComponent } from './skill-results/result-detail-for-time-with-points.component';
 import { ResultDetailForPointsComponent } from './skill-results/result-detail-for-points.component';
 import { ResultDetailForTimeManualComponent } from './skill-results/result-detail-for-time-manual.component';
+import { RatingDetailComponent } from './skill-ratings/rating-detail.component';
 
 const routes: Routes = [
   { path: '', component: SkillSelectionComponent },
@@ -23,7 +24,8 @@ const routes: Routes = [
     path: 'resultdetailfortimewithpoints',
     component: ResultDetailForTimeWithPointsComponent
   },
-  { path: 'ratinglist', component: RatingListComponent }
+  { path: 'ratinglist', component: RatingListComponent },
+  { path: 'ratingdetail', component: RatingDetailComponent }
 ];
 
 @NgModule({

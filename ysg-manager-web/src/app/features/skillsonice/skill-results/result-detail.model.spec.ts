@@ -5,13 +5,14 @@ import { Router } from '@angular/router';
 import { Link, PlayerPosition, Skill, SkillResult, Team } from '../../../types';
 import { HttpClient } from '@angular/common/http';
 import { SkillsService } from '../../../core/services/skills.service';
+import { SkillScoresService } from '../../../core/services/skill-scores.service';
 import { CacheService } from '../../../core/services/cache.service';
 
 describe('ResultDetailModel', () => {
   let component: ResultDetailForTimeComponent;
   let stateService: SkillsOnIceStateService;
   let skillResultsService: SkillResultsService;
-  let cacheService: CacheService;
+  let cacheService: CacheService<SkillResult>;
   let router: Router;
 
   let removeSkillFromCache: any;
@@ -37,7 +38,7 @@ describe('ResultDetailModel', () => {
     skillResultsService = new SkillResultsService(
       {} as HttpClient,
       {} as SkillsService,
-      cacheService
+      new SkillScoresService<SkillResult>(cacheService)
     );
     removeSkillFromCache = jest.spyOn(
       skillResultsService,
@@ -130,10 +131,14 @@ describe('ResultDetailModel', () => {
   });
 
   describe('save', () => {
-    it('should update an existing skill result', () => {
-      const existingResult = { time: 5.25 } as SkillResult;
+    it('should allow to update own result which already exists in cache', () => {
+      const existingResult = { time: 2.5, cacheId: '9999' } as SkillResult;
       skillResultsService.setSelectedItem(existingResult);
       component.ngOnInit();
+      // result for this player already exists in cache (it's the result we want to update)
+      getCachedSkillResult.mockImplementation(
+        () => ({ time: 2.5, cacheId: '9999' } as SkillResult)
+      );
 
       component.save();
 
@@ -144,6 +149,29 @@ describe('ResultDetailModel', () => {
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         'skillsonice/resultlist'
       );
+    });
+
+    it('should prevent to update result to player which already exists in cache', () => {
+      const existingResult = { time: 2.5, cacheId: '9999' } as SkillResult;
+      skillResultsService.setSelectedItem(existingResult);
+      component.ngOnInit();
+      // result for this player already exists in cache (it's another result)
+      getCachedSkillResult.mockImplementation(
+        () => ({ time: 2.5, cacheId: '8888' } as SkillResult)
+      );
+
+      component.save();
+
+      expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(1);
+
+      expect(
+        skillResultsService.updateSkillResultInCache
+      ).toHaveBeenCalledTimes(0);
+      expect(skillResultsService.addSkillResultToCache).toHaveBeenCalledTimes(
+        0
+      );
+      expect(removeSelectedSkill).toHaveBeenCalledTimes(0);
+      expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
     });
 
     it('should create new result', () => {

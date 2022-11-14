@@ -5,14 +5,14 @@ import {
   HttpTestingController
 } from '@angular/common/http/testing';
 import { Tournament, TournamentList } from '../../types';
-import DoneCallback = jest.DoneCallback;
 import { skip } from 'rxjs/operators';
 import { CacheService } from './cache.service';
+import DoneCallback = jest.DoneCallback;
 
 describe('TournamentsService', () => {
   let service: TournamentsService;
   let httpMock: HttpTestingController;
-  let cacheService: CacheService;
+  let cacheService: CacheService<Tournament>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

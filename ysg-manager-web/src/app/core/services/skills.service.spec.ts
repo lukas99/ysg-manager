@@ -13,7 +13,7 @@ describe('SkillsService', () => {
   let service: SkillsService;
   let tournamentSerivce: TournamentsService;
   let httpMock: HttpTestingController;
-  let cacheService: CacheService;
+  let cacheService: CacheService<Skill>;
 
   let tournament: Tournament = {
     name: 'YSG 2019',
