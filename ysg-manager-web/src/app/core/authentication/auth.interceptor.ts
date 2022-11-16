@@ -27,8 +27,8 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Promise<HttpEvent<any>> {
-    // Only add an access token to whitelisted origins. TODO: add production URL eventually
-    const allowedOrigins = ['http://localhost'];
+    // only add an access token to whitelisted origins
+    const allowedOrigins = ['http://localhost', 'https://youngstargames.zapto.org'];
     if (allowedOrigins.some((url) => request.urlWithParams.includes(url))) {
       const accessToken = await this.oktaAuth.getAccessToken();
       request = request.clone({
