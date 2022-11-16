@@ -33,17 +33,23 @@ export class SkillsService extends CrudStateService implements CrudService {
       .pipe(
         map((list) => {
           if (list && list._embedded && list._embedded.skillModelList) {
-            this.cacheService.replaceCache(
-              list._embedded.skillModelList,
-              STORAGE_KEY
+            const skills = this.sortBySkillNumber(
+              list._embedded.skillModelList
             );
-            return list._embedded.skillModelList;
+            this.cacheService.replaceCache(skills, STORAGE_KEY);
+            return skills;
           } else {
             return [];
           }
         }),
-        catchError(() => of(this.cacheService.getCache(STORAGE_KEY)))
+        catchError(() =>
+          of(this.sortBySkillNumber(this.cacheService.getCache(STORAGE_KEY)))
+        )
       );
+  }
+
+  private sortBySkillNumber(skills: Skill[]): Skill[] {
+    return skills.sort((s1, s2) => s1.number - s2.number);
   }
 
   createSkill(skill: Skill): Observable<Skill> {

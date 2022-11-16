@@ -64,12 +64,14 @@ describe('SkillsService', () => {
 
   describe('getSkills', () => {
     let skills: Skill[];
+    let magicTransitions: Skill;
+    let bestShot: Skill;
 
     beforeEach(() => {
-      skills = [
-        <Skill>{ name: 'Magic Transitions' },
-        <Skill>{ name: 'Best Shot' }
-      ];
+      magicTransitions = <Skill>{ name: 'Magic Transitions', number: 1 };
+      bestShot = <Skill>{ name: 'Best Shot', number: 2 };
+      // skill with number 2 first to let it sort
+      skills = [bestShot, magicTransitions];
       localStorage.removeItem('ysg-skills');
     });
 
@@ -80,7 +82,8 @@ describe('SkillsService', () => {
     it('should get the skills of a tournament and store them to cache', (done: DoneCallback) => {
       service.getSkills().subscribe((result) => {
         expect(result).toHaveLength(2);
-        expect(result).toEqual(skills);
+        // order by skill number
+        expect(result).toEqual([magicTransitions, bestShot]);
         done();
       });
 
@@ -93,8 +96,9 @@ describe('SkillsService', () => {
       });
 
       expect(cacheService.getCache('ysg-skills')).toMatchObject([
-        { name: 'Magic Transitions', isCached: true },
-        { name: 'Best Shot', isCached: true }
+        // ordered by skill number
+        { name: 'Magic Transitions', number: 1, isCached: true },
+        { name: 'Best Shot', number: 2, isCached: true }
       ]);
     });
 
@@ -115,8 +119,9 @@ describe('SkillsService', () => {
       service.getSkills().subscribe((result) => {
         expect(result.length).toBe(2);
         expect(result).toMatchObject([
-          { name: 'Magic Transitions', isCached: true },
-          { name: 'Best Shot', isCached: true }
+          // ordered by skill number
+          { name: 'Magic Transitions', number: 1, isCached: true },
+          { name: 'Best Shot', number: 2, isCached: true }
         ]);
         done();
       });
