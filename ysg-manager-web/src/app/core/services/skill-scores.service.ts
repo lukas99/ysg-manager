@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Player, Skill, SkillScore, Team } from '../../types';
 import { CacheService } from './cache.service';
-import { catchError, take } from 'rxjs/operators';
+import { catchError, flatMap, map, take, tap } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
+
+export interface SkillScoresPushResult {
+  updateSuccessAmount: number;
+  updateFailedAmount: number;
+  creationSuccessAmount: number;
+  creationFailedAmount: number;
+}
 
 /**
  * Service to store items in the local storage cache.
@@ -53,34 +60,55 @@ export class SkillScoresService<T extends SkillScore> {
     storageKey: string,
     updateSkillScore: (score: T) => Observable<T>,
     createSkillScore: (score: T, skill: Skill) => Observable<T>
-  ): void {
-    allSkills.pipe(take(1)).subscribe((skills) => {
-      let observables: Observable<T>[] = [];
-      this.cacheService.getCache(storageKey).forEach((skillScore) => {
-        if (this.shouldUpdate(skillScore)) {
-          observables.push(
-            updateSkillScore(skillScore).pipe(
-              catchError((error) => of(skillScore))
-            )
-          );
-        } else {
-          const skill = skills.find(
-            (s) => s._links.self.href === skillScore._links.skill.href
-          ) as Skill;
-          observables.push(
-            createSkillScore(skillScore, skill).pipe(
-              catchError((error) => of(skillScore))
-            )
-          );
-        }
-      });
-      forkJoin(observables).subscribe((value) =>
-        // Hint: items get fresh cacheIDs.
-        // Only set new cacheID when no cacheID is available doesn't help because we have here
-        // the skill result values from the server which does not have the cacheID persisted.
-        this.cacheService.replaceCache(value, storageKey)
-      );
-    });
+  ): Observable<SkillScoresPushResult> {
+    return allSkills.pipe(
+      take(1),
+      map((skills) => {
+        let pushResult: SkillScoresPushResult = {
+          updateSuccessAmount: 0,
+          updateFailedAmount: 0,
+          creationSuccessAmount: 0,
+          creationFailedAmount: 0
+        };
+        let observables: Observable<T>[] = [];
+        this.cacheService.getCache(storageKey).forEach((skillScore) => {
+          if (this.shouldUpdate(skillScore)) {
+            observables.push(
+              updateSkillScore(skillScore).pipe(
+                tap(() => pushResult.updateSuccessAmount++),
+                catchError((error) => {
+                  pushResult.updateFailedAmount++;
+                  return of(skillScore);
+                })
+              )
+            );
+          } else {
+            const skill = skills.find(
+              (s) => s._links.self.href === skillScore._links.skill.href
+            ) as Skill;
+            observables.push(
+              createSkillScore(skillScore, skill).pipe(
+                tap(() => pushResult.creationSuccessAmount++),
+                catchError((error) => {
+                  pushResult.creationFailedAmount++;
+                  return of(skillScore);
+                })
+              )
+            );
+          }
+        });
+        return forkJoin(observables).pipe(
+          tap((skillScores) =>
+            // Hint: items get fresh cacheIDs.
+            // Only set new cacheID when no cacheID is available doesn't help because we have here
+            // the skill result values from the server which does not have the cacheID persisted.
+            this.cacheService.replaceCache(skillScores, storageKey)
+          ),
+          map((skillScores) => pushResult)
+        );
+      }),
+      flatMap((pushResults) => pushResults)
+    );
   }
 
   private shouldUpdate(skillScore: T) {

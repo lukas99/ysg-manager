@@ -2,7 +2,10 @@ import { Link, Player, Skill, SkillResult, Team } from '../../types';
 import { STORAGE_KEY as SKILL_RESULTS_STORAGE_KEY } from './skill-results.service';
 import * as uuid from 'uuid';
 import { Observable, of, throwError } from 'rxjs';
-import { SkillScoresService } from './skill-scores.service';
+import {
+  SkillScoresPushResult,
+  SkillScoresService
+} from './skill-scores.service';
 import { CacheService } from './cache.service';
 
 jest.mock('uuid');
@@ -196,12 +199,22 @@ describe('SkillScoresService', () => {
           resultSkill2Team2
         );
 
-        service.pushCachedSkillScoresToServer(
-          of([skill1, skill2]),
-          SKILL_RESULTS_STORAGE_KEY,
-          skillResultService.updateSkillResult,
-          skillResultService.createSkillResult
-        );
+        let pushResult = {} as SkillScoresPushResult;
+        service
+          .pushCachedSkillScoresToServer(
+            of([skill1, skill2]),
+            SKILL_RESULTS_STORAGE_KEY,
+            skillResultService.updateSkillResult,
+            skillResultService.createSkillResult
+          )
+          .subscribe((result) => (pushResult = result));
+
+        expect(pushResult).toEqual({
+          updateSuccessAmount: 2,
+          updateFailedAmount: 0,
+          creationSuccessAmount: 2,
+          creationFailedAmount: 0
+        });
 
         expect(createSkillResultSpy).toHaveBeenCalledTimes(2);
         expect(updateSkillResultSpy).toHaveBeenCalledTimes(2);
@@ -249,12 +262,22 @@ describe('SkillScoresService', () => {
           resultSkill2Team2
         );
 
-        service.pushCachedSkillScoresToServer(
-          of([skill1, skill2]),
-          SKILL_RESULTS_STORAGE_KEY,
-          skillResultService.updateSkillResult,
-          skillResultService.createSkillResult
-        );
+        let pushResult = {} as SkillScoresPushResult;
+        service
+          .pushCachedSkillScoresToServer(
+            of([skill1, skill2]),
+            SKILL_RESULTS_STORAGE_KEY,
+            skillResultService.updateSkillResult,
+            skillResultService.createSkillResult
+          )
+          .subscribe((result) => (pushResult = result));
+
+        expect(pushResult).toEqual({
+          updateSuccessAmount: 2,
+          updateFailedAmount: 0,
+          creationSuccessAmount: 0,
+          creationFailedAmount: 2
+        });
 
         expect(createSkillResultSpy).toHaveBeenCalledTimes(2);
         expect(updateSkillResultSpy).toHaveBeenCalledTimes(2);
