@@ -97,15 +97,20 @@ export class SkillScoresService<T extends SkillScore> {
             );
           }
         });
-        return forkJoin(observables).pipe(
-          tap((skillScores) =>
-            // Hint: items get fresh cacheIDs.
-            // Only set new cacheID when no cacheID is available doesn't help because we have here
-            // the skill result values from the server which does not have the cacheID persisted.
-            this.cacheService.replaceCache(skillScores, storageKey)
-          ),
-          map((skillScores) => pushResult)
-        );
+        if (observables.length > 0) {
+          return forkJoin(observables).pipe(
+            tap((skillScores) =>
+              // Hint: items get fresh cacheIDs.
+              // Only set new cacheID when no cacheID is available doesn't help because we have here
+              // the skill result values from the server which does not have the cacheID persisted.
+              this.cacheService.replaceCache(skillScores, storageKey)
+            ),
+            map((skillScores) => pushResult)
+          );
+        } else {
+          // forkJoin would not emit a value in case observables array is empty
+          return of(pushResult);
+        }
       }),
       flatMap((pushResults) => pushResults)
     );

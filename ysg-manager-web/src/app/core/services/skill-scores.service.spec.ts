@@ -312,6 +312,33 @@ describe('SkillScoresService', () => {
           resultSkill2Team2
         );
       });
+
+      it('should emit a value in case no results are available', () => {
+        localStorage.removeItem(SKILL_RESULTS_STORAGE_KEY);
+        expect(localStorage.getItem(SKILL_RESULTS_STORAGE_KEY)).toBeNull();
+
+        let pushResult = {} as SkillScoresPushResult;
+        service
+          .pushCachedSkillScoresToServer(
+            of([skill1, skill2]),
+            SKILL_RESULTS_STORAGE_KEY,
+            skillResultService.updateSkillResult,
+            skillResultService.createSkillResult
+          )
+          .subscribe((result) => (pushResult = result));
+
+        expect(pushResult).toEqual({
+          updateSuccessAmount: 0,
+          updateFailedAmount: 0,
+          creationSuccessAmount: 0,
+          creationFailedAmount: 0
+        });
+
+        expect(createSkillResultSpy).toHaveBeenCalledTimes(0);
+        expect(updateSkillResultSpy).toHaveBeenCalledTimes(0);
+
+        expect(localStorage.getItem(SKILL_RESULTS_STORAGE_KEY)).toBeNull();
+      });
     });
 
     function verifyCache(
