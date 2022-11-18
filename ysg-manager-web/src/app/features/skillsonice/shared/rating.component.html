@@ -10,7 +10,11 @@
     <div class="rating-count">
       {{ rating }}
     </div>
-    <button mat-icon-button (click)="increaseRating()">
+    <button
+      mat-icon-button
+      (click)="increaseRating()"
+      [disabled]="rating >= 100"
+    >
       <mat-icon>add</mat-icon>
     </button>
   </div>
