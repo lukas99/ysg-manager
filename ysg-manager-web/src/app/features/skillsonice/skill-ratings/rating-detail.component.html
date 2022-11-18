@@ -5,6 +5,7 @@
 <ysg-player
   [(player)]="skillRating.player"
   (playerChange)="playerChanged()"
+  [disablePositionToggle]="disablePlayerPositionToggle"
 ></ysg-player>
 <ysg-rating [(rating)]="skillRating.score"></ysg-rating>
 <ysg-crud-buttons

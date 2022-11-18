@@ -23,6 +23,7 @@ export class PlayerComponent implements AfterViewInit {
   @ViewChild('shirtNumber') shirtNumberInputField!: ElementRef;
 
   @Input() player!: Player;
+  @Input() disablePositionToggle = false;
   @Output() playerChange = new EventEmitter<Player>();
 
   constructor(private ngZone: NgZone) {}
@@ -42,6 +43,12 @@ export class PlayerComponent implements AfterViewInit {
   }
 
   playerPositionSelected(isSkater: boolean) {
+    // Setting mat-button-toggle-group only greys out the toggle group but the
+    // click events are still firing. Therefore, prevent position change here.
+    if (this.disablePositionToggle) {
+      return;
+    }
+
     if (isSkater) {
       this.player.position = PlayerPosition.SKATER;
     } else {

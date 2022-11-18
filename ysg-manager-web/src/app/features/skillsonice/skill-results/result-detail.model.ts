@@ -9,6 +9,7 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { Router } from '@angular/router';
 import { Directive } from '@angular/core';
+import { SkillTypeService } from '../../../core/services/skill-type.service';
 
 /**
  * Base class for skill result detail components.
@@ -19,16 +20,23 @@ export abstract class ResultDetailModel {
   selectedTeam!: Team;
   skillResult!: SkillResult;
   stopWatchRunning: boolean = false;
+  disablePlayerPositionToggle = false;
 
   constructor(
     protected stateService: SkillsOnIceStateService,
     protected skillResultsService: SkillResultsService,
+    protected skillTypeService: SkillTypeService,
     protected router: Router
   ) {}
 
   ngOnInit(): void {
     this.selectedSkill = this.stateService.getSelectedSkill();
     this.selectedTeam = this.stateService.getSelectedTeam();
+
+    let singlePossiblePosition = this.getSinglePossiblePlayerPosition(
+      this.selectedSkill
+    );
+    this.disablePlayerPositionToggle = !!singlePossiblePosition;
 
     if (this.shouldUpdate()) {
       // empty object if no value present
@@ -40,11 +48,27 @@ export abstract class ResultDetailModel {
         points: 0,
         player: {
           team: this.selectedTeam,
-          position: PlayerPosition.SKATER,
+          position: singlePossiblePosition || PlayerPosition.SKATER,
           _links: { team: this.selectedTeam._links.self }
         } as Player,
         _links: { skill: this.selectedSkill._links.self }
       } as SkillResult;
+    }
+  }
+
+  private getSinglePossiblePlayerPosition(skill: Skill): PlayerPosition | null {
+    let playerResults = this.skillTypeService.isWithResults(
+      skill.typeForPlayers
+    );
+    let goalieResults = this.skillTypeService.isWithResults(
+      skill.typeForGoaltenders
+    );
+    if (playerResults && !goalieResults) {
+      return PlayerPosition.SKATER;
+    } else if (!playerResults && goalieResults) {
+      return PlayerPosition.GOALTENDER;
+    } else {
+      return null;
     }
   }
 

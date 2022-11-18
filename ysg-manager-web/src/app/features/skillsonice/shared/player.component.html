@@ -13,7 +13,10 @@
     (change)="shirtNumberChanged()"
   />
 </mat-form-field>
-<mat-button-toggle-group [value]="player.position">
+<mat-button-toggle-group
+  [value]="player.position"
+  [disabled]="disablePositionToggle"
+>
   <mat-button-toggle
     (click)="playerPositionSelected(true)"
     [value]="positionSkater"

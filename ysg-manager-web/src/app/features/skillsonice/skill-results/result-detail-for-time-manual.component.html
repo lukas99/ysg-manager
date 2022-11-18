@@ -5,6 +5,7 @@
 <ysg-player
   [(player)]="skillResult.player"
   (playerChange)="playerChanged()"
+  [disablePositionToggle]="disablePlayerPositionToggle"
 ></ysg-player>
 <ysg-time-manual [(time)]="skillResult.time"></ysg-time-manual>
 <ysg-failures [(failures)]="skillResult.failures"></ysg-failures>

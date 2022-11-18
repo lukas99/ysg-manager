@@ -9,6 +9,7 @@ import {
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillRatingsService } from '../../../core/services/skill-ratings.service';
 import { Router } from '@angular/router';
+import { SkillTypeService } from '../../../core/services/skill-type.service';
 
 @Component({
   selector: 'ysg-rating-detail',
@@ -19,16 +20,23 @@ export class RatingDetailComponent implements OnInit {
   selectedSkill!: Skill;
   selectedTeam!: Team;
   skillRating!: SkillRating;
+  disablePlayerPositionToggle = false;
 
   constructor(
-    protected stateService: SkillsOnIceStateService,
-    protected skillRatingsService: SkillRatingsService,
-    protected router: Router
+    private stateService: SkillsOnIceStateService,
+    private skillRatingsService: SkillRatingsService,
+    private skillTypeService: SkillTypeService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.selectedSkill = this.stateService.getSelectedSkill();
     this.selectedTeam = this.stateService.getSelectedTeam();
+
+    let singlePossiblePosition = this.getSinglePossiblePlayerPosition(
+      this.selectedSkill
+    );
+    this.disablePlayerPositionToggle = !!singlePossiblePosition;
 
     if (this.shouldUpdate()) {
       // empty object if no value present
@@ -38,11 +46,27 @@ export class RatingDetailComponent implements OnInit {
         score: 0,
         player: {
           team: this.selectedTeam,
-          position: PlayerPosition.SKATER,
+          position: singlePossiblePosition || PlayerPosition.SKATER,
           _links: { team: this.selectedTeam._links.self }
         } as Player,
         _links: { skill: this.selectedSkill._links.self }
       } as SkillRating;
+    }
+  }
+
+  private getSinglePossiblePlayerPosition(skill: Skill): PlayerPosition | null {
+    let playerRatings = this.skillTypeService.isWithRatings(
+      skill.typeForPlayers
+    );
+    let goalieRatings = this.skillTypeService.isWithRatings(
+      skill.typeForGoaltenders
+    );
+    if (playerRatings && !goalieRatings) {
+      return PlayerPosition.SKATER;
+    } else if (!playerRatings && goalieRatings) {
+      return PlayerPosition.GOALTENDER;
+    } else {
+      return null;
     }
   }
 

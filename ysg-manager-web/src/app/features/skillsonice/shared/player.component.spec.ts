@@ -1,5 +1,6 @@
 import { PlayerComponent } from './player.component';
 import { Player, PlayerPosition } from '../../../types';
+import { fakeAsync, tick } from '@angular/core/testing';
 
 describe('PlayerComponent', () => {
   let component: PlayerComponent;
@@ -47,4 +48,17 @@ describe('PlayerComponent', () => {
 
     component.playerPositionSelected(false);
   });
+
+  it('emits no value when changing player position but position toggle is disabled', fakeAsync(() => {
+    component.player = { position: PlayerPosition.SKATER } as Player;
+    component.disablePositionToggle = true;
+
+    let emittedPlayer: Player | undefined = undefined;
+    component.playerChange.subscribe((player) => (emittedPlayer = player));
+
+    component.playerPositionSelected(false);
+    tick();
+
+    expect(emittedPlayer).toBeUndefined();
+  }));
 });

@@ -2,11 +2,19 @@ import { ResultDetailForTimeComponent } from './result-detail-for-time.component
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { Router } from '@angular/router';
-import { Link, PlayerPosition, Skill, SkillResult, Team } from '../../../types';
+import {
+  Link,
+  PlayerPosition,
+  Skill,
+  SkillResult,
+  SkillType,
+  Team
+} from '../../../types';
 import { HttpClient } from '@angular/common/http';
 import { SkillsService } from '../../../core/services/skills.service';
 import { SkillScoresService } from '../../../core/services/skill-scores.service';
 import { CacheService } from '../../../core/services/cache.service';
+import { SkillTypeService } from '../../../core/services/skill-type.service';
 
 describe('ResultDetailModel', () => {
   let component: ResultDetailForTimeComponent;
@@ -64,6 +72,7 @@ describe('ResultDetailModel', () => {
     component = new ResultDetailForTimeComponent(
       stateService,
       skillResultsService,
+      new SkillTypeService(),
       router
     );
 
@@ -88,27 +97,90 @@ describe('ResultDetailModel', () => {
       expect(component.selectedSkill).toBe(selectedSkill);
     });
 
-    it('loads an existing result', () => {
-      const existingResult = { time: 5.25 } as SkillResult;
-      skillResultsService.setSelectedItem(existingResult);
+    describe('result exists', () => {
+      let existingResult: SkillResult;
 
-      component.ngOnInit();
+      beforeEach(() => {
+        existingResult = { time: 5.25 } as SkillResult;
+        skillResultsService.setSelectedItem(existingResult);
+      });
 
-      expect(component.skillResult).toBe(existingResult);
+      it('loads an existing result', () => {
+        component.ngOnInit();
+        expect(component.skillResult).toBe(existingResult);
+      });
+
+      it('disables the player position toggle', () => {
+        selectedSkill.name = 'Controlled Jumble';
+        selectedSkill.typeForPlayers = SkillType.TIME;
+        selectedSkill.typeForGoaltenders = SkillType.RATING;
+        stateService.setSelectedSkill(selectedSkill);
+
+        component.ngOnInit();
+
+        expect(component.disablePlayerPositionToggle).toBeTruthy();
+        expect(component.skillResult).toBe(existingResult);
+      });
+
+      it('enables the player position toggle', () => {
+        selectedSkill.name = 'skillResult';
+        selectedSkill.typeForPlayers = SkillType.TIME_WITH_RATING;
+        selectedSkill.typeForGoaltenders = SkillType.TIME_WITH_RATING;
+        stateService.setSelectedSkill(selectedSkill);
+
+        component.ngOnInit();
+
+        expect(component.disablePlayerPositionToggle).toBeFalsy();
+        expect(component.skillResult).toBe(existingResult);
+      });
     });
 
-    it('initializes a new result', () => {
-      expect(skillResultsService.getSelectedItemValue()).toEqual({});
+    describe('new result', () => {
+      beforeEach(() => {
+        expect(skillResultsService.getSelectedItemValue()).toEqual({});
+      });
 
-      component.ngOnInit();
+      it('initializes a new result', () => {
+        component.ngOnInit();
 
-      expect(component.skillResult.time).toBe(0);
-      expect(component.skillResult.failures).toBe(0);
-      expect(component.skillResult.points).toBe(0);
-      expect(component.skillResult.player.team).toBe(selectedTeam);
-      expect(component.skillResult.player.position).toBe(PlayerPosition.SKATER);
-      expect(component.skillResult.player._links.team).toBe(selectedTeamLink);
-      expect(component.skillResult._links.skill).toBe(selectedSkillLink);
+        expect(component.skillResult.time).toBe(0);
+        expect(component.skillResult.failures).toBe(0);
+        expect(component.skillResult.points).toBe(0);
+        expect(component.skillResult.player.team).toBe(selectedTeam);
+        expect(component.skillResult.player.position).toBe(
+          PlayerPosition.SKATER
+        );
+        expect(component.skillResult.player._links.team).toBe(selectedTeamLink);
+        expect(component.skillResult._links.skill).toBe(selectedSkillLink);
+      });
+
+      it('disables the player position toggle and preselects the position value', () => {
+        selectedSkill.name = 'Controlled Jumble';
+        selectedSkill.typeForPlayers = SkillType.TIME;
+        selectedSkill.typeForGoaltenders = SkillType.RATING;
+        stateService.setSelectedSkill(selectedSkill);
+
+        component.ngOnInit();
+
+        expect(component.disablePlayerPositionToggle).toBeTruthy();
+        expect(component.skillResult.player.position).toBe(
+          PlayerPosition.SKATER
+        );
+      });
+
+      it('enables the player position toggle', () => {
+        selectedSkill.name = 'skillResult';
+        selectedSkill.typeForPlayers = SkillType.TIME_WITH_RATING;
+        selectedSkill.typeForGoaltenders = SkillType.TIME_WITH_RATING;
+        stateService.setSelectedSkill(selectedSkill);
+
+        component.ngOnInit();
+
+        expect(component.disablePlayerPositionToggle).toBeFalsy();
+        expect(component.skillResult.player.position).toBe(
+          PlayerPosition.SKATER
+        );
+      });
     });
   });
 

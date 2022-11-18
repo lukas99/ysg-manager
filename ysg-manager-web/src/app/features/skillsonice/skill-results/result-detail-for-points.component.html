@@ -5,6 +5,7 @@
 <ysg-player
   [(player)]="skillResult.player"
   (playerChange)="playerChanged()"
+  [disablePositionToggle]="disablePlayerPositionToggle"
 ></ysg-player>
 <ysg-points
   [(points)]="skillResult.points"

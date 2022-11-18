@@ -37,7 +37,7 @@ export class SkillTypeService {
     );
   }
 
-  private isWithResults(skillType: SkillType): boolean {
+  isWithResults(skillType: SkillType): boolean {
     switch (skillType) {
       case SkillType.RATING:
       case SkillType.GOALTENDERS_OVERALL:
@@ -48,7 +48,7 @@ export class SkillTypeService {
     }
   }
 
-  private isWithRatings(skillType: SkillType): boolean {
+  isWithRatings(skillType: SkillType): boolean {
     switch (skillType) {
       case SkillType.TIME_WITH_RATING:
       case SkillType.RATING:
