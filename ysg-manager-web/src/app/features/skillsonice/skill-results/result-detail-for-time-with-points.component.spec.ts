@@ -2,6 +2,7 @@ import { ResultDetailForTimeWithPointsComponent } from './result-detail-for-time
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { Router } from '@angular/router';
+import { SkillTypeService } from "../../../core/services/skill-type.service";
 
 describe('ResultDetailForTimeWithPointsComponent', () => {
   let component: ResultDetailForTimeWithPointsComponent;
@@ -10,6 +11,7 @@ describe('ResultDetailForTimeWithPointsComponent', () => {
     component = new ResultDetailForTimeWithPointsComponent(
       {} as SkillsOnIceStateService,
       {} as SkillResultsService,
+      {} as SkillTypeService,
       {} as Router
     );
   });
