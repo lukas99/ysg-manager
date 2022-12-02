@@ -14,4 +14,11 @@ jobs:
       with:
         java-version: 17
     - name: Build with Maven
-      run: mvn -B clean verify --file pom.xml
+      run: mvn -B clean verify spring-boot:build-image --file pom.xml
+    - name: Publish to Docker Hub
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{secrets.DOCKER_HUB_USERNAME}}
+        password: ${{secrets.DOCKER_HUB_PASSWORD}}
+        repository: lukas999/ysg-manager
+        tags: 2.0.1-SNAPSHOT
