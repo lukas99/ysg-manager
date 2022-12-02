@@ -17,8 +17,8 @@
 
   <properties>
     <java.version>17</java.version>
-    <ysg.docker.hub.username>docker-hub-username</ysg.docker.hub.username>
-    <ysg.docker.hub.password>docker-hub-password</ysg.docker.hub.password>
+    <ysg-docker-hub-username>docker-hub-username</ysg-docker-hub-username>
+    <ysg-docker-hub-password>docker-hub-password</ysg-docker-hub-password>
   </properties>
 
   <dependencies>
@@ -140,8 +140,8 @@
           </image>
           <docker>
             <publishRegistry>
-              <username>${ysg.docker.hub.username}</username>
-              <password>${ysg.docker.hub.password}</password>
+              <username>${ysg-docker-hub-username}</username>
+              <password>${ysg-docker-hub-password}</password>
             </publishRegistry>
           </docker>
         </configuration>

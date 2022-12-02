@@ -16,4 +16,4 @@ jobs:
       - name: Build with Maven
         run: mvn -B clean install --file pom.xml
       - name: Build and Publish Image
-        run: mvn -B clean spring-boot:build-image --file ./ysg-manager-server/pom.xml -Pskip-tests  -DysgDockerHubUsername=${{secrets.DOCKER_HUB_USERNAME}} -DysgDockerHubPassword=${{secrets.DOCKER_HUB_PASSWORD}}
+        run: mvn -B clean spring-boot:build-image --file ./ysg-manager-server/pom.xml -Pskip-tests  -Dysg-docker-hub-username=${{secrets.DOCKER_HUB_USERNAME}} -Dysg-docker-hub-password=${{secrets.DOCKER_HUB_PASSWORD}}
