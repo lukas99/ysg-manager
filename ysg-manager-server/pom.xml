@@ -17,6 +17,8 @@
 
   <properties>
     <java.version>17</java.version>
+    <ysg.docker.hub.username>docker-hub-username</ysg.docker.hub.username>
+    <ysg.docker.hub.password>docker-hub-password</ysg.docker.hub.password>
   </properties>
 
   <dependencies>
@@ -132,6 +134,17 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <image>
+            <publish>true</publish>
+          </image>
+          <docker>
+            <publishRegistry>
+              <username>${ysg.docker.hub.username}</username>
+              <password>${ysg.docker.hub.password}</password>
+            </publishRegistry>
+          </docker>
+        </configuration>
       </plugin>
     </plugins>
   </build>

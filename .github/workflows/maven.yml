@@ -1,6 +1,6 @@
 name: Java CI
 
-on: [push]
+on: [ push ]
 
 jobs:
   build:
@@ -8,19 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
-    - name: Build with Maven
-      run: mvn -B clean install --file pom.xml
-    - name: Build Image
-      run: mvn -B clean spring-boot:build-image --file ./ysg-manager-server/pom.xml -P skip-tests
-    - name: Publish to Docker Hub
-      uses: docker/build-push-action@v1
-      with:
-        username: ${{secrets.DOCKER_HUB_USERNAME}}
-        password: ${{secrets.DOCKER_HUB_PASSWORD}}
-        repository: lukas999/ysg-manager
-        tags: 2.0.1-SNAPSHOT
+      - uses: actions/checkout@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Build with Maven
+        run: mvn -B clean install --file pom.xml
+      - name: Build and Publish Image
+        run: mvn -B clean spring-boot:build-image --file ./ysg-manager-server/pom.xml -Pskip-tests  -DysgDockerHubUsername=${{secrets.DOCKER_HUB_USERNAME}} -DysgDockerHubPassword=${{secrets.DOCKER_HUB_PASSWORD}}
