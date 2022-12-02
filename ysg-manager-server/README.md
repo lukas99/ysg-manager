@@ -12,9 +12,9 @@ Install Docker e.g. for Windows: https://hub.docker.com/editions/community/docke
 ### Prepare PostgreSQL
 Execute the following commands to create the databases:
 
-`docker pull postgres:11.4`
+`docker pull postgres:14.6`
 
-`docker run --name ysg-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=ysg-server -d -p 5432:5432 postgres:11.4`
+`docker run --name ysg-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=ysg-server -d -p 5432:5432 postgres:14.6`
 
 Also see: 
 * https://docs.docker.com/samples/library/postgres/

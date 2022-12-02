@@ -32,7 +32,7 @@ public abstract class IntegrationTest {
   private static PostgreSQLContainer<?> sqlContainer;
 
   static {
-    sqlContainer = new PostgreSQLContainer<>("postgres:11.4");
+    sqlContainer = new PostgreSQLContainer<>("postgres:14.6");
     sqlContainer.start();
   }
 
