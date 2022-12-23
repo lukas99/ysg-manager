@@ -16,7 +16,7 @@
   }}</span>
 
   <span class="show-menu-content-top-right"></span>
-  <ysg-tournament-picker></ysg-tournament-picker>
+  <ysg-tournament-picker *ngIf="isAuthenticated"></ysg-tournament-picker>
   <ysg-language-picker></ysg-language-picker>
   <ysg-login></ysg-login>
 </mat-toolbar>
