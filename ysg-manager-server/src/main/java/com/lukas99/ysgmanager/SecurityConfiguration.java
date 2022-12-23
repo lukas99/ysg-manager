@@ -22,7 +22,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     // disable CSRF protection for now, otherwise POST requests do not work with https
     http.csrf().disable();
     http.authorizeRequests()
-        .antMatchers("/", "/index.html", "/**.js", "/**.css").permitAll()
+        .antMatchers(
+            "/", "/index.html", "/**.js", "/**.css", "/favicon.ico",
+            "/assets/images/**.jpg", "/assets/i18n/**.json").permitAll()
         .antMatchers("manifest.webmanifest", "ngsw.json").permitAll() // to support PWA
         .antMatchers("/api/v1/application").permitAll()
         /*
