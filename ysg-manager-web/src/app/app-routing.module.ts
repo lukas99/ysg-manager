@@ -24,19 +24,13 @@ const oktaAuth = new OktaAuth(config);
  */
 export const routes: Routes = [
   {
-    // navigate to home if there was NO route
     path: '',
-    pathMatch: 'full',
-    redirectTo: 'home'
+    loadChildren: () =>
+      import('./features/home/home.module').then((m) => m.HomeModule)
   },
   {
     path: 'implicit/callback',
     component: OktaCallbackComponent
-  },
-  {
-    path: 'home',
-    loadChildren: () =>
-      import('./features/home/home.module').then((m) => m.HomeModule)
   },
   {
     path: 'tournaments',
