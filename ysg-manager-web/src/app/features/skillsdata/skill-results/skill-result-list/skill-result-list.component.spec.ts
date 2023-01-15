@@ -25,7 +25,9 @@ describe('SkillResultListComponent', () => {
     );
   });
 
-  it('creates the options', () => {
+  it('ngOnInit creates the options', () => {
+    component.ngOnInit();
+
     const options = component.crudListOptions;
 
     expect(options.columnDefs.length).toBe(7);

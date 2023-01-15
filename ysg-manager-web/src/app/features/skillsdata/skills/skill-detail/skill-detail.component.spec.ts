@@ -49,8 +49,12 @@ describe('SkillDetailComponent', () => {
     );
   });
 
-  describe('the constructor', () => {
-    it('initializes the positions array', () => {
+  describe('ngOnInit', () => {
+    beforeEach(()=>{
+      component.ngOnInit();
+    });
+
+    it('initializes the skill types array', () => {
       expect(component.skillTypes.length).toBe(7);
       expect(component.skillTypes[0].viewValue).toBe(
         'SKILL_TYPE_TIME_WITH_RATING'
@@ -68,7 +72,7 @@ describe('SkillDetailComponent', () => {
       expect(translateService.instant).toHaveBeenCalledTimes(9); // 7 + 2 position
     });
 
-    it('initializes the positions array', () => {
+    it('initializes the player positions array', () => {
       expect(component.positions.length).toBe(2);
       expect(component.positions[0].viewValue).toBe('PLAYER_POSITION_SKATER');
       expect(component.positions[1].viewValue).toBe(

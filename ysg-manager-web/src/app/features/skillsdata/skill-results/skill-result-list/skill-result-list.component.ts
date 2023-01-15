@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SkillResultsService } from '../../../../core/services/skill-results.service';
 import { Team } from '../../../../types';
@@ -10,15 +10,19 @@ import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.com
   templateUrl: './skill-result-list.component.html',
   styleUrls: []
 })
-export class SkillResultListComponent {
-  crudListOptions: CrudListOptions;
-  selectedSkill: Team = this.skillsService.getSelectedItemValue();
+export class SkillResultListComponent implements OnInit {
+  crudListOptions!: CrudListOptions;
+  selectedSkill!: Team;
 
   constructor(
     private skillResultsService: SkillResultsService,
     private skillsService: SkillsService,
     private translateService: TranslateService
   ) {
+  }
+
+  ngOnInit(): void {
+    this.selectedSkill = this.skillsService.getSelectedItemValue();
     this.crudListOptions = {
       columnDefs: [
         {
@@ -61,7 +65,7 @@ export class SkillResultListComponent {
           filter: 'agNumberColumnFilter'
         }
       ],
-      crudService: skillResultsService,
+      crudService: this.skillResultsService,
       routerDetailUrl: '/skillresults/detail'
     };
   }

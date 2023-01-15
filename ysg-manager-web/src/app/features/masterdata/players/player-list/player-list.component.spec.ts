@@ -30,17 +30,23 @@ describe('PlayerListComponent', () => {
     );
   });
 
-  it('initializes the selected team', () => {
-    expect(component.selectedTeam).toBe(selectedTeam);
-  });
+  describe('ngOnInit', ()=>{
+    beforeEach(()=>{
+      component.ngOnInit();
+    });
 
-  it('creates the options', () => {
-    const options = component.crudListOptions;
+    it('initializes the selected team', () => {
+      expect(component.selectedTeam).toBe(selectedTeam);
+    });
 
-    expect(options.columnDefs.length).toBe(4);
-    expect(translateService.instant).toHaveBeenCalled();
+    it('creates the options', () => {
+      const options = component.crudListOptions;
 
-    expect(options.crudService).toBe(playersService);
-    expect(options.routerDetailUrl).toBeDefined();
+      expect(options.columnDefs.length).toBe(4);
+      expect(translateService.instant).toHaveBeenCalled();
+
+      expect(options.crudService).toBe(playersService);
+      expect(options.routerDetailUrl).toBeDefined();
+    });
   });
 });

@@ -24,7 +24,11 @@ describe('PlayerDetailComponent', () => {
     );
   });
 
-  describe('the constructor', () => {
+  describe('ngOnInit', () => {
+    beforeEach(()=>{
+      component.ngOnInit();
+    });
+
     it('initializes the positions array', () => {
       expect(component.positions.length).toBe(2);
       expect(component.positions[0].viewValue).toBe('PLAYER_POSITION_SKATER');

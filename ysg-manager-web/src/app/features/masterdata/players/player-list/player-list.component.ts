@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PlayersService } from '../../../../core/services/players.service';
 import { TeamsService } from '../../../../core/services/teams.service';
@@ -10,15 +10,19 @@ import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.com
   templateUrl: 'player-list.component.html',
   styleUrls: []
 })
-export class PlayerListComponent {
-  crudListOptions: CrudListOptions;
-  selectedTeam: Team = this.teamsService.getSelectedItemValue();
+export class PlayerListComponent implements OnInit {
+  crudListOptions!: CrudListOptions;
+  selectedTeam!: Team;
 
   constructor(
     private playersService: PlayersService,
     private teamsService: TeamsService,
     private translateService: TranslateService
   ) {
+  }
+
+  ngOnInit(): void {
+    this.selectedTeam = this.teamsService.getSelectedItemValue();
     this.crudListOptions = {
       columnDefs: [
         {
@@ -43,7 +47,7 @@ export class PlayerListComponent {
           headerName: this.translateService.instant('PLAYER_LAST_NAME')
         }
       ],
-      crudService: playersService,
+      crudService: this.playersService,
       routerDetailUrl: '/players/detail'
     };
   }

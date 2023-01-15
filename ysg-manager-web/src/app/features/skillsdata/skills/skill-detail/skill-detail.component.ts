@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { SkillsService } from '../../../../core/services/skills.service';
@@ -17,52 +17,13 @@ interface ViewObject {
   templateUrl: './skill-detail.component.html',
   styleUrls: []
 })
-export class SkillDetailComponent {
-  crudDetailOptions: CrudDetailOptions;
+export class SkillDetailComponent implements OnInit {
+  crudDetailOptions!: CrudDetailOptions;
   enableSkillResults = false;
   enableSkillRatings = false;
 
-  skillTypes: ViewObject[] = [
-    {
-      value: SkillType.TIME_WITH_RATING,
-      viewValue: this.translateService.instant('SKILL_TYPE_TIME_WITH_RATING')
-    },
-    {
-      value: SkillType.TIME_WITH_POINTS,
-      viewValue: this.translateService.instant('SKILL_TYPE_TIME_WITH_POINTS')
-    },
-    {
-      value: SkillType.TIME,
-      viewValue: this.translateService.instant('SKILL_TYPE_TIME')
-    },
-    {
-      value: SkillType.POINTS,
-      viewValue: this.translateService.instant('SKILL_TYPE_POINTS')
-    },
-    {
-      value: SkillType.RATING,
-      viewValue: this.translateService.instant('SKILL_TYPE_RATING')
-    },
-    {
-      value: SkillType.GOALTENDERS_OVERALL,
-      viewValue: this.translateService.instant('SKILL_TYPE_GOALTENDERS_OVERALL')
-    },
-    {
-      value: SkillType.NO_RESULTS,
-      viewValue: this.translateService.instant('SKILL_TYPE_NO_RESULTS')
-    }
-  ];
-
-  positions: ViewObject[] = [
-    {
-      value: PlayerPosition.SKATER,
-      viewValue: this.translateService.instant('PLAYER_POSITION_SKATER')
-    },
-    {
-      value: PlayerPosition.GOALTENDER,
-      viewValue: this.translateService.instant('PLAYER_POSITION_GOALTENDER')
-    }
-  ];
+  skillTypes: ViewObject[] = [];
+  positions: ViewObject[] = [];
 
   constructor(
     private skillsService: SkillsService,
@@ -71,6 +32,51 @@ export class SkillDetailComponent {
     private translateService: TranslateService,
     private router: Router
   ) {
+  }
+
+  ngOnInit(): void {
+    this.skillTypes = [
+      {
+        value: SkillType.TIME_WITH_RATING,
+        viewValue: this.translateService.instant('SKILL_TYPE_TIME_WITH_RATING')
+      },
+      {
+        value: SkillType.TIME_WITH_POINTS,
+        viewValue: this.translateService.instant('SKILL_TYPE_TIME_WITH_POINTS')
+      },
+      {
+        value: SkillType.TIME,
+        viewValue: this.translateService.instant('SKILL_TYPE_TIME')
+      },
+      {
+        value: SkillType.POINTS,
+        viewValue: this.translateService.instant('SKILL_TYPE_POINTS')
+      },
+      {
+        value: SkillType.RATING,
+        viewValue: this.translateService.instant('SKILL_TYPE_RATING')
+      },
+      {
+        value: SkillType.GOALTENDERS_OVERALL,
+        viewValue: this.translateService.instant('SKILL_TYPE_GOALTENDERS_OVERALL')
+      },
+      {
+        value: SkillType.NO_RESULTS,
+        viewValue: this.translateService.instant('SKILL_TYPE_NO_RESULTS')
+      }
+    ];
+
+    this.positions = [
+      {
+        value: PlayerPosition.SKATER,
+        viewValue: this.translateService.instant('PLAYER_POSITION_SKATER')
+      },
+      {
+        value: PlayerPosition.GOALTENDER,
+        viewValue: this.translateService.instant('PLAYER_POSITION_GOALTENDER')
+      }
+    ];
+
     this.crudDetailOptions = {
       form: this.formBuilder.group({
         name: ['', Validators.required],
@@ -83,7 +89,7 @@ export class SkillDetailComponent {
         number: [''],
         _links: ['']
       }),
-      crudService: skillsService,
+      crudService: this.skillsService,
       routerListUrl: '/skills'
     };
 

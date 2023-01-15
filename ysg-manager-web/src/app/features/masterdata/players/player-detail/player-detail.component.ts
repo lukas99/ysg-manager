@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { PlayersService } from '../../../../core/services/players.service';
@@ -15,25 +15,29 @@ interface Position {
   templateUrl: 'player-detail.component.html',
   styleUrls: []
 })
-export class PlayerDetailComponent {
-  crudDetailOptions: CrudDetailOptions;
-
-  positions: Position[] = [
-    {
-      value: PlayerPosition.SKATER,
-      viewValue: this.translateService.instant('PLAYER_POSITION_SKATER')
-    },
-    {
-      value: PlayerPosition.GOALTENDER,
-      viewValue: this.translateService.instant('PLAYER_POSITION_GOALTENDER')
-    }
-  ];
+export class PlayerDetailComponent implements OnInit {
+  crudDetailOptions!: CrudDetailOptions;
+  positions: Position[] = [];
 
   constructor(
     private playersService: PlayersService,
     private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService
   ) {
+  }
+
+  ngOnInit(): void {
+    this.positions = [
+      {
+        value: PlayerPosition.SKATER,
+        viewValue: this.translateService.instant('PLAYER_POSITION_SKATER')
+      },
+      {
+        value: PlayerPosition.GOALTENDER,
+        viewValue: this.translateService.instant('PLAYER_POSITION_GOALTENDER')
+      }
+    ];
+
     this.crudDetailOptions = {
       form: this.formBuilder.group({
         firstName: [''],
@@ -42,7 +46,7 @@ export class PlayerDetailComponent {
         position: [PlayerPosition.SKATER, Validators.required],
         _links: ['']
       }),
-      crudService: playersService,
+      crudService: this.playersService,
       routerListUrl: '/players'
     };
   }
