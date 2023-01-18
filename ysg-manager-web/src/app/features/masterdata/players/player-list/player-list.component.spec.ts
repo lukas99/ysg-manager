@@ -30,8 +30,8 @@ describe('PlayerListComponent', () => {
     );
   });
 
-  describe('ngOnInit', ()=>{
-    beforeEach(()=>{
+  describe('ngOnInit', () => {
+    beforeEach(() => {
       component.ngOnInit();
     });
 

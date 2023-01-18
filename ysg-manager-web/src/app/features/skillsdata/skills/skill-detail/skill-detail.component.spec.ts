@@ -50,7 +50,7 @@ describe('SkillDetailComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    beforeEach(()=>{
+    beforeEach(() => {
       component.ngOnInit();
     });
 

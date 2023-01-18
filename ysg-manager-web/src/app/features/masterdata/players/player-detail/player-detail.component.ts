@@ -23,8 +23,7 @@ export class PlayerDetailComponent implements OnInit {
     private playersService: PlayersService,
     private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.positions = [

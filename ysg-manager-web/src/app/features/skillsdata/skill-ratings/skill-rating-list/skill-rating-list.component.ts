@@ -18,8 +18,7 @@ export class SkillRatingListComponent implements OnInit {
     private skillRatingsService: SkillRatingsService,
     private skillsService: SkillsService,
     private translateService: TranslateService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.selectedSkill = this.skillsService.getSelectedItemValue();

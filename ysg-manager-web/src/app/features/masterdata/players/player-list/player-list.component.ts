@@ -18,8 +18,7 @@ export class PlayerListComponent implements OnInit {
     private playersService: PlayersService,
     private teamsService: TeamsService,
     private translateService: TranslateService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.selectedTeam = this.teamsService.getSelectedItemValue();

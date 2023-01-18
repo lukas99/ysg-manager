@@ -31,8 +31,7 @@ export class SkillDetailComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
     private router: Router
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.skillTypes = [
@@ -58,7 +57,9 @@ export class SkillDetailComponent implements OnInit {
       },
       {
         value: SkillType.GOALTENDERS_OVERALL,
-        viewValue: this.translateService.instant('SKILL_TYPE_GOALTENDERS_OVERALL')
+        viewValue: this.translateService.instant(
+          'SKILL_TYPE_GOALTENDERS_OVERALL'
+        )
       },
       {
         value: SkillType.NO_RESULTS,

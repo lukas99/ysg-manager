@@ -2,7 +2,7 @@ import { ResultDetailForTimeManualComponent } from './result-detail-for-time-man
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { Router } from '@angular/router';
-import { SkillTypeService } from "../../../core/services/skill-type.service";
+import { SkillTypeService } from '../../../core/services/skill-type.service';
 
 describe('ResultDetailForTimeManualComponent', () => {
   let component: ResultDetailForTimeManualComponent;

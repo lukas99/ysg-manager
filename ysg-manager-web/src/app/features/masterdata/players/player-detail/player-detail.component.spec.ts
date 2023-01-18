@@ -25,7 +25,7 @@ describe('PlayerDetailComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    beforeEach(()=>{
+    beforeEach(() => {
       component.ngOnInit();
     });
 

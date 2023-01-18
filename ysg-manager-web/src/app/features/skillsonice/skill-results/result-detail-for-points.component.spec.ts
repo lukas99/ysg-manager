@@ -2,7 +2,7 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { Router } from '@angular/router';
 import { ResultDetailForPointsComponent } from './result-detail-for-points.component';
-import { SkillTypeService } from "../../../core/services/skill-type.service";
+import { SkillTypeService } from '../../../core/services/skill-type.service';
 
 describe('ResultDetailForPointsComponent', () => {
   let component: ResultDetailForPointsComponent;
