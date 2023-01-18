@@ -12,4 +12,10 @@
   grid-column: 2;
   text-align: center;
   justify-content: center;
+
+  font-weight: normal;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
