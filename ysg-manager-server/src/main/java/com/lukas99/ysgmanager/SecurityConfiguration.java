@@ -53,6 +53,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     var config = new CorsConfiguration();
     config.setAllowCredentials(true);
     config.addAllowedOrigin("http://localhost:4200");
+    config.addAllowedOrigin("https://youngstargames.zapto.org");
+    config.addAllowedOrigin("https://ysg-manager-server-24h6rzjfpa-ew.a.run.app");
     config.addAllowedMethod("*");
     config.addAllowedHeader("*");
     source.registerCorsConfiguration("/**", config);

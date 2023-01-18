@@ -30,7 +30,8 @@ export class AuthInterceptor implements HttpInterceptor {
     // only add an access token to whitelisted origins
     const allowedOrigins = [
       'http://localhost',
-      'https://youngstargames.zapto.org'
+      'https://youngstargames.zapto.org',
+      'https://ysg-manager-server-24h6rzjfpa-ew.a.run.app'
     ];
     if (allowedOrigins.some((url) => request.urlWithParams.includes(url))) {
       const accessToken = await this.oktaAuth.getAccessToken();
