@@ -1,19 +1,21 @@
 <mat-card>
   <mat-card-subtitle>{{ 'MORE_ACTIONS' | translate }}</mat-card-subtitle>
-  <button
-    mat-stroked-button
-    (click)="onButton1Click()"
-    *ngIf="button1Text"
-    [disabled]="button1Disabled"
-  >
-    {{ button1Text | translate }}
-  </button>
-  <button
-    mat-stroked-button
-    (click)="onButton2Click()"
-    *ngIf="button2Text"
-    [disabled]="button2Disabled"
-  >
-    {{ button2Text | translate }}
-  </button>
+  <div class="more-action-buttons">
+    <button
+      mat-stroked-button
+      (click)="onButton1Click()"
+      *ngIf="button1Text"
+      [disabled]="button1Disabled"
+    >
+      {{ button1Text | translate }}
+    </button>
+    <button
+      mat-stroked-button
+      (click)="onButton2Click()"
+      *ngIf="button2Text"
+      [disabled]="button2Disabled"
+    >
+      {{ button2Text | translate }}
+    </button>
+  </div>
 </mat-card>

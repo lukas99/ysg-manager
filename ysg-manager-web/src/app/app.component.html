@@ -34,7 +34,7 @@
 
     <mat-divider></mat-divider>
 
-    <button mat-button class="menu-button" routerLink="">
+    <button mat-button color="white" class="menu-button" routerLink="">
       <mat-icon>home</mat-icon>
       <span>{{ 'NAVIGATION_HOME' | translate }}</span>
     </button>
@@ -43,6 +43,7 @@
 
     <button
       mat-button
+      color="white"
       class="menu-button"
       routerLink="tournaments"
       *ngIf="isAuthenticated"
@@ -52,6 +53,7 @@
     </button>
     <button
       mat-button
+      color="white"
       class="menu-button"
       routerLink="teams"
       *ngIf="isAuthenticated"
@@ -64,6 +66,7 @@
 
     <button
       mat-button
+      color="white"
       class="menu-button"
       routerLink="skills"
       *ngIf="isAuthenticated"
@@ -71,12 +74,13 @@
       <mat-icon>assessment</mat-icon>
       <span>{{ 'NAVIGATION_SKILLS' | translate }}</span>
     </button>
-    <button mat-button class="menu-button" routerLink="skillsonice">
+    <button mat-button color="white" class="menu-button" routerLink="skillsonice">
       <mat-icon>sports_hockey</mat-icon>
       <span>{{ 'NAVIGATION_SKILLS_ON_ICE' | translate }}</span>
     </button>
     <button
       mat-button
+      color="white"
       class="menu-button"
       routerLink="skillrankings"
       *ngIf="isAuthenticated"
@@ -86,6 +90,7 @@
     </button>
     <button
       mat-button
+      color="white"
       class="menu-button"
       routerLink="skilltournamentrankings"
       *ngIf="isAuthenticated"

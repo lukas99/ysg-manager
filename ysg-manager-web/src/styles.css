@@ -3,7 +3,10 @@
 @import "../node_modules/ag-grid-community/dist/styles/ag-grid.css";
 @import "../node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css";
 
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  line-height: inherit !important;
+}
 
 mat-form-field {
   width: 100%;
@@ -15,5 +18,14 @@ mat-checkbox {
 }
 
 mat-card {
+  padding: 15px;
   margin-bottom: 20px;
+}
+
+mat-card-subtitle {
+  margin-bottom: 10px !important;
+}
+
+button {
+  letter-spacing: normal !important;
 }
