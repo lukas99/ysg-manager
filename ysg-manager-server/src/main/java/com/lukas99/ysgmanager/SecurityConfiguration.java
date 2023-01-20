@@ -52,6 +52,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     var source = new UrlBasedCorsConfigurationSource();
     var config = new CorsConfiguration();
     config.setAllowCredentials(true);
+    // also add origins to auth.interceptor.ts and to Okta trusted Origins (Security -> API)
+    // at https://dev-280604-admin.okta.com/admin/access/api/trusted_origins
+    // also see: https://developer.okta.com/docs/guides/enable-cors/main/
     config.addAllowedOrigin("http://localhost:4200");
     config.addAllowedOrigin("https://youngstargames.zapto.org");
     config.addAllowedOrigin("https://ysg-manager-server-24h6rzjfpa-ew.a.run.app");
