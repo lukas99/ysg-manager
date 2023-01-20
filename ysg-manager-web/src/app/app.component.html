@@ -79,6 +79,7 @@
       color="white"
       class="menu-button"
       routerLink="skillsonice"
+      *ngIf="isAuthenticated"
     >
       <mat-icon>sports_hockey</mat-icon>
       <span>{{ 'NAVIGATION_SKILLS_ON_ICE' | translate }}</span>
