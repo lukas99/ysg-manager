@@ -10,6 +10,8 @@ import { SkillResultsService } from '../../../core/services/skill-results.servic
 import { Router } from '@angular/router';
 import { Directive } from '@angular/core';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
+import { defaultIfEmpty, filter, flatMap, map, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 /**
  * Base class for skill result detail components.
@@ -75,15 +77,18 @@ export abstract class ResultDetailModel {
   abstract shouldUpdate(): boolean;
 
   playerChanged() {
-    if (this.resultForSkillExists()) {
-      this.skillResult.player.shirtNumber = 0;
-      this.showAlertDialogResultForSkillAlreadyExists();
-    }
+    this.resultForSkillExists()
+      .pipe(filter((resultForSkillExists) => resultForSkillExists))
+      .subscribe(() => {
+        this.skillResult.player.shirtNumber = 0;
+        this.showAlertDialogResultForSkillAlreadyExists();
+      });
   }
 
   delete() {
-    this.skillResultsService.removeSkillResultFromCache(this.skillResult);
-    this.navigateToResultList();
+    this.skillResultsService
+      .deleteSkillResult(this.skillResult)
+      .subscribe(() => this.navigateToResultList());
   }
 
   cancel() {
@@ -91,19 +96,24 @@ export abstract class ResultDetailModel {
   }
 
   save() {
-    if (this.resultForSkillExists()) {
-      // check for existing result although check is also done when player shirt number has changed
-      // check again here in case component <ysg-player> would be used without (playerChange)
-      // output validation
-      this.showAlertDialogResultForSkillAlreadyExists();
-      return;
-    }
-    if (this.shouldUpdate()) {
-      this.skillResultsService.updateSkillResultInCache(this.skillResult);
-    } else {
-      this.skillResultsService.addSkillResultToCache(this.skillResult);
-    }
-    this.navigateToResultList();
+    this.resultForSkillExists().subscribe((resultForSkillExists) => {
+      if (resultForSkillExists) {
+        // check for existing result although check is also done when player shirt number has changed
+        // check again here in case component <ysg-player> would be used without (playerChange)
+        // output validation
+        this.showAlertDialogResultForSkillAlreadyExists();
+        return;
+      }
+      if (this.shouldUpdate()) {
+        this.skillResultsService
+          .updateSkillResult(this.skillResult)
+          .subscribe(() => this.navigateToResultList());
+      } else {
+        this.skillResultsService
+          .createSkillResult(this.skillResult, this.selectedSkill)
+          .subscribe(() => this.navigateToResultList());
+      }
+    });
   }
 
   private navigateToResultList() {
@@ -111,20 +121,26 @@ export abstract class ResultDetailModel {
     this.router.navigateByUrl('skillsonice/resultlist');
   }
 
-  private resultForSkillExists(): boolean {
-    const existingCacheResult = this.skillResultsService.getCachedSkillResult(
-      this.selectedSkill,
-      this.selectedTeam,
-      this.skillResult.player
-    );
-    if (existingCacheResult) {
-      const isCurrentRating =
-        !!this.skillResult.cacheId &&
-        this.skillResult.cacheId === existingCacheResult?.cacheId;
-      return !isCurrentRating; // allow to update own result (this.skillResult)
-    } else {
-      return false;
-    }
+  private resultForSkillExists(): Observable<boolean> {
+    return this.skillResultsService
+      .getSkillResultsBySkillAndTeamAndPlayerShirtNumber(
+        this.selectedSkill,
+        this.selectedTeam,
+        this.skillResult.player.shirtNumber
+      )
+      .pipe(
+        flatMap((list) => list),
+        take(1),
+        map((existingResult) => {
+          const isCurrentRating =
+            !!this.skillResult._links &&
+            !!this.skillResult._links.self &&
+            this.skillResult._links.self.href ===
+              existingResult?._links.self.href;
+          return !isCurrentRating; // allow to update own result (this.skillResult)
+        }),
+        defaultIfEmpty(false)
+      );
   }
 
   showAlertDialogResultForSkillAlreadyExists() {

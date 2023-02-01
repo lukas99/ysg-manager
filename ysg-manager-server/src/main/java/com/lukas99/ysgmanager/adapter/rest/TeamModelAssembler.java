@@ -19,6 +19,7 @@ public class TeamModelAssembler extends RepresentationModelAssemblerSupport<Team
   public TeamModel toModel(Team team) {
     var model = instantiateModel(team);
 
+    model.setId(team.getId());
     model.setName(team.getName());
     model.setLogo(team.getLogo());
 

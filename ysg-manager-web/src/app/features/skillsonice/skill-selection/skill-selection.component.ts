@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { SkillsService } from '../../../core/services/skills.service';
-import { forkJoin, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Skill, SkillType, Team } from '../../../types';
 import { TeamsService } from '../../../core/services/teams.service';
 import { Router } from '@angular/router';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { SkillRatingsService } from '../../../core/services/skill-ratings.service';
-import { concatMap, reduce } from 'rxjs/operators';
-import { SkillScoresPushResult } from '../../../core/services/skill-scores.service';
 
 @Component({
   selector: 'ysg-skill-selection',
@@ -75,38 +73,5 @@ export class SkillSelectionComponent implements OnInit {
   skillSelected(skill: Skill) {
     this.stateService.setSelectedSkill(skill);
     this.router.navigateByUrl('skillsonice/teamselection');
-  }
-
-  uploadSkillScores() {
-    this.doUploadSkillScores().subscribe((pushResult) => {
-      const total =
-        pushResult.updateSuccessAmount +
-        pushResult.updateFailedAmount +
-        pushResult.creationSuccessAmount +
-        pushResult.creationFailedAmount;
-      window.alert(`
-      Total uploaded skill scores: ${total}
-      - Creation success: ${pushResult.creationSuccessAmount}
-      - Creation failed: ${pushResult.creationFailedAmount}
-      - Update success: ${pushResult.updateSuccessAmount}
-      - Update failed: ${pushResult.updateFailedAmount}
-      `);
-    });
-  }
-
-  private doUploadSkillScores(): Observable<SkillScoresPushResult> {
-    return forkJoin([
-      this.skillResultsService.pushCachedSkillResultsToServer(),
-      this.skillRatingsService.pushCachedSkillRatingsToServer()
-    ]).pipe(
-      concatMap((results) => results),
-      reduce((totalResult, result) => {
-        totalResult.updateSuccessAmount += result.updateSuccessAmount;
-        totalResult.updateFailedAmount += result.updateFailedAmount;
-        totalResult.creationSuccessAmount += result.creationSuccessAmount;
-        totalResult.creationFailedAmount += result.creationFailedAmount;
-        return totalResult;
-      })
-    );
   }
 }

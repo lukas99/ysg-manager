@@ -14,6 +14,7 @@ describe('PlayersService', () => {
   let httpMock: HttpTestingController;
 
   let team: Team = {
+    id: 26,
     name: 'EHC Engelberg',
     _links: {
       self: { href: 'teams/1' },

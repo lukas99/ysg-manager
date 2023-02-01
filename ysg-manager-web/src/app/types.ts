@@ -31,6 +31,7 @@ export interface TournamentList {
 }
 
 export interface Team extends CacheSupport {
+  id: number;
   name: string;
   _links: {
     self: Link;
@@ -77,6 +78,8 @@ export interface Skill extends CacheSupport {
     self: Link;
     tournament: Link;
     skillresults: Link;
+    skillResultsByTeam: Link;
+    skillResultsByTeamAndPlayerShirtNumber: Link;
     skillratings: Link;
   };
 }

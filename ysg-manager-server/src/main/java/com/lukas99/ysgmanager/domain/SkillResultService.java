@@ -75,6 +75,28 @@ public class SkillResultService {
   }
 
   /**
+   * @param skill The skill for which the results should be retrieved.
+   * @param team  The team for which the results should be retrieved.
+   * @return the results for the given skill and team
+   */
+  public List<SkillResult> findBySkillAndTeam(Skill skill, Team team) {
+    return skillResultRepository.findBySkillAndPlayerTeam(skill, team);
+  }
+
+  /**
+   * @param skill             The skill for which the results should be retrieved.
+   * @param team              The team for which the results should be retrieved.
+   * @param playerShirtNumber the shirt number of the player for which the results should be
+   *                          retrieved
+   * @return the results for the given skill, team and player shirt number
+   */
+  public List<SkillResult> findBySkillAndTeamAndPlayerShirtNumber(
+      Skill skill, Team team, Integer playerShirtNumber) {
+    return skillResultRepository.findBySkillAndPlayerTeamAndPlayerShirtNumber(
+        skill, team, playerShirtNumber);
+  }
+
+  /**
    * @param player The skill for which the results should be retrieved.
    * @return The results of the given player.
    */

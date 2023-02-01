@@ -29,7 +29,35 @@ export class SkillResultsService
   }
 
   getSkillResults(skill: Skill): Observable<SkillResult[]> {
-    return this.http.get<SkillResultList>(skill._links.skillresults.href).pipe(
+    const url = skill._links.skillresults.href;
+    return this.loadSkillResults(url);
+  }
+
+  getSkillResultsBySkillAndTeam(
+    skill: Skill,
+    team: Team
+  ): Observable<SkillResult[]> {
+    const url = decodeURIComponent(
+      skill._links.skillResultsByTeam.href
+    ).replace(':teamId', team.id.toString());
+    return this.loadSkillResults(url);
+  }
+
+  getSkillResultsBySkillAndTeamAndPlayerShirtNumber(
+    skill: Skill,
+    team: Team,
+    playerShirtNumber: number
+  ): Observable<SkillResult[]> {
+    const url = decodeURIComponent(
+      skill._links.skillResultsByTeamAndPlayerShirtNumber.href
+    )
+      .replace(':teamId', team.id.toString())
+      .replace(':playerShirtNumber', playerShirtNumber.toString());
+    return this.loadSkillResults(url);
+  }
+
+  private loadSkillResults(url: string) {
+    return this.http.get<SkillResultList>(url).pipe(
       map((list) => {
         if (list && list._embedded && list._embedded.skillResultModelList) {
           return list._embedded.skillResultModelList;

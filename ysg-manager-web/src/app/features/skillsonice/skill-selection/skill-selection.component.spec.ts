@@ -6,8 +6,6 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { SkillsService } from '../../../core/services/skills.service';
 import { SkillRatingsService } from '../../../core/services/skill-ratings.service';
-import { of } from 'rxjs';
-import { SkillScoresPushResult } from '../../../core/services/skill-scores.service';
 
 describe('SkillSelectionComponent', () => {
   let component: SkillSelectionComponent;
@@ -104,36 +102,5 @@ describe('SkillSelectionComponent', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith(
       'skillsonice/teamselection'
     );
-  });
-
-  it('uploads skill results and skill ratings', () => {
-    skillResultsService.pushCachedSkillResultsToServer = jest.fn(() =>
-      of(<SkillScoresPushResult>{
-        updateSuccessAmount: 3,
-        updateFailedAmount: 3,
-        creationSuccessAmount: 3,
-        creationFailedAmount: 3
-      })
-    );
-    skillRatingsService.pushCachedSkillRatingsToServer = jest.fn(() =>
-      of(<SkillScoresPushResult>{
-        updateSuccessAmount: 2,
-        updateFailedAmount: 2,
-        creationSuccessAmount: 2,
-        creationFailedAmount: 2
-      })
-    );
-
-    let pushResult = {} as SkillScoresPushResult;
-    component['doUploadSkillScores']().subscribe(
-      (result) => (pushResult = result)
-    );
-
-    expect(pushResult).toEqual({
-      updateSuccessAmount: 5,
-      updateFailedAmount: 5,
-      creationSuccessAmount: 5,
-      creationFailedAmount: 5
-    });
   });
 });

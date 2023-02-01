@@ -14,6 +14,8 @@ import org.springframework.hateoas.RepresentationModel;
 @Setter
 public class TeamModel extends RepresentationModel<TeamModel> {
 
+  private Long id;
+
   @NotNull
   private String name;
 

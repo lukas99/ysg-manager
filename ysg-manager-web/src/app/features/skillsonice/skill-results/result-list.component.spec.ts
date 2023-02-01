@@ -4,6 +4,7 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 import { Router } from '@angular/router';
 import { Skill, SkillResult, SkillType, Team } from '../../../types';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
+import { of } from 'rxjs';
 
 describe('ResultListComponent', () => {
   let component: ResultListComponent;
@@ -15,7 +16,7 @@ describe('ResultListComponent', () => {
   beforeEach(() => {
     stateService = new SkillsOnIceStateService();
     skillResultsService = <any>{
-      getCachedSkillResults: jest.fn(() => []),
+      getSkillResultsBySkillAndTeam: jest.fn(() => of([])),
       setSelectedItem: jest.fn(),
       removeSelectedItem: jest.fn()
     };
@@ -62,31 +63,19 @@ describe('ResultListComponent', () => {
         points: 3,
         _links: { self: { href: 'results/1' } }
       } as SkillResult;
-      skillResultsService.getCachedSkillResults = jest.fn(() => [
-        result1,
-        result2,
-        result3
-      ]);
+      skillResultsService.getSkillResultsBySkillAndTeam = jest.fn(() =>
+        of([result1, result2, result3])
+      );
 
       component.ngOnInit();
 
-      expect(skillResultsService.getCachedSkillResults).toHaveBeenCalledWith(
-        skill,
-        team
-      );
+      expect(
+        skillResultsService.getSkillResultsBySkillAndTeam
+      ).toHaveBeenCalledWith(skill, team);
       expect(component.skillResults.length).toBe(3);
-      expect(component.skillResults[0]).toEqual({
-        ...result1,
-        isUploaded: true
-      });
-      expect(component.skillResults[1]).toEqual({
-        ...result2,
-        isUploaded: false
-      });
-      expect(component.skillResults[2]).toEqual({
-        ...result3,
-        isUploaded: true
-      });
+      expect(component.skillResults[0]).toEqual(result1);
+      expect(component.skillResults[1]).toEqual(result2);
+      expect(component.skillResults[2]).toEqual(result3);
     });
 
     it('should set showTime to true', () => {

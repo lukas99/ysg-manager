@@ -5,10 +5,6 @@ import { Skill, SkillResult, SkillType, Team } from '../../../types';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
 
-interface SkillResultView extends SkillResult {
-  isUploaded: boolean;
-}
-
 @Component({
   selector: 'ysg-result-list',
   templateUrl: './result-list.component.html',
@@ -17,7 +13,7 @@ interface SkillResultView extends SkillResult {
 export class ResultListComponent implements OnInit {
   selectedSkill!: Skill;
   selectedTeam!: Team;
-  skillResults: SkillResultView[] = [];
+  skillResults: SkillResult[] = [];
   showTime = false;
   showPoints = false;
 
@@ -32,19 +28,11 @@ export class ResultListComponent implements OnInit {
     this.selectedSkill = this.stateService.getSelectedSkill();
     this.selectedTeam = this.stateService.getSelectedTeam();
 
-    this.skillResults = this.skillResultsService
-      .getCachedSkillResults(this.selectedSkill, this.selectedTeam)
-      .map((skillResult) => {
-        let skillResultView = skillResult as SkillResultView;
-        skillResultView.isUploaded = this.isUploaded(skillResult);
-        return skillResultView;
-      });
+    this.skillResultsService
+      .getSkillResultsBySkillAndTeam(this.selectedSkill, this.selectedTeam)
+      .subscribe((skillResults) => (this.skillResults = skillResults));
     this.showTime = this.skillTypeService.isWithTime(this.selectedSkill);
     this.showPoints = this.skillTypeService.isWithPoints(this.selectedSkill);
-  }
-
-  private isUploaded(skillResult: SkillResult): boolean {
-    return !!skillResult._links.self;
   }
 
   editResult(skillResult: SkillResult) {

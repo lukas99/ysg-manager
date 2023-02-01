@@ -132,6 +132,7 @@ public class TeamRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.links", empty()))
         .andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content.[0].id").value(is(ehcEngelberg.getId().intValue())))
         .andExpect(jsonPath("$.content.[0].name").value(is(TeamTemplates.EHC_ENGELBERG)))
         .andExpect(jsonPath("$.content.[0].logo")
             .value(is(getBase64EncodedString(EHC_ENGELBERG_LOGO))))
@@ -139,6 +140,7 @@ public class TeamRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
             endsWith("/teams/" + ehcEngelberg.getId())))
+        .andExpect(jsonPath("$.content.[1].id").value(is(scBern.getId().intValue())))
         .andExpect(jsonPath("$.content.[1].name").value(is(SC_BERN)))
         .andExpect(jsonPath("$.content.[1].logo").value(is(getBase64EncodedString(SC_BERN_LOGO))))
         .andExpect(jsonPath("$.content.[1].links", hasSize(3)))
@@ -156,6 +158,7 @@ public class TeamRestControllerIT extends IntegrationTest {
     restTeamMockMvc.perform(get("/api/teams/{id}", ehcEngelberg.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.id").value(ehcEngelberg.getId().intValue()))
         .andExpect(jsonPath("$.name").value(EHC_ENGELBERG))
         .andExpect(jsonPath("$.logo").value(getBase64EncodedString(EHC_ENGELBERG_LOGO)))
         .andExpect(jsonPath("$.links", hasSize(3)))

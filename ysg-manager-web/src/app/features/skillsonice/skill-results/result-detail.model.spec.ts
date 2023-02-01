@@ -1,6 +1,5 @@
 import { ResultDetailForTimeComponent } from './result-detail-for-time.component';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
-import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { Router } from '@angular/router';
 import {
   Link,
@@ -10,24 +9,15 @@ import {
   SkillType,
   Team
 } from '../../../types';
-import { HttpClient } from '@angular/common/http';
-import { SkillsService } from '../../../core/services/skills.service';
-import { SkillScoresService } from '../../../core/services/skill-scores.service';
-import { CacheService } from '../../../core/services/cache.service';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
+import { of } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
 
 describe('ResultDetailModel', () => {
   let component: ResultDetailForTimeComponent;
   let stateService: SkillsOnIceStateService;
-  let skillResultsService: SkillResultsService;
-  let cacheService: CacheService<SkillResult>;
+  let skillResultsService: any;
   let router: Router;
-
-  let removeSkillFromCache: any;
-  let removeSelectedSkill: any;
-  let updateSkillResultInCache: any;
-  let addSkillResultToCache: any;
-  let getCachedSkillResult: any;
 
   let selectedTeamLink: Link;
   let selectedSkillLink: Link;
@@ -38,36 +28,18 @@ describe('ResultDetailModel', () => {
 
   beforeEach(() => {
     stateService = new SkillsOnIceStateService();
-    cacheService = <any>{
-      addToCache: jest.fn(),
-      updateInCache: jest.fn(),
-      removeFromCache: jest.fn()
+    skillResultsService = <any>{
+      // no item is selected -> would create new item
+      getSelectedItemValue: jest.fn(() => {
+        return {};
+      }),
+      deleteSkillResult: jest.fn(() => of({})),
+      removeSelectedItem: jest.fn(),
+      updateSkillResult: jest.fn(() => of({})),
+      createSkillResult: jest.fn(() => of({})),
+      // result for same player does not yet exist
+      getSkillResultsBySkillAndTeamAndPlayerShirtNumber: jest.fn(() => of([]))
     };
-    skillResultsService = new SkillResultsService(
-      {} as HttpClient,
-      {} as SkillsService,
-      new SkillScoresService<SkillResult>(cacheService)
-    );
-    removeSkillFromCache = jest.spyOn(
-      skillResultsService,
-      'removeSkillResultFromCache'
-    );
-    removeSelectedSkill = jest.spyOn(skillResultsService, 'removeSelectedItem');
-    updateSkillResultInCache = jest.spyOn(
-      skillResultsService,
-      'updateSkillResultInCache'
-    );
-    addSkillResultToCache = jest.spyOn(
-      skillResultsService,
-      'addSkillResultToCache'
-    );
-    getCachedSkillResult = jest.spyOn(
-      skillResultsService,
-      'getCachedSkillResult'
-    );
-    // result for same player does not yet exist in cache
-    getCachedSkillResult.mockImplementation(() => {});
-
     router = <any>{ navigateByUrl: jest.fn() };
     component = new ResultDetailForTimeComponent(
       stateService,
@@ -92,7 +64,11 @@ describe('ResultDetailModel', () => {
 
   describe('ngOnInit', () => {
     it('sets the selected skill and team', () => {
+      const existingResult = { time: 5.25 } as SkillResult;
+      skillResultsService.getSelectedItemValue = jest.fn(() => existingResult);
+
       component.ngOnInit();
+
       expect(component.selectedTeam).toBe(selectedTeam);
       expect(component.selectedSkill).toBe(selectedSkill);
     });
@@ -102,7 +78,9 @@ describe('ResultDetailModel', () => {
 
       beforeEach(() => {
         existingResult = { time: 5.25 } as SkillResult;
-        skillResultsService.setSelectedItem(existingResult);
+        skillResultsService.getSelectedItemValue = jest.fn(
+          () => existingResult
+        );
       });
 
       it('loads an existing result', () => {
@@ -187,97 +165,128 @@ describe('ResultDetailModel', () => {
   it('should delete a skill result', () => {
     const skillResult = {} as SkillResult;
     component.skillResult = skillResult;
+    skillResultsService.deleteSkillResult = jest.fn(() => of(skillResult));
 
     component.delete();
 
-    expect(removeSkillFromCache).toHaveBeenCalledWith(skillResult);
-    expect(removeSelectedSkill).toHaveBeenCalled();
+    expect(skillResultsService.deleteSkillResult).toHaveBeenCalledWith(
+      skillResult
+    );
+    expect(skillResultsService.removeSelectedItem).toHaveBeenCalled();
     expect(router.navigateByUrl).toHaveBeenCalledWith('skillsonice/resultlist');
   });
 
   it('should cancel the skill result editing', () => {
     component.cancel();
 
-    expect(removeSelectedSkill).toHaveBeenCalled();
+    expect(skillResultsService.removeSelectedItem).toHaveBeenCalled();
     expect(router.navigateByUrl).toHaveBeenCalledWith('skillsonice/resultlist');
   });
 
   describe('save', () => {
-    it('should allow to update own result which already exists in cache', () => {
-      const existingResult = { time: 2.5, cacheId: '9999' } as SkillResult;
-      skillResultsService.setSelectedItem(existingResult);
+    it('should allow to update own result which already exists', fakeAsync(() => {
+      const existingResult = {
+        time: 2.5,
+        player: { shirtNumber: 20 },
+        _links: { self: { href: 'self-link' } }
+      } as SkillResult;
+      skillResultsService.getSelectedItemValue = jest.fn(() => existingResult);
       component.ngOnInit();
-      // result for this player already exists in cache (it's the result we want to update)
-      getCachedSkillResult.mockImplementation(
-        () => ({ time: 2.5, cacheId: '9999' } as SkillResult)
-      );
+      // result for this player already exists (it's the result we want to update)
+      skillResultsService.getSkillResultsBySkillAndTeamAndPlayerShirtNumber =
+        jest.fn(() =>
+          of([
+            {
+              time: 2.5,
+              player: { shirtNumber: 20 },
+              _links: { self: { href: 'self-link' } }
+            } as SkillResult
+          ])
+        );
 
       component.save();
+      tick();
 
-      expect(skillResultsService.updateSkillResultInCache).toHaveBeenCalledWith(
+      expect(skillResultsService.updateSkillResult).toHaveBeenCalledWith(
         existingResult
       );
-      expect(removeSelectedSkill).toHaveBeenCalled();
+      expect(skillResultsService.removeSelectedItem).toHaveBeenCalled();
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         'skillsonice/resultlist'
       );
-    });
+    }));
 
-    it('should prevent to update result to player which already exists in cache', () => {
-      const existingResult = { time: 2.5, cacheId: '9999' } as SkillResult;
-      skillResultsService.setSelectedItem(existingResult);
+    it('should prevent to update result to player which already exists', () => {
+      const existingResult = {
+        time: 2.5,
+        player: { shirtNumber: 20 },
+        _links: { self: { href: 'self-link' } }
+      } as SkillResult;
+      skillResultsService.getSelectedItemValue = jest.fn(() => existingResult);
       component.ngOnInit();
-      // result for this player already exists in cache (it's another result)
-      getCachedSkillResult.mockImplementation(
-        () => ({ time: 2.5, cacheId: '8888' } as SkillResult)
-      );
+      // result for this player already exists (it's another result)
+      skillResultsService.getSkillResultsBySkillAndTeamAndPlayerShirtNumber =
+        jest.fn(() =>
+          of([
+            {
+              time: 2.5,
+              player: { shirtNumber: 20 },
+              _links: { self: { href: 'other-link' } }
+            } as SkillResult
+          ])
+        );
 
       component.save();
 
       expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(1);
 
-      expect(
-        skillResultsService.updateSkillResultInCache
-      ).toHaveBeenCalledTimes(0);
-      expect(skillResultsService.addSkillResultToCache).toHaveBeenCalledTimes(
-        0
-      );
-      expect(removeSelectedSkill).toHaveBeenCalledTimes(0);
+      expect(skillResultsService.updateSkillResult).toHaveBeenCalledTimes(0);
+      expect(skillResultsService.createSkillResult).toHaveBeenCalledTimes(0);
+      expect(skillResultsService.removeSelectedItem).toHaveBeenCalledTimes(0);
       expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
     });
 
     it('should create new result', () => {
       expect(skillResultsService.getSelectedItemValue()).toEqual({});
       component.ngOnInit();
+      // result for this player doesn't yet exist
+      skillResultsService.getSkillResultsBySkillAndTeamAndPlayerShirtNumber =
+        jest.fn(() => of([]));
 
       component.save();
 
-      expect(skillResultsService.addSkillResultToCache).toHaveBeenCalledWith(
-        component.skillResult
+      expect(skillResultsService.createSkillResult).toHaveBeenCalledWith(
+        component.skillResult,
+        selectedSkill
       );
-      expect(removeSelectedSkill).toHaveBeenCalled();
+      expect(skillResultsService.removeSelectedItem).toHaveBeenCalled();
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         'skillsonice/resultlist'
       );
     });
 
-    it('should prevent to create a new result when a result already exists in cache', () => {
+    it('should prevent to create a new result when a result already exists', () => {
       expect(skillResultsService.getSelectedItemValue()).toEqual({});
       component.ngOnInit();
-      // result for this player already exists in cache
-      getCachedSkillResult.mockImplementation(() => ({} as SkillResult));
+      // result for this player already exists
+      skillResultsService.getSkillResultsBySkillAndTeamAndPlayerShirtNumber =
+        jest.fn(() =>
+          of([
+            {
+              time: 2.5,
+              player: { shirtNumber: 20 },
+              _links: { self: { href: 'self-link' } }
+            } as SkillResult
+          ])
+        );
 
       component.save();
 
       expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(1);
 
-      expect(
-        skillResultsService.updateSkillResultInCache
-      ).toHaveBeenCalledTimes(0);
-      expect(skillResultsService.addSkillResultToCache).toHaveBeenCalledTimes(
-        0
-      );
-      expect(removeSelectedSkill).toHaveBeenCalledTimes(0);
+      expect(skillResultsService.updateSkillResult).toHaveBeenCalledTimes(0);
+      expect(skillResultsService.createSkillResult).toHaveBeenCalledTimes(0);
+      expect(skillResultsService.removeSelectedItem).toHaveBeenCalledTimes(0);
       expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
     });
   });
@@ -291,24 +300,36 @@ describe('ResultDetailModel', () => {
       component.skillResult.player.shirtNumber = 20;
     });
 
-    it('detects that a skill result for a player already exists', () => {
-      // result for this player already exists in cache
-      getCachedSkillResult.mockImplementation(() => ({} as SkillResult));
+    it('detects that a skill result for a player already exists', fakeAsync(() => {
+      // result for this player already exists
+      skillResultsService.getSkillResultsBySkillAndTeamAndPlayerShirtNumber =
+        jest.fn(() =>
+          of([
+            {
+              time: 2.5,
+              player: { shirtNumber: 20 },
+              _links: { self: { href: 'self-link' } }
+            } as SkillResult
+          ])
+        );
 
       component.playerChanged();
+      tick();
 
       expect(component.skillResult.player.shirtNumber).toBe(0);
       expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(1);
-    });
+    }));
 
-    it('detects that a skill result for a player not yet exists', () => {
-      // result for this player already exists in cache
-      getCachedSkillResult.mockImplementation(() => null);
+    it('detects that a skill result for a player not yet exists', fakeAsync(() => {
+      // result for this player doesn't yet exist
+      skillResultsService.getSkillResultsBySkillAndTeamAndPlayerShirtNumber =
+        jest.fn(() => of([]));
 
       component.playerChanged();
+      tick();
 
       expect(component.skillResult.player.shirtNumber).toBe(20);
       expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(0);
-    });
+    }));
   });
 });

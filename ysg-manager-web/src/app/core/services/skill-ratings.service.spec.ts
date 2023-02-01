@@ -30,8 +30,18 @@ describe('SkillRatingsService', () => {
     _links: {
       self: { href: 'skills/1' },
       tournament: { href: 'tournaments/1' },
-      skillresults: { href: '/skills/1/skill-results' },
-      skillratings: { href: '/skills/1/skill-ratings' }
+      skillresults: {
+        href: '/skills/1/skill-results'
+      },
+      skillResultsByTeam: {
+        href: '/skills/1/skill-results?teamId=:teamId'
+      },
+      skillResultsByTeamAndPlayerShirtNumber: {
+        href: '/skills/1/skill-results?teamId=:teamId&playerShirtNumber=:playerShirtNumber'
+      },
+      skillratings: {
+        href: '/skills/1/skill-ratings'
+      }
     }
   };
 

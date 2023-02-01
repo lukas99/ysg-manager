@@ -22,6 +22,8 @@ import com.lukas99.ysgmanager.domain.SkillType;
 import com.lukas99.ysgmanager.domain.Tournament;
 import com.lukas99.ysgmanager.domain.TournamentService;
 import com.lukas99.ysgmanager.domain.TournamentTemplates;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -187,7 +189,7 @@ public class SkillRestControllerIT extends IntegrationTest {
             is(PlayerPosition.SKATER.toString())))
         .andExpect(jsonPath("$.content.[0].name").value(is(SkillTemplates.MAGIC_TRANSITIONS)))
         .andExpect(jsonPath("$.content.[0].number").value(is(SkillTemplates.ONE)))
-        .andExpect(jsonPath("$.content.[0].links", hasSize(4)))
+        .andExpect(jsonPath("$.content.[0].links", hasSize(6)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
             endsWith("/skills/" + magicTransitions.getId())))
@@ -199,7 +201,7 @@ public class SkillRestControllerIT extends IntegrationTest {
             is(PlayerPosition.SKATER.toString())))
         .andExpect(jsonPath("$.content.[1].name").value(is(SkillTemplates.BEST_SHOT)))
         .andExpect(jsonPath("$.content.[1].number").value(is(SkillTemplates.TWO)))
-        .andExpect(jsonPath("$.content.[1].links", hasSize(4)))
+        .andExpect(jsonPath("$.content.[1].links", hasSize(6)))
         .andExpect(jsonPath("$.content.[1].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[1].links.[0].href",
             endsWith("/skills/" + bestShot.getId())));
@@ -221,16 +223,31 @@ public class SkillRestControllerIT extends IntegrationTest {
             jsonPath("$.tournamentRankingPlayerPosition").value(PlayerPosition.SKATER.toString()))
         .andExpect(jsonPath("$.name").value(SkillTemplates.MAGIC_TRANSITIONS))
         .andExpect(jsonPath("$.number").value(SkillTemplates.ONE))
-        .andExpect(jsonPath("$.links", hasSize(4)))
+        .andExpect(jsonPath("$.links", hasSize(6)))
+
         .andExpect(jsonPath("$.links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.links.[0].href", endsWith("/skills/" + magicTransitions.getId())))
+
         .andExpect(jsonPath("$.links.[1].rel").value(is("tournament")))
         .andExpect(jsonPath("$.links.[1].href", endsWith("/tournaments/" + ysg2019.getId())))
+
         .andExpect(jsonPath("$.links.[2].rel").value(is("skillresults")))
         .andExpect(jsonPath("$.links.[2].href",
             endsWith("/skills/" + magicTransitions.getId() + "/skill-results")))
-        .andExpect(jsonPath("$.links.[3].rel").value(is("skillratings")))
+
+        .andExpect(jsonPath("$.links.[3].rel").value(is("skillResultsByTeam")))
         .andExpect(jsonPath("$.links.[3].href",
+            endsWith("/skills/%s/skill-results?teamId=%s".formatted(
+                magicTransitions.getId(), URLEncoder.encode(":teamId", StandardCharsets.UTF_8)))))
+
+        .andExpect(jsonPath("$.links.[4].rel").value(is("skillResultsByTeamAndPlayerShirtNumber")))
+        .andExpect(jsonPath("$.links.[4].href",
+            endsWith("/skills/%s/skill-results?teamId=%s&playerShirtNumber=%s".formatted(
+                magicTransitions.getId(), URLEncoder.encode(":teamId", StandardCharsets.UTF_8),
+                URLEncoder.encode(":playerShirtNumber", StandardCharsets.UTF_8)))))
+
+        .andExpect(jsonPath("$.links.[5].rel").value(is("skillratings")))
+        .andExpect(jsonPath("$.links.[5].href",
             endsWith("/skills/" + magicTransitions.getId() + "/skill-ratings")))
     ;
   }
