@@ -2,13 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Tournament, TournamentList } from '../../types';
-import { catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { CrudStateService } from './crud-state.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
-import { CacheService } from './cache.service';
-
-const STORAGE_KEY = 'ysg-tournaments';
 
 @Injectable({
   providedIn: 'root'
@@ -29,10 +26,7 @@ export class TournamentsService
     {} as Tournament
   );
 
-  constructor(
-    private http: HttpClient,
-    private cacheService: CacheService<Tournament>
-  ) {
+  constructor(private http: HttpClient) {
     super();
     this.tournamentsUrl = environment.apiUrl + '/api/tournaments';
   }
@@ -70,16 +64,11 @@ export class TournamentsService
     return this.http.get<TournamentList>(this.tournamentsUrl).pipe(
       map((list) => {
         if (list && list._embedded && list._embedded.tournamentModelList) {
-          this.cacheService.replaceCache(
-            list._embedded.tournamentModelList,
-            STORAGE_KEY
-          );
           return list._embedded.tournamentModelList;
         } else {
           return [];
         }
-      }),
-      catchError(() => of(this.cacheService.getCache(STORAGE_KEY)))
+      })
     );
   }
 

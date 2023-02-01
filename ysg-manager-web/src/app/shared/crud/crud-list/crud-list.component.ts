@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { ColDef, GridApi, RowClassParams } from 'ag-grid-community';
+import { ColDef, GridApi } from 'ag-grid-community';
 import { switchMap } from 'rxjs/operators';
 import {
   ConfirmationDialogComponent,
@@ -143,11 +143,5 @@ export class CrudListComponent implements OnInit {
 
   onRowSelected($event: any) {
     this.isItemSelected = this.gridApi.getSelectedNodes().length > 0;
-  }
-
-  getRowStyle(params: RowClassParams) {
-    if (params.data.isCached === true) {
-      return { background: 'lightyellow' };
-    }
   }
 }

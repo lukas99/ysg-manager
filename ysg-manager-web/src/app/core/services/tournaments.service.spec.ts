@@ -6,13 +6,11 @@ import {
 } from '@angular/common/http/testing';
 import { Tournament, TournamentList } from '../../types';
 import { skip } from 'rxjs/operators';
-import { CacheService } from './cache.service';
 import DoneCallback = jest.DoneCallback;
 
 describe('TournamentsService', () => {
   let service: TournamentsService;
   let httpMock: HttpTestingController;
-  let cacheService: CacheService<Tournament>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -20,7 +18,6 @@ describe('TournamentsService', () => {
     });
     service = TestBed.inject(TournamentsService);
     httpMock = TestBed.inject(HttpTestingController);
-    cacheService = TestBed.inject(CacheService);
   });
 
   afterEach(() => {
@@ -111,7 +108,7 @@ describe('TournamentsService', () => {
       localStorage.removeItem('ysg-tournaments');
     });
 
-    it('should get the tournaments and store them to cache', (done: DoneCallback) => {
+    it('should get the tournaments', (done: DoneCallback) => {
       service.getTournaments().subscribe((result) => {
         expect(result.length).toBe(2);
         expect(result).toEqual(tournaments);
@@ -125,11 +122,6 @@ describe('TournamentsService', () => {
           tournamentModelList: tournaments
         }
       });
-
-      expect(cacheService.getCache('ysg-tournaments')).toMatchObject([
-        { name: 'YSG 2019', isCached: true },
-        { name: 'YSG 2020', isCached: true }
-      ]);
     });
 
     it('should return an empty list when no tournaments are available', (done: DoneCallback) => {
@@ -141,23 +133,6 @@ describe('TournamentsService', () => {
       const testRequest = httpMock.expectOne(service['tournamentsUrl']);
       expect(testRequest.request.method).toBe('GET');
       testRequest.flush(<TournamentList>{});
-    });
-
-    it('loads the cached tournaments when loading failed', (done: DoneCallback) => {
-      cacheService.replaceCache(tournaments, 'ysg-tournaments');
-
-      service.getTournaments().subscribe((result) => {
-        expect(result.length).toBe(2);
-        expect(result).toMatchObject([
-          { name: 'YSG 2019', isCached: true },
-          { name: 'YSG 2020', isCached: true }
-        ]);
-        done();
-      });
-
-      const testRequest = httpMock.expectOne(service['tournamentsUrl']);
-      expect(testRequest.request.method).toBe('GET');
-      testRequest.flush('', { status: 504, statusText: 'Timeout' });
     });
   });
 

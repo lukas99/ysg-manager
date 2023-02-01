@@ -2,13 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Skill, SkillList, Tournament } from '../../types';
-import { catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { TournamentsService } from './tournaments.service';
 import { CrudStateService } from './crud-state.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
-import { CacheService } from './cache.service';
-
-const STORAGE_KEY = 'ysg-skills';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +15,7 @@ export class SkillsService extends CrudStateService implements CrudService {
 
   constructor(
     private http: HttpClient,
-    private tournamentService: TournamentsService,
-    private cacheService: CacheService<Skill>
+    private tournamentService: TournamentsService
   ) {
     super();
     this.tournamentService
@@ -36,15 +32,11 @@ export class SkillsService extends CrudStateService implements CrudService {
             const skills = this.sortBySkillNumber(
               list._embedded.skillModelList
             );
-            this.cacheService.replaceCache(skills, STORAGE_KEY);
             return skills;
           } else {
             return [];
           }
-        }),
-        catchError(() =>
-          of(this.sortBySkillNumber(this.cacheService.getCache(STORAGE_KEY)))
-        )
+        })
       );
   }
 
