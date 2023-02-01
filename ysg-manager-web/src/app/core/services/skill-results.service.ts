@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Player, Skill, SkillResult, SkillResultList, Team } from '../../types';
+import { Skill, SkillResult, SkillResultList, Team } from '../../types';
 import { CrudStateService } from './crud-state.service';
 import { SkillsService } from './skills.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
-import { SkillScoresService } from './skill-scores.service';
 
 export const STORAGE_KEY = 'ysg-skill-results';
 
@@ -17,11 +16,7 @@ export class SkillResultsService
   extends CrudStateService
   implements CrudService
 {
-  constructor(
-    private http: HttpClient,
-    private skillsService: SkillsService,
-    private skillScoresService: SkillScoresService<SkillResult>
-  ) {
+  constructor(private http: HttpClient, private skillsService: SkillsService) {
     super();
   }
 
@@ -114,38 +109,5 @@ export class SkillResultsService
 
   getItemTitle(item: any): string {
     return this.getSkillResultTitle(item);
-  }
-
-  addSkillResultToCache(skillResult: SkillResult): void {
-    this.skillScoresService.addToCache(skillResult, STORAGE_KEY);
-  }
-
-  updateSkillResultInCache(skillResult: SkillResult): void {
-    this.skillScoresService.updateInCache(skillResult, STORAGE_KEY);
-  }
-
-  removeSkillResultFromCache(skillResult: SkillResult): void {
-    this.skillScoresService.removeFromCache(skillResult, STORAGE_KEY);
-  }
-
-  getCachedSkillResults(skill: Skill, team: Team): SkillResult[] {
-    return this.skillScoresService.getCachedSkillScores(
-      skill,
-      team,
-      STORAGE_KEY
-    );
-  }
-
-  getCachedSkillResult(
-    skill: Skill,
-    team: Team,
-    player: Player
-  ): SkillResult | null {
-    return this.skillScoresService.getCachedSkillScore(
-      skill,
-      team,
-      player,
-      STORAGE_KEY
-    );
   }
 }

@@ -102,8 +102,6 @@ export interface SkillList {
   };
 }
 
-export type SkillScore = SkillResult | SkillRating;
-
 export interface SkillResult extends CacheSupport {
   time: number;
   failures: number;

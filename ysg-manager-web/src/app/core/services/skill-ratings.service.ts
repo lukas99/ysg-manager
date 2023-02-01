@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Player, Skill, SkillRating, SkillRatingList, Team } from '../../types';
+import { Skill, SkillRating, SkillRatingList, Team } from '../../types';
 import { CrudStateService } from './crud-state.service';
 import { SkillsService } from './skills.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
-import { SkillScoresService } from './skill-scores.service';
 
 export const STORAGE_KEY = 'ysg-skill-ratings';
 
@@ -17,11 +16,7 @@ export class SkillRatingsService
   extends CrudStateService
   implements CrudService
 {
-  constructor(
-    private http: HttpClient,
-    private skillsService: SkillsService,
-    private skillScoresService: SkillScoresService<SkillRating>
-  ) {
+  constructor(private http: HttpClient, private skillsService: SkillsService) {
     super();
   }
 
@@ -114,38 +109,5 @@ export class SkillRatingsService
 
   getItemTitle(item: any): string {
     return this.getSkillRatingTitle(item);
-  }
-
-  addSkillRatingToCache(skillRating: SkillRating): void {
-    this.skillScoresService.addToCache(skillRating, STORAGE_KEY);
-  }
-
-  updateSkillRatingInCache(skillRating: SkillRating): void {
-    this.skillScoresService.updateInCache(skillRating, STORAGE_KEY);
-  }
-
-  removeSkillRatingFromCache(skillRating: SkillRating): void {
-    this.skillScoresService.removeFromCache(skillRating, STORAGE_KEY);
-  }
-
-  getCachedSkillRatings(skill: Skill, team: Team): SkillRating[] {
-    return this.skillScoresService.getCachedSkillScores(
-      skill,
-      team,
-      STORAGE_KEY
-    );
-  }
-
-  getCachedSkillRating(
-    skill: Skill,
-    team: Team,
-    player: Player
-  ): SkillRating | null {
-    return this.skillScoresService.getCachedSkillScore(
-      skill,
-      team,
-      player,
-      STORAGE_KEY
-    );
   }
 }
