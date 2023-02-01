@@ -75,8 +75,10 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
   private MockMvc restSkillRatingMockMvc;
 
   private Team ehcEngelberg;
+  private Team scBern;
   private Player romanJosi;
   private Player martinGerber;
+  private Player timoMeier;
   private Skill magicTransitions;
   private Skill controlledJumble;
   private SkillRating magicTransitionsRating;
@@ -96,8 +98,10 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
   public void initTest() {
     Tournament ysg2019 = TournamentTemplates.ysg2019(em);
     ehcEngelberg = TeamTemplates.ehcEngelberg(ysg2019, em);
+    scBern = TeamTemplates.scBern(ysg2019, em);
     romanJosi = PlayerTemplates.romanJosi(ehcEngelberg, em);
     martinGerber = PlayerTemplates.martinGerber(ehcEngelberg, em);
+    timoMeier = PlayerTemplates.timoMeier(scBern, em);
     magicTransitions = SkillTemplates.magicTransitions(ysg2019, em);
     controlledJumble = SkillTemplates.controlledJumble(ysg2019, em);
     magicTransitionsRating = magicTransitionsRating(magicTransitions, romanJosi);
@@ -245,6 +249,69 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
             endsWith("/skill-ratings/" + magicTransitionsRating.getId())));
+  }
+
+  @Test
+  @Transactional
+  public void getSkillRatingsOfSkillAndTeam() throws Exception {
+    // EHC Engelberg
+    var magicTransitionsRating1 = magicTransitionsRating(magicTransitions, romanJosi);
+    var magicTransitionsRating2 = magicTransitionsRating(magicTransitions, martinGerber);
+    // SC Bern
+    var magicTransitionsRating3 = magicTransitionsRating(magicTransitions, timoMeier);
+
+    // Initialize the database
+    skillRatingRepository.saveAndFlush(magicTransitionsRating1);
+    skillRatingRepository.saveAndFlush(magicTransitionsRating2);
+    skillRatingRepository.saveAndFlush(magicTransitionsRating3);
+
+    // Get all the skillRatings of a skill
+    restSkillRatingMockMvc
+        .perform(get("/api/skills/{skillId}/skill-ratings?teamId={teamId}",
+            magicTransitions.getId(), ehcEngelberg.getId()))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.links", empty()))
+        .andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content.[0].player.firstName")
+            .value(is(romanJosi.getFirstName())))
+        .andExpect(jsonPath("$.content.[0].player.lastName")
+            .value(is(romanJosi.getLastName())))
+        .andExpect(jsonPath("$.content.[0].player.team.name").value(is(ehcEngelberg.getName())))
+        .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
+        .andExpect(jsonPath("$.content.[1].player.firstName")
+            .value(is(martinGerber.getFirstName())))
+        .andExpect(jsonPath("$.content.[1].player.lastName")
+            .value(is(martinGerber.getLastName())))
+        .andExpect(jsonPath("$.content.[1].player.team.name").value(is(ehcEngelberg.getName())))
+        .andExpect(jsonPath("$.content.[1].links", hasSize(3)));
+  }
+
+  @Test
+  @Transactional
+  public void getSkillRatingsOfSkillAndTeamAndPlayerShirtNumber() throws Exception {
+    var magicTransitionsRating1 = magicTransitionsRating(magicTransitions, romanJosi);
+    var magicTransitionsRating2 = magicTransitionsRating(magicTransitions, martinGerber);
+
+    // Initialize the database
+    skillRatingRepository.saveAndFlush(magicTransitionsRating1);
+    skillRatingRepository.saveAndFlush(magicTransitionsRating2);
+
+    // Get all the skillRatings of a skill for a player with a given shirt number
+    restSkillRatingMockMvc
+        .perform(
+            get("/api/skills/{skillId}/skill-ratings?teamId={teamId}&playerShirtNumber={shirtNumber}",
+                magicTransitions.getId(), ehcEngelberg.getId(), romanJosi.getShirtNumber()))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.links", empty()))
+        .andExpect(jsonPath("$.content", hasSize(1)))
+        .andExpect(jsonPath("$.content.[0].player.firstName")
+            .value(is(romanJosi.getFirstName())))
+        .andExpect(jsonPath("$.content.[0].player.lastName")
+            .value(is(romanJosi.getLastName())))
+        .andExpect(jsonPath("$.content.[0].player.team.name").value(is(ehcEngelberg.getName())))
+        .andExpect(jsonPath("$.content.[0].links", hasSize(3)));
   }
 
   @Test

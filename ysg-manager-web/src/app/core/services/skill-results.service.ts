@@ -6,10 +6,7 @@ import { Player, Skill, SkillResult, SkillResultList, Team } from '../../types';
 import { CrudStateService } from './crud-state.service';
 import { SkillsService } from './skills.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
-import {
-  SkillScoresPushResult,
-  SkillScoresService
-} from './skill-scores.service';
+import { SkillScoresService } from './skill-scores.service';
 
 export const STORAGE_KEY = 'ysg-skill-results';
 
@@ -149,16 +146,6 @@ export class SkillResultsService
       team,
       player,
       STORAGE_KEY
-    );
-  }
-
-  pushCachedSkillResultsToServer(): Observable<SkillScoresPushResult> {
-    return this.skillScoresService.pushCachedSkillScoresToServer(
-      this.skillsService.getSkills(),
-      STORAGE_KEY,
-      (result: SkillResult) => this.updateSkillResult(result),
-      (result: SkillResult, skill: Skill) =>
-        this.createSkillResult(result, skill)
     );
   }
 }

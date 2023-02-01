@@ -81,6 +81,8 @@ export interface Skill extends CacheSupport {
     skillResultsByTeam: Link;
     skillResultsByTeamAndPlayerShirtNumber: Link;
     skillratings: Link;
+    skillRatingsByTeam: Link;
+    skillRatingsByTeamAndPlayerShirtNumber: Link;
   };
 }
 

@@ -48,6 +48,12 @@ describe('SkillResultsService', () => {
       },
       skillratings: {
         href: '/skills/1/skill-ratings'
+      },
+      skillRatingsByTeam: {
+        href: '/skills/1/skill-ratings?teamId=:teamId'
+      },
+      skillRatingsByTeamAndPlayerShirtNumber: {
+        href: '/skills/1/skill-ratings?teamId=:teamId&playerShirtNumber=:playerShirtNumber'
       }
     }
   };

@@ -10,7 +10,8 @@ import {
   Skill,
   SkillRating,
   SkillRatingList,
-  SkillType
+  SkillType,
+  Team
 } from '../../types';
 import { SkillRatingsService } from './skill-ratings.service';
 import { SkillsService } from './skills.service';
@@ -41,7 +42,22 @@ describe('SkillRatingsService', () => {
       },
       skillratings: {
         href: '/skills/1/skill-ratings'
+      },
+      skillRatingsByTeam: {
+        href: '/skills/1/skill-ratings?teamId=:teamId'
+      },
+      skillRatingsByTeamAndPlayerShirtNumber: {
+        href: '/skills/1/skill-ratings?teamId=:teamId&playerShirtNumber=:playerShirtNumber'
       }
+    }
+  };
+
+  let team: Team = {
+    id: 26,
+    name: 'EHC Engelberg',
+    _links: {
+      self: { href: 'teams/1' },
+      players: { href: 'teams/1/players' }
     }
   };
 
@@ -96,6 +112,86 @@ describe('SkillRatingsService', () => {
       });
 
       const testRequest = httpMock.expectOne('/skills/1/skill-ratings');
+      expect(testRequest.request.method).toBe('GET');
+      testRequest.flush(<PlayerList>{});
+    });
+  });
+
+  describe('getSkillRatingsBySkillAndTeam', () => {
+    it('should get the skillRatings of a skill filtered by team', (done: DoneCallback) => {
+      const skillRatings = [
+        <SkillRating>{ score: 80 },
+        <SkillRating>{ score: 90 }
+      ];
+
+      service.getSkillRatingsBySkillAndTeam(skill, team).subscribe((rating) => {
+        expect(rating).toHaveLength(2);
+        expect(rating).toEqual(skillRatings);
+        done();
+      });
+
+      const testRequest = httpMock.expectOne(
+        '/skills/1/skill-ratings?teamId=26'
+      );
+      expect(testRequest.request.method).toBe('GET');
+      testRequest.flush(<SkillRatingList>{
+        _embedded: {
+          skillRatingModelList: skillRatings
+        }
+      });
+    });
+
+    it('should return an empty list when no ratings are available', (done: DoneCallback) => {
+      service.getSkillRatingsBySkillAndTeam(skill, team).subscribe((rating) => {
+        expect(rating).toHaveLength(0);
+        done();
+      });
+
+      const testRequest = httpMock.expectOne(
+        '/skills/1/skill-ratings?teamId=26'
+      );
+      expect(testRequest.request.method).toBe('GET');
+      testRequest.flush(<PlayerList>{});
+    });
+  });
+
+  describe('getSkillRatingsBySkillAndTeamAndPlayerShirtNumber', () => {
+    it('should get the skillRatings of a skill filtered by team and shirt number', (done: DoneCallback) => {
+      const skillRatings = [
+        <SkillRating>{ score: 80 },
+        <SkillRating>{ score: 90 }
+      ];
+
+      service
+        .getSkillRatingsBySkillAndTeamAndPlayerShirtNumber(skill, team, 99)
+        .subscribe((rating) => {
+          expect(rating).toHaveLength(2);
+          expect(rating).toEqual(skillRatings);
+          done();
+        });
+
+      const testRequest = httpMock.expectOne(
+        '/skills/1/skill-ratings?teamId=26&playerShirtNumber=99'
+      );
+      expect(testRequest.request.method).toBe('GET');
+      testRequest.flush(<SkillRatingList>{
+        _embedded: {
+          skillRatingModelList: skillRatings
+        }
+      });
+    });
+
+    it('should return an empty list when no ratings are available', (done: DoneCallback) => {
+      service
+        .getSkillRatingsBySkillAndTeamAndPlayerShirtNumber(skill, team, 99)
+        .subscribe((rating) => {
+          expect(rating).toHaveLength(0);
+          done();
+        });
+
+      const testRequest = httpMock.expectOne(
+        '/skills/1/skill-ratings?teamId=26&playerShirtNumber=99'
+      );
       expect(testRequest.request.method).toBe('GET');
       testRequest.flush(<PlayerList>{});
     });

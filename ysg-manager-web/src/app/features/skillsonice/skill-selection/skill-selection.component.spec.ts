@@ -3,17 +3,13 @@ import { TeamsService } from '../../../core/services/teams.service';
 import { Skill, SkillType } from '../../../types';
 import { Router } from '@angular/router';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
-import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { SkillsService } from '../../../core/services/skills.service';
-import { SkillRatingsService } from '../../../core/services/skill-ratings.service';
 
 describe('SkillSelectionComponent', () => {
   let component: SkillSelectionComponent;
 
   let skillsService: SkillsService;
   let teamsService: TeamsService;
-  let skillResultsService: SkillResultsService;
-  let skillRatingsService: SkillRatingsService;
   let stateService: SkillsOnIceStateService;
   let router: Router;
 
@@ -45,16 +41,12 @@ describe('SkillSelectionComponent', () => {
   beforeEach(() => {
     skillsService = <any>{};
     teamsService = <any>{};
-    skillResultsService = <any>{ pushCachedSkillResultsToServer: jest.fn() };
-    skillRatingsService = <any>{ pushCachedSkillRatingsToServer: jest.fn() };
     router = <any>{ navigateByUrl: jest.fn() };
     stateService = new SkillsOnIceStateService();
 
     component = new SkillSelectionComponent(
       skillsService,
       teamsService,
-      skillResultsService,
-      skillRatingsService,
       stateService,
       router
     );

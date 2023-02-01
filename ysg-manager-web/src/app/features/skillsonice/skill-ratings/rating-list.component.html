@@ -7,7 +7,6 @@
   <mat-list-option
     *ngFor="let skillRating of skillRatings"
     [value]="skillRating"
-    [ngClass]="{ uploaded: skillRating.isUploaded }"
   >
     <div class="row-content" (click)="editRating(skillRating)">
       <div class="row-content skill-rating-player">

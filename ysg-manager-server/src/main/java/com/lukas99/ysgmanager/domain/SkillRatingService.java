@@ -75,6 +75,28 @@ public class SkillRatingService {
   }
 
   /**
+   * @param skill The skill for which the ratings should be retrieved.
+   * @param team  The team for which the ratings should be retrieved.
+   * @return the ratings for the given skill and team
+   */
+  public List<SkillRating> findBySkillAndTeam(Skill skill, Team team) {
+    return skillRatingRepository.findBySkillAndPlayerTeam(skill, team);
+  }
+
+  /**
+   * @param skill             The skill for which the ratings should be retrieved.
+   * @param team              The team for which the ratings should be retrieved.
+   * @param playerShirtNumber the shirt number of the player for which the ratings should be
+   *                          retrieved
+   * @return the ratings for the given skill, team and player shirt number
+   */
+  public List<SkillRating> findBySkillAndTeamAndPlayerShirtNumber(
+      Skill skill, Team team, Integer playerShirtNumber) {
+    return skillRatingRepository.findBySkillAndPlayerTeamAndPlayerShirtNumber(
+        skill, team, playerShirtNumber);
+  }
+
+  /**
    * @param player The player for which the ratings should be retrieved.
    * @return The ratings of the given player.
    */

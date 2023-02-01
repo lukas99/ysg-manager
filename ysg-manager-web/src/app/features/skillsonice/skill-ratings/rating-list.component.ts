@@ -5,10 +5,6 @@ import { SkillRatingsService } from '../../../core/services/skill-ratings.servic
 import { SkillTypeService } from '../../../core/services/skill-type.service';
 import { Router } from '@angular/router';
 
-interface SkillRatingView extends SkillRating {
-  isUploaded: boolean;
-}
-
 @Component({
   selector: 'ysg-rating-list',
   templateUrl: './rating-list.component.html',
@@ -17,7 +13,7 @@ interface SkillRatingView extends SkillRating {
 export class RatingListComponent implements OnInit {
   selectedSkill!: Skill;
   selectedTeam!: Team;
-  skillRatings: SkillRatingView[] = [];
+  skillRatings: SkillRating[] = [];
 
   constructor(
     private stateService: SkillsOnIceStateService,
@@ -30,17 +26,9 @@ export class RatingListComponent implements OnInit {
     this.selectedSkill = this.stateService.getSelectedSkill();
     this.selectedTeam = this.stateService.getSelectedTeam();
 
-    this.skillRatings = this.skillRatingsService
-      .getCachedSkillRatings(this.selectedSkill, this.selectedTeam)
-      .map((skillRating) => {
-        let skillRatingView = skillRating as SkillRatingView;
-        skillRatingView.isUploaded = this.isUploaded(skillRating);
-        return skillRatingView;
-      });
-  }
-
-  private isUploaded(skillRating: SkillRating): boolean {
-    return !!skillRating._links.self;
+    this.skillRatingsService
+      .getSkillRatingsBySkillAndTeam(this.selectedSkill, this.selectedTeam)
+      .subscribe((skillRatings) => (this.skillRatings = skillRatings));
   }
 
   editRating(skillRating: SkillRating) {

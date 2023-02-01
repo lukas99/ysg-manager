@@ -44,8 +44,17 @@ public class SkillModelAssembler extends RepresentationModelAssemblerSupport<Ski
         .withRel("skillResultsByTeamAndPlayerShirtNumber")
         .expand(":teamId", ":playerShirtNumber"));
     model.add(linkTo(
-        methodOn(SkillRatingRestController.class).getSkillRatingsBySkill(skill.getId()))
-        .withRel("skillratings"));
+        methodOn(SkillRatingRestController.class).getSkillRatingsBySkill(skill.getId(), null, null))
+        .withRel("skillratings")
+        .expand()); // expand removes teamId and shirtNumber query parameters
+    model.add(linkTo(
+        methodOn(SkillRatingRestController.class).getSkillRatingsBySkill(skill.getId(), null, null))
+        .withRel("skillRatingsByTeam")
+        .expand(":teamId"));
+    model.add(linkTo(
+        methodOn(SkillRatingRestController.class).getSkillRatingsBySkill(skill.getId(), null, null))
+        .withRel("skillRatingsByTeamAndPlayerShirtNumber")
+        .expand(":teamId", ":playerShirtNumber"));
 
     return model;
   }

@@ -1,11 +1,14 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.lukas99.ysgmanager.domain.Player;
 import com.lukas99.ysgmanager.domain.PlayerService;
 import com.lukas99.ysgmanager.domain.Skill;
 import com.lukas99.ysgmanager.domain.SkillRating;
 import com.lukas99.ysgmanager.domain.SkillRatingService;
 import com.lukas99.ysgmanager.domain.SkillService;
+import com.lukas99.ysgmanager.domain.Team;
 import com.lukas99.ysgmanager.domain.TeamService;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -111,22 +115,44 @@ public class SkillRatingRestController {
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     existingSkillRating.update(
         skillRating.toEntity(existingSkillRating.getPlayer(), existingSkillRating.getSkill()));
-    SkillRating result = skillRatingService.save(existingSkillRating);
-    return ResponseEntity.ok(new SkillRatingModelAssembler().toModel(result));
+    SkillRating rating = skillRatingService.save(existingSkillRating);
+    return ResponseEntity.ok(new SkillRatingModelAssembler().toModel(rating));
   }
 
   /**
-   * Get all skillRatings of the given skill.
+   * Get all skillRatings of the given skill. Optional filtered by team and player shirt number.
    *
-   * @param skillId the id of the skill for which the ratings should be retrieved
+   * @param skillId           the id of the skill for which the ratings should be retrieved
+   * @param teamId            the id of the team for which the ratings should be retrieved
+   * @param playerShirtNumber the shirt number of the player for which the ratings should be
+   *                          retrieved
    * @return the list of ratings.
    */
   @GetMapping("/skills/{skillId}/skill-ratings")
   public ResponseEntity<CollectionModel<SkillRatingModel>> getSkillRatingsBySkill(
-      @PathVariable Long skillId) {
-    Optional<Skill> skill = skillService.findOne(skillId);
-    List<SkillRating> skillRatings = skill.map(sr -> skillRatingService.findBySkill(sr))
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+      @PathVariable Long skillId, @RequestParam(required = false) Long teamId,
+      @RequestParam(required = false) Integer playerShirtNumber) {
+    List<SkillRating> skillRatings;
+    Optional<Skill> skillOpt = skillService.findOne(skillId);
+    if (nonNull(teamId) && nonNull(playerShirtNumber)) {
+      Optional<Team> teamOpt = teamService.findOne(teamId);
+      skillRatings = skillOpt
+          .map(skill -> teamOpt.map(team -> skillRatingService
+                  .findBySkillAndTeamAndPlayerShirtNumber(skill, team, playerShirtNumber))
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)))
+          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    } else if (nonNull(teamId)) {
+      Optional<Team> teamOpt = teamService.findOne(teamId);
+      skillRatings = skillOpt
+          .map(skill ->
+              teamOpt.map(team -> skillRatingService.findBySkillAndTeam(skill, team))
+                  .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)))
+          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    } else {
+      skillRatings = skillOpt
+          .map(skillRatingService::findBySkill)
+          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
     return ResponseEntity.ok(new SkillRatingModelAssembler().toCollectionModel(skillRatings));
   }
 

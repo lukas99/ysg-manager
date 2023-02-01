@@ -4,6 +4,7 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 import { Router } from '@angular/router';
 import { Skill, SkillRating, SkillType, Team } from '../../../types';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
+import { of } from 'rxjs';
 
 describe('RatingListComponent', () => {
   let component: RatingListComponent;
@@ -15,7 +16,7 @@ describe('RatingListComponent', () => {
   beforeEach(() => {
     stateService = new SkillsOnIceStateService();
     skillRatingsService = <any>{
-      getCachedSkillRatings: jest.fn(() => []),
+      getSkillRatingsBySkillAndTeam: jest.fn(() => of([])),
       setSelectedItem: jest.fn(),
       removeSelectedItem: jest.fn()
     };
@@ -63,31 +64,19 @@ describe('RatingListComponent', () => {
         score: 3,
         _links: { self: { href: 'ratings/1' } }
       } as SkillRating;
-      skillRatingsService.getCachedSkillRatings = jest.fn(() => [
-        rating1,
-        rating2,
-        rating3
-      ]);
+      skillRatingsService.getSkillRatingsBySkillAndTeam = jest.fn(() =>
+        of([rating1, rating2, rating3])
+      );
 
       component.ngOnInit();
 
-      expect(skillRatingsService.getCachedSkillRatings).toHaveBeenCalledWith(
-        skill,
-        team
-      );
+      expect(
+        skillRatingsService.getSkillRatingsBySkillAndTeam
+      ).toHaveBeenCalledWith(skill, team);
       expect(component.skillRatings.length).toBe(3);
-      expect(component.skillRatings[0]).toEqual({
-        ...rating1,
-        isUploaded: true
-      });
-      expect(component.skillRatings[1]).toEqual({
-        ...rating2,
-        isUploaded: false
-      });
-      expect(component.skillRatings[2]).toEqual({
-        ...rating3,
-        isUploaded: true
-      });
+      expect(component.skillRatings[0]).toEqual(rating1);
+      expect(component.skillRatings[1]).toEqual(rating2);
+      expect(component.skillRatings[2]).toEqual(rating3);
     });
   });
 
