@@ -8,7 +8,7 @@ import {
 import { Observable } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 
-const DEFAULT_TIMEOUT = 5000;
+const DEFAULT_TIMEOUT = 30000;
 
 /**
  * Overwrite default timeout in case it's not set individually for a request.

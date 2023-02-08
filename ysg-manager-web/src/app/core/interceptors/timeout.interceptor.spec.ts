@@ -30,7 +30,7 @@ describe('TimeoutInterceptor', () => {
       .subscribe((value: any) => (expectedBody = value.body));
     tick();
 
-    expect(timeoutSpy).toHaveBeenCalledWith(5000);
+    expect(timeoutSpy).toHaveBeenCalledWith(30000);
     expect(expectedBody).toBe('1234');
   }));
 
