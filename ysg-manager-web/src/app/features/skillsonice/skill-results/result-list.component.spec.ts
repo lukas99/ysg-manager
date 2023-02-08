@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Skill, SkillResult, SkillType, Team } from '../../../types';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
 import { of } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
 
 describe('ResultListComponent', () => {
   let component: ResultListComponent;
@@ -50,7 +51,7 @@ describe('ResultListComponent', () => {
       expect(component.selectedTeam).toBe(team);
     });
 
-    it('should load the skill results', () => {
+    it('should load the skill results', fakeAsync(() => {
       const result1 = {
         points: 1,
         _links: { self: { href: 'results/1' } }
@@ -68,6 +69,7 @@ describe('ResultListComponent', () => {
       );
 
       component.ngOnInit();
+      tick(50); // delay from loading-delay-indicator
 
       expect(
         skillResultsService.getSkillResultsBySkillAndTeam
@@ -76,8 +78,8 @@ describe('ResultListComponent', () => {
       expect(component.skillResults[0]).toEqual(result1);
       expect(component.skillResults[1]).toEqual(result2);
       expect(component.skillResults[2]).toEqual(result3);
-      expect(component.isLoading).toBe(false);
-    });
+      expect(component.loadingIndicator.isLoading).toBe(false);
+    }));
 
     it('should set showTime to true', () => {
       skill = { typeForPlayers: SkillType.TIME_WITH_POINTS } as Skill;

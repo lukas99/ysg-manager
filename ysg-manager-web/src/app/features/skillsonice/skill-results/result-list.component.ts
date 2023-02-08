@@ -4,6 +4,8 @@ import { SkillResultsService } from '../../../core/services/skill-results.servic
 import { Skill, SkillResult, SkillType, Team } from '../../../types';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
+import { forkJoin } from 'rxjs';
+import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
 
 @Component({
   selector: 'ysg-result-list',
@@ -16,7 +18,7 @@ export class ResultListComponent implements OnInit {
   skillResults: SkillResult[] = [];
   showTime = false;
   showPoints = false;
-  isLoading = false;
+  loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
     private stateService: SkillsOnIceStateService,
@@ -26,18 +28,21 @@ export class ResultListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isLoading = true;
     this.selectedSkill = this.stateService.getSelectedSkill();
     this.selectedTeam = this.stateService.getSelectedTeam();
-
-    this.skillResultsService
-      .getSkillResultsBySkillAndTeam(this.selectedSkill, this.selectedTeam)
-      .subscribe((skillResults) => {
-        this.skillResults = skillResults;
-        this.isLoading = false;
-      });
     this.showTime = this.skillTypeService.isWithTime(this.selectedSkill);
     this.showPoints = this.skillTypeService.isWithPoints(this.selectedSkill);
+
+    forkJoin({
+      loading: this.loadingIndicator.startLoading(),
+      skillResults: this.skillResultsService.getSkillResultsBySkillAndTeam(
+        this.selectedSkill,
+        this.selectedTeam
+      )
+    }).subscribe(({ skillResults }) => {
+      this.skillResults = skillResults;
+      this.loadingIndicator.finishLoading();
+    });
   }
 
   editResult(skillResult: SkillResult) {
