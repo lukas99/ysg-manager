@@ -10,8 +10,9 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 import { SkillRatingsService } from '../../../core/services/skill-ratings.service';
 import { Router } from '@angular/router';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
-import { Observable } from 'rxjs';
-import { defaultIfEmpty, filter, flatMap, map, take } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { defaultIfEmpty, flatMap, map, take } from 'rxjs/operators';
+import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
 
 @Component({
   selector: 'ysg-rating-detail',
@@ -23,6 +24,7 @@ export class RatingDetailComponent implements OnInit {
   selectedTeam!: Team;
   skillRating!: SkillRating;
   disablePlayerPositionToggle = false;
+  loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
     private stateService: SkillsOnIceStateService,
@@ -78,18 +80,26 @@ export class RatingDetailComponent implements OnInit {
   }
 
   playerChanged() {
-    this.ratingForSkillExists()
-      .pipe(filter((ratingForSkillExists) => ratingForSkillExists))
-      .subscribe(() => {
+    forkJoin({
+      loading: this.loadingIndicator.startLoading(),
+      ratingForSkillExists: this.ratingForSkillExists()
+    }).subscribe(({ ratingForSkillExists }) => {
+      if (ratingForSkillExists) {
         this.skillRating.player.shirtNumber = 0;
         this.showAlertDialogRatingForSkillAlreadyExists();
-      });
+      }
+      this.loadingIndicator.finishLoading();
+    });
   }
 
   delete() {
-    this.skillRatingsService
-      .deleteSkillRating(this.skillRating)
-      .subscribe(() => this.navigateToRatingList());
+    forkJoin({
+      loading: this.loadingIndicator.startLoading(),
+      delete: this.skillRatingsService.deleteSkillRating(this.skillRating)
+    }).subscribe(() => {
+      this.loadingIndicator.finishLoading();
+      this.navigateToRatingList();
+    });
   }
 
   cancel() {
@@ -97,22 +107,32 @@ export class RatingDetailComponent implements OnInit {
   }
 
   save() {
-    this.ratingForSkillExists().subscribe((ratingForSkillExists) => {
+    forkJoin({
+      loading: this.loadingIndicator.startLoading(),
+      ratingForSkillExists: this.ratingForSkillExists()
+    }).subscribe(({ ratingForSkillExists }) => {
       if (ratingForSkillExists) {
         // check for existing rating although check is also done when player shirt number has changed
         // check again here in case component <ysg-player> would be used without (playerChange)
         // output validation
         this.showAlertDialogRatingForSkillAlreadyExists();
+        this.loadingIndicator.finishLoading();
         return;
       }
       if (this.shouldUpdate()) {
         this.skillRatingsService
           .updateSkillRating(this.skillRating)
-          .subscribe(() => this.navigateToRatingList());
+          .subscribe(() => {
+            this.loadingIndicator.finishLoading();
+            this.navigateToRatingList();
+          });
       } else {
         this.skillRatingsService
           .createSkillRating(this.skillRating, this.selectedSkill)
-          .subscribe(() => this.navigateToRatingList());
+          .subscribe(() => {
+            this.loadingIndicator.finishLoading();
+            this.navigateToRatingList();
+          });
       }
     });
   }

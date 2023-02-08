@@ -160,19 +160,21 @@ describe('RatingDetailComponent', () => {
     });
   });
 
-  it('should delete a skill rating', () => {
+  it('should delete a skill rating', fakeAsync(() => {
     const skillRating = {} as SkillRating;
     component.skillRating = skillRating;
     skillRatingsService.deleteSkillRating = jest.fn(() => of(skillRating));
 
     component.delete();
+    tick(50); // delay from loading-delay-indicator
 
     expect(skillRatingsService.deleteSkillRating).toHaveBeenCalledWith(
       skillRating
     );
     expect(skillRatingsService.removeSelectedItem).toHaveBeenCalled();
+    expect(component.loadingIndicator.isLoading).toBe(false);
     expect(router.navigateByUrl).toHaveBeenCalledWith('skillsonice/ratinglist');
-  });
+  }));
 
   it('should cancel the skill rating editing', () => {
     component.cancel();
@@ -203,18 +205,19 @@ describe('RatingDetailComponent', () => {
         );
 
       component.save();
-      tick();
+      tick(50); // delay from loading-delay-indicator
 
       expect(skillRatingsService.updateSkillRating).toHaveBeenCalledWith(
         existingRating
       );
       expect(skillRatingsService.removeSelectedItem).toHaveBeenCalled();
+      expect(component.loadingIndicator.isLoading).toBe(false);
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         'skillsonice/ratinglist'
       );
     }));
 
-    it('should prevent to update rating to player which already exists', () => {
+    it('should prevent to update rating to player which already exists', fakeAsync(() => {
       const existingRating = {
         score: 90,
         player: { shirtNumber: 20 },
@@ -235,16 +238,18 @@ describe('RatingDetailComponent', () => {
         );
 
       component.save();
+      tick(50); // delay from loading-delay-indicator
 
       expect(showAlertDialogRatingAlreadyExists).toHaveBeenCalledTimes(1);
 
       expect(skillRatingsService.updateSkillRating).toHaveBeenCalledTimes(0);
       expect(skillRatingsService.createSkillRating).toHaveBeenCalledTimes(0);
       expect(skillRatingsService.removeSelectedItem).toHaveBeenCalledTimes(0);
+      expect(component.loadingIndicator.isLoading).toBe(false);
       expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
-    });
+    }));
 
-    it('should create new rating', () => {
+    it('should create new rating', fakeAsync(() => {
       expect(skillRatingsService.getSelectedItemValue()).toEqual({});
       component.ngOnInit();
       // rating for this player doesn't yet exist
@@ -252,18 +257,20 @@ describe('RatingDetailComponent', () => {
         jest.fn(() => of([]));
 
       component.save();
+      tick(50); // delay from loading-delay-indicator
 
       expect(skillRatingsService.createSkillRating).toHaveBeenCalledWith(
         component.skillRating,
         selectedSkill
       );
       expect(skillRatingsService.removeSelectedItem).toHaveBeenCalled();
+      expect(component.loadingIndicator.isLoading).toBe(false);
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         'skillsonice/ratinglist'
       );
-    });
+    }));
 
-    it('should prevent to create a new rating when a rating already exists', () => {
+    it('should prevent to create a new rating when a rating already exists', fakeAsync(() => {
       expect(skillRatingsService.getSelectedItemValue()).toEqual({});
       component.ngOnInit();
       // rating for this player already exists
@@ -279,14 +286,16 @@ describe('RatingDetailComponent', () => {
         );
 
       component.save();
+      tick(50); // delay from loading-delay-indicator
 
       expect(showAlertDialogRatingAlreadyExists).toHaveBeenCalledTimes(1);
 
       expect(skillRatingsService.updateSkillRating).toHaveBeenCalledTimes(0);
       expect(skillRatingsService.createSkillRating).toHaveBeenCalledTimes(0);
       expect(skillRatingsService.removeSelectedItem).toHaveBeenCalledTimes(0);
+      expect(component.loadingIndicator.isLoading).toBe(false);
       expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
-    });
+    }));
   });
 
   describe('playerChanged', () => {
@@ -312,10 +321,11 @@ describe('RatingDetailComponent', () => {
         );
 
       component.playerChanged();
-      tick();
+      tick(50); // delay from loading-delay-indicator
 
       expect(component.skillRating.player.shirtNumber).toBe(0);
       expect(showAlertDialogRatingAlreadyExists).toHaveBeenCalledTimes(1);
+      expect(component.loadingIndicator.isLoading).toBe(false);
     }));
 
     it('detects that a skill rating for a player not yet exists', fakeAsync(() => {
@@ -324,10 +334,11 @@ describe('RatingDetailComponent', () => {
         jest.fn(() => of([]));
 
       component.playerChanged();
-      tick();
+      tick(50); // delay from loading-delay-indicator
 
       expect(component.skillRating.player.shirtNumber).toBe(20);
       expect(showAlertDialogRatingAlreadyExists).toHaveBeenCalledTimes(0);
+      expect(component.loadingIndicator.isLoading).toBe(false);
     }));
   });
 });

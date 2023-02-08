@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Skill, SkillRating, SkillType, Team } from '../../../types';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
 import { of } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
 
 describe('RatingListComponent', () => {
   let component: RatingListComponent;
@@ -50,7 +51,7 @@ describe('RatingListComponent', () => {
       expect(component.selectedTeam).toBe(team);
     });
 
-    it('should load the skill rating view records', () => {
+    it('should load the skill ratings', fakeAsync(() => {
       const rating1 = {
         score: 1,
         _links: { self: { href: 'ratings/1' } }
@@ -69,6 +70,7 @@ describe('RatingListComponent', () => {
       );
 
       component.ngOnInit();
+      tick(50); // delay from loading-delay-indicator
 
       expect(
         skillRatingsService.getSkillRatingsBySkillAndTeam
@@ -77,7 +79,8 @@ describe('RatingListComponent', () => {
       expect(component.skillRatings[0]).toEqual(rating1);
       expect(component.skillRatings[1]).toEqual(rating2);
       expect(component.skillRatings[2]).toEqual(rating3);
-    });
+      expect(component.loadingIndicator.isLoading).toBe(false);
+    }));
   });
 
   it('should edit a rating', () => {

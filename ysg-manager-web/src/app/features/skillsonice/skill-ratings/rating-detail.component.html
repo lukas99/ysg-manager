@@ -5,14 +5,22 @@
 <ysg-player
   [(player)]="skillRating.player"
   (playerChange)="playerChanged()"
-  [disablePositionToggle]="disablePlayerPositionToggle"
+  [disablePositionToggle]="
+    disablePlayerPositionToggle || loadingIndicator.isLoading
+  "
 ></ysg-player>
-<ysg-rating [(rating)]="skillRating.score"></ysg-rating>
+<ysg-rating
+  [(rating)]="skillRating.score"
+  [disabled]="loadingIndicator.isLoading"
+></ysg-rating>
 <ysg-crud-buttons
   (deleteClicked)="delete()"
+  [deleteDisabled]="loadingIndicator.isLoading"
   (cancelClicked)="cancel()"
+  [cancelDisabled]="loadingIndicator.isLoading"
   (saveClicked)="save()"
   [saveDisabled]="
+    loadingIndicator.isLoading ||
     !(skillRating.player.shirtNumber > 0 && skillRating.score > 0)
   "
 >

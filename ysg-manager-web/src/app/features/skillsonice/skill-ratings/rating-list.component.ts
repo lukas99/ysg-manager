@@ -4,6 +4,8 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 import { SkillRatingsService } from '../../../core/services/skill-ratings.service';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
 import { Router } from '@angular/router';
+import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'ysg-rating-list',
@@ -14,6 +16,7 @@ export class RatingListComponent implements OnInit {
   selectedSkill!: Skill;
   selectedTeam!: Team;
   skillRatings: SkillRating[] = [];
+  loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
     private stateService: SkillsOnIceStateService,
@@ -26,9 +29,16 @@ export class RatingListComponent implements OnInit {
     this.selectedSkill = this.stateService.getSelectedSkill();
     this.selectedTeam = this.stateService.getSelectedTeam();
 
-    this.skillRatingsService
-      .getSkillRatingsBySkillAndTeam(this.selectedSkill, this.selectedTeam)
-      .subscribe((skillRatings) => (this.skillRatings = skillRatings));
+    forkJoin({
+      loading: this.loadingIndicator.startLoading(),
+      skillRatings: this.skillRatingsService.getSkillRatingsBySkillAndTeam(
+        this.selectedSkill,
+        this.selectedTeam
+      )
+    }).subscribe(({ skillRatings }) => {
+      this.skillRatings = skillRatings;
+      this.loadingIndicator.finishLoading();
+    });
   }
 
   editRating(skillRating: SkillRating) {
