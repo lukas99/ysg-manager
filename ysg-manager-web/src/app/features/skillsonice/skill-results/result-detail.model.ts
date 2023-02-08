@@ -10,8 +10,9 @@ import { SkillResultsService } from '../../../core/services/skill-results.servic
 import { Router } from '@angular/router';
 import { Directive } from '@angular/core';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
-import { defaultIfEmpty, filter, flatMap, map, take } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { defaultIfEmpty, flatMap, map, take } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
 
 /**
  * Base class for skill result detail components.
@@ -23,6 +24,7 @@ export abstract class ResultDetailModel {
   skillResult!: SkillResult;
   stopWatchRunning: boolean = false;
   disablePlayerPositionToggle = false;
+  loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
     protected stateService: SkillsOnIceStateService,
@@ -77,18 +79,26 @@ export abstract class ResultDetailModel {
   abstract shouldUpdate(): boolean;
 
   playerChanged() {
-    this.resultForSkillExists()
-      .pipe(filter((resultForSkillExists) => resultForSkillExists))
-      .subscribe(() => {
+    forkJoin({
+      loading: this.loadingIndicator.startLoading(),
+      resultForSkillExists: this.resultForSkillExists()
+    }).subscribe(({ resultForSkillExists }) => {
+      if (resultForSkillExists) {
         this.skillResult.player.shirtNumber = 0;
         this.showAlertDialogResultForSkillAlreadyExists();
-      });
+      }
+      this.loadingIndicator.finishLoading();
+    });
   }
 
   delete() {
-    this.skillResultsService
-      .deleteSkillResult(this.skillResult)
-      .subscribe(() => this.navigateToResultList());
+    forkJoin({
+      loading: this.loadingIndicator.startLoading(),
+      delete: this.skillResultsService.deleteSkillResult(this.skillResult)
+    }).subscribe(() => {
+      this.loadingIndicator.finishLoading();
+      this.navigateToResultList();
+    });
   }
 
   cancel() {
@@ -96,22 +106,32 @@ export abstract class ResultDetailModel {
   }
 
   save() {
-    this.resultForSkillExists().subscribe((resultForSkillExists) => {
+    forkJoin({
+      loading: this.loadingIndicator.startLoading(),
+      resultForSkillExists: this.resultForSkillExists()
+    }).subscribe(({ resultForSkillExists }) => {
       if (resultForSkillExists) {
         // check for existing result although check is also done when player shirt number has changed
         // check again here in case component <ysg-player> would be used without (playerChange)
         // output validation
         this.showAlertDialogResultForSkillAlreadyExists();
+        this.loadingIndicator.finishLoading();
         return;
       }
       if (this.shouldUpdate()) {
         this.skillResultsService
           .updateSkillResult(this.skillResult)
-          .subscribe(() => this.navigateToResultList());
+          .subscribe(() => {
+            this.loadingIndicator.finishLoading();
+            this.navigateToResultList();
+          });
       } else {
         this.skillResultsService
           .createSkillResult(this.skillResult, this.selectedSkill)
-          .subscribe(() => this.navigateToResultList());
+          .subscribe(() => {
+            this.loadingIndicator.finishLoading();
+            this.navigateToResultList();
+          });
       }
     });
   }

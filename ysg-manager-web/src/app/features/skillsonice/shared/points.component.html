@@ -9,14 +9,14 @@
       <button
         mat-icon-button
         (click)="decreasePoints()"
-        [disabled]="points <= 0"
+        [disabled]="points <= 0 || disabled"
       >
         <mat-icon>remove</mat-icon>
       </button>
       <div class="points-count">
         {{ points }}
       </div>
-      <button mat-icon-button (click)="increasePoints()">
+      <button mat-icon-button (click)="increasePoints()" [disabled]="disabled">
         <mat-icon>add</mat-icon>
       </button>
     </div>
@@ -27,12 +27,16 @@
       <button
         mat-icon-button
         (click)="decreasePointsBy3()"
-        [disabled]="points <= 2"
+        [disabled]="points <= 2 || disabled"
       >
         <mat-icon>remove</mat-icon> 3
       </button>
       <div></div>
-      <button mat-icon-button (click)="increasePointsBy3()">
+      <button
+        mat-icon-button
+        (click)="increasePointsBy3()"
+        [disabled]="disabled"
+      >
         <mat-icon>add</mat-icon> 3
       </button>
     </div>
@@ -47,12 +51,12 @@
       <button
         mat-icon-button
         (click)="decreasePoints()"
-        [disabled]="points <= 0"
+        [disabled]="points <= 0 || disabled"
       >
         <mat-icon>remove</mat-icon> 1
       </button>
       <div></div>
-      <button mat-icon-button (click)="increasePoints()">
+      <button mat-icon-button (click)="increasePoints()" [disabled]="disabled">
         <mat-icon>add</mat-icon> 1
       </button>
     </div>

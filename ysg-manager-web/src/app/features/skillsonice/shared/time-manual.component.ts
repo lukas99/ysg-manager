@@ -17,6 +17,8 @@ export class TimeManualComponent implements OnInit {
   @Input() time = 0;
   @Output() timeChange = new EventEmitter<number>();
 
+  @Input() disabled = false;
+
   ngOnInit() {
     if (this.time > 0) {
       this.componentTime = this.time;

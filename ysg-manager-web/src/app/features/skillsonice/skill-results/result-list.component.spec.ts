@@ -50,7 +50,7 @@ describe('ResultListComponent', () => {
       expect(component.selectedTeam).toBe(team);
     });
 
-    it('should load the skill result view records', () => {
+    it('should load the skill results', () => {
       const result1 = {
         points: 1,
         _links: { self: { href: 'results/1' } }
@@ -76,6 +76,7 @@ describe('ResultListComponent', () => {
       expect(component.skillResults[0]).toEqual(result1);
       expect(component.skillResults[1]).toEqual(result2);
       expect(component.skillResults[2]).toEqual(result3);
+      expect(component.isLoading).toBe(false);
     });
 
     it('should set showTime to true', () => {

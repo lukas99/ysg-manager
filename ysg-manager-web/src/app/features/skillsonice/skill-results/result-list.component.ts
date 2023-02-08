@@ -16,6 +16,7 @@ export class ResultListComponent implements OnInit {
   skillResults: SkillResult[] = [];
   showTime = false;
   showPoints = false;
+  isLoading = false;
 
   constructor(
     private stateService: SkillsOnIceStateService,
@@ -25,12 +26,16 @@ export class ResultListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.selectedSkill = this.stateService.getSelectedSkill();
     this.selectedTeam = this.stateService.getSelectedTeam();
 
     this.skillResultsService
       .getSkillResultsBySkillAndTeam(this.selectedSkill, this.selectedTeam)
-      .subscribe((skillResults) => (this.skillResults = skillResults));
+      .subscribe((skillResults) => {
+        this.skillResults = skillResults;
+        this.isLoading = false;
+      });
     this.showTime = this.skillTypeService.isWithTime(this.selectedSkill);
     this.showPoints = this.skillTypeService.isWithPoints(this.selectedSkill);
   }

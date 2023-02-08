@@ -4,16 +4,33 @@
     {{ 'SKILLS_ON_ICE_DETAIL_TIME' | translate }}</mat-card-subtitle
   >
   <div class="stopwatch-content">
-    <button mat-icon-button color="warn" (click)="clearTimer()">
+    <button
+      mat-icon-button
+      color="warn"
+      (click)="clearTimer()"
+      [disabled]="disabled"
+    >
       <mat-icon>delete</mat-icon>
     </button>
     <div class="stopwatch-time">
       {{ counter }}
     </div>
-    <button mat-fab color="primary" (click)="startTimer()" *ngIf="!running">
+    <button
+      mat-fab
+      color="primary"
+      (click)="startTimer()"
+      *ngIf="!running"
+      [disabled]="disabled"
+    >
       <mat-icon>play_arrow</mat-icon>
     </button>
-    <button mat-fab color="primary" (click)="startTimer()" *ngIf="running">
+    <button
+      mat-fab
+      color="primary"
+      (click)="startTimer()"
+      *ngIf="running"
+      [disabled]="disabled"
+    >
       <mat-icon>pause</mat-icon>
     </button>
   </div>

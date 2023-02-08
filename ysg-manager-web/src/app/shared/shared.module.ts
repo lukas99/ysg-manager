@@ -23,6 +23,8 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MobilePageTitleComponent } from './mobile/page-title/mobile-page-title.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 
 /**
  * Contains reusable components, pipes and directives (declarables) that will be used by lazy
@@ -46,7 +48,8 @@ import { MobilePageTitleComponent } from './mobile/page-title/mobile-page-title.
     CrudDetailComponent,
     MoreActionsComponent,
     ConfirmationDialogComponent,
-    MobilePageTitleComponent
+    MobilePageTitleComponent,
+    ProgressBarComponent
   ],
   imports: [
     // angular
@@ -72,6 +75,7 @@ import { MobilePageTitleComponent } from './mobile/page-title/mobile-page-title.
     MatDialogModule,
     MatCheckboxModule,
     MatButtonToggleModule,
+    MatProgressBarModule,
 
     // agGrid
     AgGridModule.withComponents([])
@@ -100,6 +104,7 @@ import { MobilePageTitleComponent } from './mobile/page-title/mobile-page-title.
     MatSelectModule,
     MatCheckboxModule,
     MatButtonToggleModule,
+    MatProgressBarModule,
 
     // agGrid
     AgGridModule,
@@ -108,7 +113,8 @@ import { MobilePageTitleComponent } from './mobile/page-title/mobile-page-title.
     CrudListComponent,
     CrudDetailComponent,
     MoreActionsComponent,
-    MobilePageTitleComponent
+    MobilePageTitleComponent,
+    ProgressBarComponent
   ],
   providers: [] // should stay empty
 })

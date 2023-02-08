@@ -1,42 +1,48 @@
+<ysg-progress-bar [showProgress]="isLoading"></ysg-progress-bar>
+
 <ysg-mobile-page-title [backRoute]="'skillsonice/teamselection'">
   {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
   {{ selectedTeam?.name }}
 </ysg-mobile-page-title>
 
-<mat-selection-list [multiple]="false">
-  <mat-list-option
-    *ngFor="let skillResult of skillResults"
-    [value]="skillResult"
-  >
-    <div class="row-content" (click)="editResult(skillResult)">
-      <div class="row-content skill-result-player">
-        <span>
-          #{{ skillResult.player.shirtNumber }}
-          <span *ngIf="skillResult.player.position === 'GOALTENDER'"> TH </span>
-        </span>
+<ng-container *ngIf="!isLoading">
+  <mat-selection-list [multiple]="false">
+    <mat-list-option
+      *ngFor="let skillResult of skillResults"
+      [value]="skillResult"
+    >
+      <div class="row-content" (click)="editResult(skillResult)">
+        <div class="row-content skill-result-player">
+          <span>
+            #{{ skillResult.player.shirtNumber }}
+            <span *ngIf="skillResult.player.position === 'GOALTENDER'">
+              TH
+            </span>
+          </span>
+        </div>
+        <div class="row-content" *ngIf="showTime">
+          <span>
+            <mat-icon>timer</mat-icon>
+            <span>{{ skillResult.time | number: '1.2-2' }}</span>
+          </span>
+        </div>
+        <div class="row-content" *ngIf="showPoints">
+          <span>
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ skillResult.points }}</span>
+          </span>
+        </div>
+        <div class="row-content">
+          <span>
+            <mat-icon>error</mat-icon>
+            <span>{{ skillResult.failures }}</span>
+          </span>
+        </div>
       </div>
-      <div class="row-content" *ngIf="showTime">
-        <span>
-          <mat-icon>timer</mat-icon>
-          <span>{{ skillResult.time | number: '1.2-2' }}</span>
-        </span>
-      </div>
-      <div class="row-content" *ngIf="showPoints">
-        <span>
-          <mat-icon>check_circle</mat-icon>
-          <span>{{ skillResult.points }}</span>
-        </span>
-      </div>
-      <div class="row-content">
-        <span>
-          <mat-icon>error</mat-icon>
-          <span>{{ skillResult.failures }}</span>
-        </span>
-      </div>
-    </div>
-  </mat-list-option>
-</mat-selection-list>
+    </mat-list-option>
+  </mat-selection-list>
 
-<button mat-fab color="primary" class="add-button" (click)="createResult()">
-  <mat-icon>add</mat-icon>
-</button>
+  <button mat-fab color="primary" class="add-button" (click)="createResult()">
+    <mat-icon>add</mat-icon>
+  </button>
+</ng-container>

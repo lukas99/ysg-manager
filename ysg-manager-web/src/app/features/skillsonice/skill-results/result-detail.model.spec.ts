@@ -162,19 +162,21 @@ describe('ResultDetailModel', () => {
     });
   });
 
-  it('should delete a skill result', () => {
+  it('should delete a skill result', fakeAsync(() => {
     const skillResult = {} as SkillResult;
     component.skillResult = skillResult;
     skillResultsService.deleteSkillResult = jest.fn(() => of(skillResult));
 
     component.delete();
+    tick(50); // delay from loading-delay-indicator
 
+    expect(component.loadingIndicator.isLoading).toBe(false);
     expect(skillResultsService.deleteSkillResult).toHaveBeenCalledWith(
       skillResult
     );
     expect(skillResultsService.removeSelectedItem).toHaveBeenCalled();
     expect(router.navigateByUrl).toHaveBeenCalledWith('skillsonice/resultlist');
-  });
+  }));
 
   it('should cancel the skill result editing', () => {
     component.cancel();
@@ -205,18 +207,19 @@ describe('ResultDetailModel', () => {
         );
 
       component.save();
-      tick();
+      tick(50); // delay from loading-delay-indicator
 
       expect(skillResultsService.updateSkillResult).toHaveBeenCalledWith(
         existingResult
       );
       expect(skillResultsService.removeSelectedItem).toHaveBeenCalled();
+      expect(component.loadingIndicator.isLoading).toBe(false);
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         'skillsonice/resultlist'
       );
     }));
 
-    it('should prevent to update result to player which already exists', () => {
+    it('should prevent to update result to player which already exists', fakeAsync(() => {
       const existingResult = {
         time: 2.5,
         player: { shirtNumber: 20 },
@@ -237,16 +240,18 @@ describe('ResultDetailModel', () => {
         );
 
       component.save();
+      tick(50); // delay from loading-delay-indicator
 
       expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(1);
 
       expect(skillResultsService.updateSkillResult).toHaveBeenCalledTimes(0);
       expect(skillResultsService.createSkillResult).toHaveBeenCalledTimes(0);
       expect(skillResultsService.removeSelectedItem).toHaveBeenCalledTimes(0);
+      expect(component.loadingIndicator.isLoading).toBe(false);
       expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
-    });
+    }));
 
-    it('should create new result', () => {
+    it('should create new result', fakeAsync(() => {
       expect(skillResultsService.getSelectedItemValue()).toEqual({});
       component.ngOnInit();
       // result for this player doesn't yet exist
@@ -254,18 +259,20 @@ describe('ResultDetailModel', () => {
         jest.fn(() => of([]));
 
       component.save();
+      tick(50); // delay from loading-delay-indicator
 
       expect(skillResultsService.createSkillResult).toHaveBeenCalledWith(
         component.skillResult,
         selectedSkill
       );
       expect(skillResultsService.removeSelectedItem).toHaveBeenCalled();
+      expect(component.loadingIndicator.isLoading).toBe(false);
       expect(router.navigateByUrl).toHaveBeenCalledWith(
         'skillsonice/resultlist'
       );
-    });
+    }));
 
-    it('should prevent to create a new result when a result already exists', () => {
+    it('should prevent to create a new result when a result already exists', fakeAsync(() => {
       expect(skillResultsService.getSelectedItemValue()).toEqual({});
       component.ngOnInit();
       // result for this player already exists
@@ -281,14 +288,16 @@ describe('ResultDetailModel', () => {
         );
 
       component.save();
+      tick(50); // delay from loading-delay-indicator
 
       expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(1);
 
       expect(skillResultsService.updateSkillResult).toHaveBeenCalledTimes(0);
       expect(skillResultsService.createSkillResult).toHaveBeenCalledTimes(0);
       expect(skillResultsService.removeSelectedItem).toHaveBeenCalledTimes(0);
+      expect(component.loadingIndicator.isLoading).toBe(false);
       expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
-    });
+    }));
   });
 
   describe('playerChanged', () => {
@@ -314,9 +323,10 @@ describe('ResultDetailModel', () => {
         );
 
       component.playerChanged();
-      tick();
+      tick(50); // delay from loading-delay-indicator
 
       expect(component.skillResult.player.shirtNumber).toBe(0);
+      expect(component.loadingIndicator.isLoading).toBe(false);
       expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(1);
     }));
 
@@ -326,9 +336,10 @@ describe('ResultDetailModel', () => {
         jest.fn(() => of([]));
 
       component.playerChanged();
-      tick();
+      tick(50); // delay from loading-delay-indicator
 
       expect(component.skillResult.player.shirtNumber).toBe(20);
+      expect(component.loadingIndicator.isLoading).toBe(false);
       expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(0);
     }));
   });

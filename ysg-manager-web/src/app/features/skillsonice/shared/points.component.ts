@@ -9,6 +9,7 @@ export class PointsComponent {
   @Input() allow3PointsAddition: boolean = false;
   @Input() points: number = 0;
   @Output() pointsChange = new EventEmitter<number>();
+  @Input() disabled = false;
 
   decreasePoints() {
     this.points = this.points - 1;

@@ -9,6 +9,8 @@ export class FailuresComponent {
   @Input() failures: number = 0;
   @Output() failuresChange = new EventEmitter<number>();
 
+  @Input() disabled = false;
+
   decreaseFailures() {
     this.failures = this.failures - 1;
     this.emitFailuresValue();

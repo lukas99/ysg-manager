@@ -1,3 +1,6 @@
+<ysg-progress-bar
+  [showProgress]="loadingIndicator.isLoading"
+></ysg-progress-bar>
 <ysg-mobile-page-title [backRoute]="'skillsonice/resultlist'">
   {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
   {{ selectedTeam?.name }}
@@ -5,21 +8,28 @@
 <ysg-player
   [(player)]="skillResult.player"
   (playerChange)="playerChanged()"
-  [disablePositionToggle]="disablePlayerPositionToggle"
+  [disablePositionToggle]="
+    disablePlayerPositionToggle || loadingIndicator.isLoading
+  "
 ></ysg-player>
 <ysg-stopwatch
   [(time)]="skillResult.time"
   (runningChange)="stopWatchRunning = $event"
+  [disabled]="loadingIndicator.isLoading"
 ></ysg-stopwatch>
-<ysg-failures [(failures)]="skillResult.failures"></ysg-failures>
+<ysg-failures
+  [(failures)]="skillResult.failures"
+  [disabled]="loadingIndicator.isLoading"
+></ysg-failures>
 <ysg-crud-buttons
   (deleteClicked)="delete()"
-  [deleteDisabled]="stopWatchRunning"
+  [deleteDisabled]="stopWatchRunning || loadingIndicator.isLoading"
   (cancelClicked)="cancel()"
-  [cancelDisabled]="stopWatchRunning"
+  [cancelDisabled]="stopWatchRunning || loadingIndicator.isLoading"
   (saveClicked)="save()"
   [saveDisabled]="
     stopWatchRunning ||
+    loadingIndicator.isLoading ||
     !(skillResult.player.shirtNumber > 0) ||
     !(skillResult.time > 0)
   "

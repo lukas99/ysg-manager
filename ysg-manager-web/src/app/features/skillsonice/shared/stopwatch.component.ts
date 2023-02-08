@@ -26,6 +26,8 @@ export class StopwatchComponent implements OnInit, OnDestroy {
 
   @Output() runningChange = new EventEmitter<boolean>();
 
+  @Input() disabled = false;
+
   ngOnInit(): void {
     this.counter = this.time * 1000;
   }

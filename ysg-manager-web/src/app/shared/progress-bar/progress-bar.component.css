@@ -1,0 +1,3 @@
+.hide-progress-bar {
+  visibility: hidden; /* to keep the space when not visible */
+}
