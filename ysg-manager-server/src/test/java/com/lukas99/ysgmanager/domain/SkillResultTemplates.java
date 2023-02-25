@@ -1,7 +1,7 @@
 package com.lukas99.ysgmanager.domain;
 
 import java.math.BigDecimal;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 public class SkillResultTemplates {
 

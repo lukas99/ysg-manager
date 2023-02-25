@@ -2,7 +2,7 @@ package com.lukas99.ysgmanager.domain;
 
 import static com.lukas99.ysgmanager.domain.PlayerPosition.GOALTENDER;
 import static com.lukas99.ysgmanager.domain.PlayerPosition.SKATER;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 public class PlayerTemplates {
 

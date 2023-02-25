@@ -4,7 +4,7 @@ import com.lukas99.ysgmanager.domain.PlayerPosition;
 import com.lukas99.ysgmanager.domain.Skill;
 import com.lukas99.ysgmanager.domain.SkillType;
 import com.lukas99.ysgmanager.domain.Tournament;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;

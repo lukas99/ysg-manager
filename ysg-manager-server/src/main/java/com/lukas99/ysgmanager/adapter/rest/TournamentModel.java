@@ -1,7 +1,7 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
 import com.lukas99.ysgmanager.domain.Tournament;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;

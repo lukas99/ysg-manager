@@ -23,7 +23,7 @@ import com.lukas99.ysgmanager.domain.TeamTemplates;
 import com.lukas99.ysgmanager.domain.Tournament;
 import com.lukas99.ysgmanager.domain.TournamentService;
 import com.lukas99.ysgmanager.domain.TournamentTemplates;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;

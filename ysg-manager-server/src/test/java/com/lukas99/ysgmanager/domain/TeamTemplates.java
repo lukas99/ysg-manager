@@ -1,6 +1,6 @@
 package com.lukas99.ysgmanager.domain;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 public class TeamTemplates {
 

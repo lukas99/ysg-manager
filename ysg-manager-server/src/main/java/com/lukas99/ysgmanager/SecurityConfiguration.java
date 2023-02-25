@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -15,18 +15,18 @@ import org.springframework.web.filter.CorsFilter;
  * with an access token in it.
  */
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     // disable CSRF protection for now, otherwise POST requests do not work with https
     http.csrf().disable();
-    http.authorizeRequests()
-        .antMatchers(
+    http.authorizeHttpRequests()
+        .requestMatchers(
             "/", "/index.html", "/**.js", "/**.css", "/favicon.ico",
             "/assets/images/**.jpg", "/assets/i18n/**.json").permitAll()
-        .antMatchers("manifest.webmanifest", "ngsw.json").permitAll() // to support PWA
-        .antMatchers("/api/v1/application").permitAll()
+        .requestMatchers("manifest.webmanifest", "ngsw.json").permitAll() // to support PWA
+        .requestMatchers("/api/v1/application").permitAll()
         /*
           In Okta, add 2 'groups' claims (Access Token & ID Token) and add the applications to
           the corresponding groups. See:
@@ -34,11 +34,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
           Use @EnableGlobalMethodSecurity(prePostEnabled = true) in case @PreAuthorize
           should be used on REST controller methods.
          */
-        .antMatchers("/api/v1/secure").hasAuthority("ysg-admins")
+        .requestMatchers("/api/v1/secure").hasAuthority("ysg-admins")
         .anyRequest().authenticated()
         // enable OAuth2/OIDC
         .and().oauth2Login()
         .and().oauth2ResourceServer().jwt();
+    return http.build();
   }
 
   /**
