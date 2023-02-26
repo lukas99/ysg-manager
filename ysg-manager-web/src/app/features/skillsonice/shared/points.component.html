@@ -26,21 +26,29 @@
     <div class="points-content">
       <button
         mat-icon-button
+        class="icon-text-button"
         (click)="decreasePointsBy3()"
         [disabled]="points <= 2 || disabled"
       >
-        <mat-icon>remove</mat-icon> 3
+        <div class="icon-with-text">
+          <mat-icon>remove</mat-icon>
+          <div>3</div>
+        </div>
       </button>
       <div></div>
       <button
         mat-icon-button
+        class="icon-text-button"
         (click)="increasePointsBy3()"
         [disabled]="disabled"
       >
-        <mat-icon>add</mat-icon> 3
+        <div class="icon-with-text">
+          <mat-icon>add</mat-icon>
+          <div>3</div>
+        </div>
       </button>
     </div>
-    <div class="points-content additional-margin">
+    <div class="points-content">
       <div></div>
       <div class="points-count">
         {{ points }}
@@ -50,14 +58,26 @@
     <div class="points-content">
       <button
         mat-icon-button
+        class="icon-text-button"
         (click)="decreasePoints()"
         [disabled]="points <= 0 || disabled"
       >
-        <mat-icon>remove</mat-icon> 1
+        <div class="icon-with-text">
+          <mat-icon>remove</mat-icon>
+          <div>1</div>
+        </div>
       </button>
       <div></div>
-      <button mat-icon-button (click)="increasePoints()" [disabled]="disabled">
-        <mat-icon>add</mat-icon> 1
+      <button
+        mat-icon-button
+        class="icon-text-button"
+        (click)="increasePoints()"
+        [disabled]="disabled"
+      >
+        <div class="icon-with-text">
+          <mat-icon>add</mat-icon>
+          <div>1</div>
+        </div>
       </button>
     </div>
   </ng-container>

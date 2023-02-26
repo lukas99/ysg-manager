@@ -18,7 +18,12 @@ mat-card-subtitle mat-icon {
   text-align: center;
 }
 
-.additional-margin {
-  margin-top: 10px;
-  margin-bottom: 10px;
+.icon-text-button {
+  padding-right: 50px;
+}
+
+.icon-with-text {
+  display: flex;
+  justify-content: flex-start;
+  width: fit-content;
 }
