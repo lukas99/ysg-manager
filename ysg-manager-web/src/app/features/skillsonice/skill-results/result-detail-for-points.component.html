@@ -23,7 +23,7 @@
 ></ysg-failures>
 <ysg-crud-buttons
   (deleteClicked)="delete()"
-  [deleteDisabled]="loadingIndicator.isLoading"
+  [deleteDisabled]="loadingIndicator.isLoading || !resultExists()"
   (cancelClicked)="cancel()"
   [cancelDisabled]="loadingIndicator.isLoading"
   (saveClicked)="save()"

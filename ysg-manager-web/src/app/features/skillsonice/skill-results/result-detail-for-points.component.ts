@@ -10,7 +10,7 @@ export class ResultDetailForPointsComponent
   extends ResultDetailModel
   implements OnInit
 {
-  shouldUpdate(): boolean {
+  resultExists(): boolean {
     // all values of selected item are undefined, we use points here for testing
     return this.skillResultsService.getSelectedItemValue().points;
   }

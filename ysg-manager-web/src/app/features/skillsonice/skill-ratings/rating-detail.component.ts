@@ -42,7 +42,7 @@ export class RatingDetailComponent implements OnInit {
     );
     this.disablePlayerPositionToggle = !!singlePossiblePosition;
 
-    if (this.shouldUpdate()) {
+    if (this.ratingExists()) {
       // empty object if no value present
       this.skillRating = this.skillRatingsService.getSelectedItemValue();
     } else {
@@ -74,7 +74,10 @@ export class RatingDetailComponent implements OnInit {
     }
   }
 
-  private shouldUpdate(): boolean {
+  /**
+   * @return Whether the current rating already exists. Returns false in case it's a new rating.
+   */
+  ratingExists(): boolean {
     // all values of selected item are undefined, we use score here for testing
     return this.skillRatingsService.getSelectedItemValue().score;
   }
@@ -119,7 +122,7 @@ export class RatingDetailComponent implements OnInit {
         this.loadingIndicator.finishLoading();
         return;
       }
-      if (this.shouldUpdate()) {
+      if (this.ratingExists()) {
         this.skillRatingsService
           .updateSkillRating(this.skillRating)
           .subscribe(() => {

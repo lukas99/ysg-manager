@@ -42,7 +42,7 @@ export abstract class ResultDetailModel {
     );
     this.disablePlayerPositionToggle = !!singlePossiblePosition;
 
-    if (this.shouldUpdate()) {
+    if (this.resultExists()) {
       // empty object if no value present
       this.skillResult = this.skillResultsService.getSelectedItemValue();
     } else {
@@ -76,7 +76,10 @@ export abstract class ResultDetailModel {
     }
   }
 
-  abstract shouldUpdate(): boolean;
+  /**
+   * @return Whether the current result already exists. Returns false in case it's a new result.
+   */
+  abstract resultExists(): boolean;
 
   playerChanged() {
     forkJoin({
@@ -118,7 +121,7 @@ export abstract class ResultDetailModel {
         this.loadingIndicator.finishLoading();
         return;
       }
-      if (this.shouldUpdate()) {
+      if (this.resultExists()) {
         this.skillResultsService
           .updateSkillResult(this.skillResult)
           .subscribe(() => {

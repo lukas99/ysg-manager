@@ -10,7 +10,7 @@ export class ResultDetailForTimeManualComponent
   extends ResultDetailModel
   implements OnInit
 {
-  shouldUpdate(): boolean {
+  resultExists(): boolean {
     // all values of selected item are undefined, we use time here for testing
     return this.skillResultsService.getSelectedItemValue().time;
   }

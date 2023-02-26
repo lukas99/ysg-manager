@@ -15,7 +15,7 @@
 ></ysg-rating>
 <ysg-crud-buttons
   (deleteClicked)="delete()"
-  [deleteDisabled]="loadingIndicator.isLoading"
+  [deleteDisabled]="loadingIndicator.isLoading || !ratingExists()"
   (cancelClicked)="cancel()"
   [cancelDisabled]="loadingIndicator.isLoading"
   (saveClicked)="save()"
