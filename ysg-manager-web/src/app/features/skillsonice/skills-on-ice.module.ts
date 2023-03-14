@@ -18,6 +18,7 @@ import { ResultDetailForTimeManualComponent } from './skill-results/result-detai
 import { TimeManualComponent } from './shared/time-manual.component';
 import { RatingDetailComponent } from './skill-ratings/rating-detail.component';
 import { RatingComponent } from './shared/rating.component';
+import { MsToSecondsPipe } from './shared/ms-to-seconds.pipe';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { RatingComponent } from './shared/rating.component';
     ResultDetailForTimeManualComponent,
     TimeManualComponent,
     RatingDetailComponent,
-    RatingComponent
+    RatingComponent,
+    MsToSecondsPipe
   ],
   imports: [SharedModule, SkillsOnIceRoutingModule]
 })
