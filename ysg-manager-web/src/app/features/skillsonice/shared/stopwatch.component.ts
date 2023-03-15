@@ -78,7 +78,7 @@ export class StopwatchComponent implements OnInit, OnDestroy {
   }
 
   editTime() {
-    if (!this.running) {
+    if (!this.running && !this.disabled) {
       this.editing = true;
       this.emitEditingValue();
       this.counterBackup = this.counter;

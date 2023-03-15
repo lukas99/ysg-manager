@@ -68,6 +68,14 @@ describe('StopwatchComponent', () => {
 
     it('cannot edit time when stopwatch is running', () => {
       component.running = true;
+      component.disabled = false;
+      component.editTime();
+      expect(component.editing).toBe(false);
+    });
+
+    it('cannot edit time when stopwatch is disabled', () => {
+      component.running = false;
+      component.disabled = true;
       component.editTime();
       expect(component.editing).toBe(false);
     });
