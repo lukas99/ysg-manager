@@ -23,6 +23,7 @@ export abstract class ResultDetailModel {
   selectedTeam!: Team;
   skillResult!: SkillResult;
   stopWatchRunning: boolean = false;
+  stopWatchEditing: boolean = false;
   disablePlayerPositionToggle = false;
   loadingIndicator = new LoadingDelayIndicator();
 

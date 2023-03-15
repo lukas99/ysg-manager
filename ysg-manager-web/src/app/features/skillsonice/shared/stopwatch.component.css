@@ -18,3 +18,9 @@ mat-card-subtitle mat-icon {
   font-weight: bold;
   text-align: center;
 }
+
+.arrow-buttons-content {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}

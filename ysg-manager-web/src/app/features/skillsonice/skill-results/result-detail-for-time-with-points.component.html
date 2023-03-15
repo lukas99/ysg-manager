@@ -15,6 +15,7 @@
 <ysg-stopwatch
   [(time)]="skillResult.time"
   (runningChange)="stopWatchRunning = $event"
+  (editingChange)="stopWatchEditing = $event"
   [disabled]="loadingIndicator.isLoading"
 ></ysg-stopwatch>
 <ysg-points
@@ -28,13 +29,19 @@
 <ysg-crud-buttons
   (deleteClicked)="delete()"
   [deleteDisabled]="
-    stopWatchRunning || loadingIndicator.isLoading || !resultExists()
+    stopWatchRunning ||
+    stopWatchEditing ||
+    loadingIndicator.isLoading ||
+    !resultExists()
   "
   (cancelClicked)="cancel()"
-  [cancelDisabled]="stopWatchRunning || loadingIndicator.isLoading"
+  [cancelDisabled]="
+    stopWatchRunning || stopWatchEditing || loadingIndicator.isLoading
+  "
   (saveClicked)="save()"
   [saveDisabled]="
     stopWatchRunning ||
+    stopWatchEditing ||
     loadingIndicator.isLoading ||
     !(skillResult.player.shirtNumber > 0) ||
     !(skillResult.time > 0)

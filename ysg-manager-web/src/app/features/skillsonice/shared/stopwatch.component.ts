@@ -17,7 +17,9 @@ import {
 })
 export class StopwatchComponent implements OnInit, OnDestroy {
   counter = 0;
+  counterBackup = 0;
   running = false;
+  editing = false;
   private intervalId: any;
   private startText = 'Start';
 
@@ -25,6 +27,7 @@ export class StopwatchComponent implements OnInit, OnDestroy {
   @Output() timeChange = new EventEmitter<number>();
 
   @Output() runningChange = new EventEmitter<boolean>();
+  @Output() editingChange = new EventEmitter<boolean>();
 
   @Input() disabled = false;
 
@@ -72,5 +75,66 @@ export class StopwatchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     clearInterval(this.intervalId);
+  }
+
+  editTime() {
+    if (!this.running) {
+      this.editing = true;
+      this.emitEditingValue();
+      this.counterBackup = this.counter;
+    }
+  }
+
+  saveEditedTime() {
+    this.editing = false;
+    this.emitEditingValue();
+    this.counterBackup = this.counter;
+    this.emitTime();
+  }
+
+  discardEditedTime() {
+    this.editing = false;
+    this.emitEditingValue();
+    this.counter = this.counterBackup;
+  }
+
+  private emitEditingValue() {
+    this.editingChange.next(this.editing);
+  }
+
+  increaseByOneSecond() {
+    this.counter = this.counter + 1000;
+  }
+
+  decreaseByOneSecond() {
+    // prevents a negative value
+    if (this.counter >= 1000) {
+      this.counter = this.counter - 1000;
+    }
+  }
+
+  increaseByTenHundredths() {
+    // 2.56 -> + 0.04
+    // 2.60 -> + 0.10
+    const secondHundredthsDigit = this.counter % 100;
+    if (secondHundredthsDigit === 0) {
+      this.counter = this.counter + 100;
+    } else {
+      this.counter = this.counter + (100 - secondHundredthsDigit);
+    }
+  }
+
+  decreaseByTenHundredths() {
+    // prevents a negative value
+    if (this.counter >= 100) {
+      // 2.56 -> - 0.06
+      // 2.60 -> - 0.10
+      const secondHundredthsDigit = this.counter % 100;
+      if (secondHundredthsDigit === 0) {
+        this.counter = this.counter - 100;
+      } else {
+        this.counter = this.counter - secondHundredthsDigit;
+      }
+    }
   }
 }

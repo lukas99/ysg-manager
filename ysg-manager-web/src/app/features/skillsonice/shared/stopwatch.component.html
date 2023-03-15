@@ -3,23 +3,35 @@
     <mat-icon>timer</mat-icon>
     {{ 'SKILLS_ON_ICE_DETAIL_TIME' | translate }}</mat-card-subtitle
   >
+  <div class="arrow-buttons-content" *ngIf="editing">
+    <button mat-icon-button color="primary" (click)="increaseByOneSecond()">
+      <mat-icon>keyboard_arrow_up</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" (click)="increaseByTenHundredths()">
+      <mat-icon>keyboard_arrow_up</mat-icon>
+    </button>
+  </div>
   <div class="stopwatch-content">
     <button
       mat-icon-button
       color="warn"
       (click)="clearTimer()"
       [disabled]="disabled"
+      *ngIf="!editing"
     >
       <mat-icon>delete</mat-icon>
     </button>
-    <div class="stopwatch-time">
+    <button mat-fab color="warn" (click)="discardEditedTime()" *ngIf="editing">
+      <mat-icon>close</mat-icon>
+    </button>
+    <div class="stopwatch-time" (click)="editTime()">
       {{ counter | msToSeconds }}
     </div>
     <button
       mat-fab
       color="primary"
       (click)="startTimer()"
-      *ngIf="!running"
+      *ngIf="!running && !editing"
       [disabled]="disabled"
     >
       <mat-icon>play_arrow</mat-icon>
@@ -28,10 +40,21 @@
       mat-fab
       color="primary"
       (click)="startTimer()"
-      *ngIf="running"
+      *ngIf="running && !editing"
       [disabled]="disabled"
     >
       <mat-icon>pause</mat-icon>
+    </button>
+    <button mat-fab color="primary" (click)="saveEditedTime()" *ngIf="editing">
+      <mat-icon>check</mat-icon>
+    </button>
+  </div>
+  <div class="arrow-buttons-content" *ngIf="editing">
+    <button mat-icon-button color="primary" (click)="decreaseByOneSecond()">
+      <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" (click)="decreaseByTenHundredths()">
+      <mat-icon>keyboard_arrow_down</mat-icon>
     </button>
   </div>
 </mat-card>
