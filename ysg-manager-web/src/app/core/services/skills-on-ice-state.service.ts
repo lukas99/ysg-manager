@@ -10,12 +10,13 @@ import { Skill, Team } from '../../types';
 })
 export class SkillsOnIceStateService {
   private isSkillChef$ = new BehaviorSubject<boolean>(false);
+  private isRoleSelected$ = new BehaviorSubject<boolean>(false);
   private selectedSkill$ = new BehaviorSubject<Skill>({} as Skill);
   private selectedTeam$ = new BehaviorSubject<Team>({} as Team);
 
   constructor() {}
 
-  setSkillChef(isSkillChef: boolean) {
+  setIsSkillChef(isSkillChef: boolean) {
     this.isSkillChef$.next(isSkillChef);
   }
 
@@ -25,6 +26,18 @@ export class SkillsOnIceStateService {
 
   isSkillChef(): boolean {
     return this.isSkillChef$.getValue();
+  }
+
+  setIsRoleSelected(isRoleSelected: boolean) {
+    this.isRoleSelected$.next(isRoleSelected);
+  }
+
+  isRoleSelectedObservable(): Observable<boolean> {
+    return this.isRoleSelected$;
+  }
+
+  isRoleSelected(): boolean {
+    return this.isRoleSelected$.getValue();
   }
 
   setSelectedSkill(skill: Skill) {

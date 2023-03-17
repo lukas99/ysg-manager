@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { SkillsService } from '../../../core/services/skills.service';
-import { Observable, of } from 'rxjs';
-import { Skill, SkillType, Team } from '../../../types';
-import { TeamsService } from '../../../core/services/teams.service';
+import { forkJoin, Subject } from 'rxjs';
+import { Skill, SkillType } from '../../../types';
 import { Router } from '@angular/router';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
+import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ysg-skill-selection',
@@ -12,28 +13,41 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
   styleUrls: ['./skill-selection.component.css']
 })
 export class SkillSelectionComponent implements OnInit {
-  skills$: Observable<Skill[]> = of([]);
-  teams$: Observable<Team[]> = of([]);
-  isSkillChef$: Observable<boolean> = of(false);
-
+  private destroy = new Subject<void>();
+  skills: Skill[] = [];
+  isSkillChef: boolean = false;
   isRoleSelected: boolean = false;
+  loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
     private skillsService: SkillsService,
-    private teamsService: TeamsService,
     private stateService: SkillsOnIceStateService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.skills$ = this.skillsService.getSkills();
-    this.teams$ = this.teamsService.getTeams();
-    this.isSkillChef$ = this.stateService.isSkillChefObservable();
+    this.stateService
+      .isSkillChefObservable()
+      .pipe(takeUntil(this.destroy))
+      .subscribe((isSkillChef) => (this.isSkillChef = isSkillChef));
+    this.stateService
+      .isRoleSelectedObservable()
+      .pipe(takeUntil(this.destroy))
+      .subscribe((isRoleSelected) => (this.isRoleSelected = isRoleSelected));
+    forkJoin({
+      loading: this.loadingIndicator.startLoading(),
+      skills: this.skillsService.getSkills()
+    })
+      .pipe(takeUntil(this.destroy))
+      .subscribe(({ skills }) => {
+        this.skills = skills;
+        this.loadingIndicator.finishLoading();
+      });
   }
 
   roleToggleClicked(isSkillChef: boolean) {
-    this.isRoleSelected = true;
-    this.stateService.setSkillChef(isSkillChef);
+    this.stateService.setIsRoleSelected(true);
+    this.stateService.setIsSkillChef(isSkillChef);
   }
 
   showSkill(skill: Skill): boolean {
@@ -69,5 +83,10 @@ export class SkillSelectionComponent implements OnInit {
   skillSelected(skill: Skill) {
     this.stateService.setSelectedSkill(skill);
     this.router.navigateByUrl('skillsonice/teamselection');
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }

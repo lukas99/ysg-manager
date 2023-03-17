@@ -1,43 +1,34 @@
+<ysg-progress-bar
+  [showProgress]="loadingIndicator.isLoading"
+></ysg-progress-bar>
 <ysg-mobile-page-title>
   {{ 'SKILLS_ON_ICE_SKILL_SELECTION' | translate }}
 </ysg-mobile-page-title>
-<ng-container *ngIf="skills$ | async as skills">
-  <ng-container *ngIf="teams$ | async as teams">
-    <ng-container *ngIf="skills.length == 0 || teams.length == 0">
-      <div>{{ 'SKILLS_ON_ICE_NO_DATA_HINT' | translate }}</div>
-      <ul>
-        <li *ngIf="skills.length == 0">
-          {{ 'SKILLS_ON_ICE_NO_SKILLS_HINT' | translate }}
-        </li>
-        <li *ngIf="teams.length == 0">
-          {{ 'SKILLS_ON_ICE_NO_TEAMS_HINT' | translate }}
-        </li>
-      </ul>
-    </ng-container>
-    <ng-container *ngIf="skills.length > 0 && teams.length > 0">
-      <mat-button-toggle-group>
-        <mat-button-toggle
-          (click)="roleToggleClicked(true)"
-          [value]="isSkillChef$ | async"
-        >
-          {{ 'SKILLS_ON_ICE_SKILL_CHEF' | translate }}
-        </mat-button-toggle>
-        <mat-button-toggle
-          (click)="roleToggleClicked(false)"
-          [value]="!(isSkillChef$ | async)"
-        >
-          {{ 'SKILLS_ON_ICE_SKILL_EXPERT' | translate }}
-        </mat-button-toggle>
-      </mat-button-toggle-group>
-      <ng-container *ngIf="isRoleSelected">
-        <ng-container *ngFor="let skill of skills">
-          <mat-card *ngIf="showSkill(skill)" (click)="skillSelected(skill)">
-            <mat-card-title>
-              {{ skill?.number }} - {{ skill?.name }}
-            </mat-card-title>
-          </mat-card>
-        </ng-container>
-      </ng-container>
-    </ng-container>
+
+<!-- It's not possible for a mat-button-toggle-group to have no preselected option set
+     with a value attribute on the mat-button-toggle. So use two groups which are
+     visible / invisible accordingly. -->
+<mat-button-toggle-group *ngIf="!isRoleSelected">
+  <mat-button-toggle (click)="roleToggleClicked(true)">
+    {{ 'SKILLS_ON_ICE_SKILL_CHEF' | translate }}
+  </mat-button-toggle>
+  <mat-button-toggle (click)="roleToggleClicked(false)">
+    {{ 'SKILLS_ON_ICE_SKILL_EXPERT' | translate }}
+  </mat-button-toggle>
+</mat-button-toggle-group>
+<mat-button-toggle-group *ngIf="isRoleSelected" [(ngModel)]="isSkillChef">
+  <mat-button-toggle (click)="roleToggleClicked(true)" [value]="true">
+    {{ 'SKILLS_ON_ICE_SKILL_CHEF' | translate }}
+  </mat-button-toggle>
+  <mat-button-toggle (click)="roleToggleClicked(false)" [value]="false">
+    {{ 'SKILLS_ON_ICE_SKILL_EXPERT' | translate }}
+  </mat-button-toggle>
+</mat-button-toggle-group>
+
+<ng-container *ngIf="isRoleSelected">
+  <ng-container *ngFor="let skill of skills">
+    <mat-card *ngIf="showSkill(skill)" (click)="skillSelected(skill)">
+      <mat-card-title> {{ skill?.number }} - {{ skill?.name }} </mat-card-title>
+    </mat-card>
   </ng-container>
 </ng-container>
