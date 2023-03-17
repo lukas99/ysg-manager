@@ -111,7 +111,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/classes/resources/</outputDirectory>
+              <outputDirectory>${basedir}/src/main/resources/static/</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.parent.basedir}/ysg-manager-web/dist/ysg-manager-web/
