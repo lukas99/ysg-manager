@@ -3,6 +3,7 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 import { Router } from '@angular/router';
 import { Team } from '../../../types';
 import { of } from 'rxjs';
+import { fakeAsync, tick } from '@angular/core/testing';
 
 describe('TeamSelectionComponent', () => {
   let component: TeamSelectionComponent;
@@ -23,18 +24,20 @@ describe('TeamSelectionComponent', () => {
     component = new TeamSelectionComponent(teamsService, stateService, router);
   });
 
-  it('loads the teams', () => {
+  it('loads the teams', fakeAsync(() => {
     const teamsObservable = of(teams);
     teamsService.getTeams = jest.fn(() => teamsObservable);
 
     component.ngOnInit();
+    tick(50); // delay from loading-delay-indicator
 
-    expect(component.teams$).toEqual(teamsObservable);
-  });
+    expect(component.teams).toEqual(teams);
+    expect(component.loadingIndicator.isLoading).toEqual(false);
+  }));
 
   describe('navigate', () => {
     it('skill chef selects a team and navigates to the result list', () => {
-      stateService.setSkillChef(true);
+      stateService.setIsSkillChef(true);
 
       component.teamSelected(ehcEngelberg);
 
@@ -45,7 +48,7 @@ describe('TeamSelectionComponent', () => {
     });
 
     it('skill expert selects a team and navigates to the rating list', () => {
-      stateService.setSkillChef(false);
+      stateService.setIsSkillChef(false);
 
       component.teamSelected(ehcEngelberg);
 

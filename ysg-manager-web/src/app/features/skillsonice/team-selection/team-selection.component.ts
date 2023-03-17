@@ -3,7 +3,9 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 import { Team } from '../../../types';
 import { Router } from '@angular/router';
 import { TeamsService } from '../../../core/services/teams.service';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
+import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ysg-team-selection',
@@ -11,7 +13,9 @@ import { Observable, of } from 'rxjs';
   styleUrls: ['./team-selection.component.css']
 })
 export class TeamSelectionComponent implements OnInit {
-  teams$: Observable<Team[]> = of([]);
+  private destroy = new Subject<void>();
+  teams: Team[] = [];
+  loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
     private teamsService: TeamsService,
@@ -20,7 +24,15 @@ export class TeamSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.teams$ = this.teamsService.getTeams();
+    forkJoin({
+      loading: this.loadingIndicator.startLoading(),
+      teams: this.teamsService.getTeams()
+    })
+      .pipe(takeUntil(this.destroy))
+      .subscribe(({ teams }) => {
+        this.teams = teams;
+        this.loadingIndicator.finishLoading();
+      });
   }
 
   teamSelected(team: Team) {
@@ -34,5 +46,10 @@ export class TeamSelectionComponent implements OnInit {
     } else {
       this.router.navigateByUrl('skillsonice/ratinglist');
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }
