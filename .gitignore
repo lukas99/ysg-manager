@@ -1,4 +1,5 @@
 # manual added entries
+/ysg-manager-server/src/main/resources/static/
 
 # certificates
 *.p12
