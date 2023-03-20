@@ -16,7 +16,7 @@ import DoneCallback = jest.DoneCallback;
 
 describe('SkillTournamentRankingsService', () => {
   let service: SkillTournamentRankingsService;
-  let tournamentSerivce: TournamentsService;
+  let tournamentService: TournamentsService;
   let httpMock: HttpTestingController;
 
   let tournament: Tournament = {
@@ -43,11 +43,11 @@ describe('SkillTournamentRankingsService', () => {
       providers: [TournamentsService]
     });
     service = TestBed.inject(SkillTournamentRankingsService);
-    tournamentSerivce = TestBed.inject(TournamentsService);
+    tournamentService = TestBed.inject(TournamentsService);
     httpMock = TestBed.inject(HttpTestingController);
 
     const getDefaultTournament = httpMock.expectOne(
-      tournamentSerivce['tournamentsUrl']
+      tournamentService['tournamentsUrl']
     );
     expect(getDefaultTournament.request.method).toBe('GET');
     getDefaultTournament.flush(<TournamentList>{
