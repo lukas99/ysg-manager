@@ -20,7 +20,7 @@
   "NAVIGATION_SKILLS": "Skills",
   "NAVIGATION_SKILLS_ON_ICE": "Skills On Ice",
   "NAVIGATION_SKILL_RANKINGS": "Rankings",
-  "NAVIGATION_TOURNAMENT_SKILL_RANKINGS": "Tournament Rankings",
+  "NAVIGATION_TOURNAMENT_SKILL_RANKINGS": "Overall Rankings",
 
   "TOURNAMENTS_PAGE_TITLE": "Tournaments",
   "TOURNAMENT_NAME": "Name",
@@ -77,7 +77,7 @@
   "SKILL_RATING_SCORE": "Rating",
 
   "SKILL_RANKINGS_PAGE_TITLE": "Skills Rankings",
-  "SKILL_TOURNAMENT_RANKINGS_PAGE_TITLE": "Skills Tournament Rankings",
+  "SKILL_TOURNAMENT_RANKINGS_PAGE_TITLE": "Skills Overall Rankings",
   "SKILL_RANKING_SKILL_NAME": "Skill",
   "SKILL_RANKING_SKILL_NUMBER": "Skill Number",
   "SKILL_RANKING_SEQUENCE": "Sequence",
