@@ -29,18 +29,23 @@ describe('TournamentsService', () => {
   });
 
   describe('getApplicationTournament', () => {
-    const tournament1 = <Tournament>{ name: 'YSG 2019', active: false };
-    const tournament2 = <Tournament>{ name: 'YSG 2020', active: true };
+    const tournament1 = <Tournament>{
+      name: 'YSG 2019',
+      active: false,
+      _links: {}
+    };
+    const tournament2 = <Tournament>{
+      name: 'YSG 2020',
+      active: true,
+      _links: {}
+    };
     const tournaments = [tournament1, tournament2];
 
     it('should set the active tournament when no application tournament exists', (done: DoneCallback) => {
-      service
-        .getApplicationTournament()
-        .pipe(skip(1)) // skip initial empty value
-        .subscribe((result) => {
-          expect(result).toBe(tournament2);
-          done();
-        });
+      service.getApplicationTournament().subscribe((result) => {
+        expect(result).toBe(tournament2);
+        done();
+      });
 
       const testRequest = httpMock.expectOne(service['tournamentsUrl']);
       expect(testRequest.request.method).toBe('GET');
@@ -55,13 +60,10 @@ describe('TournamentsService', () => {
       tournament1.active = false;
       tournament2.active = false;
 
-      service
-        .getApplicationTournament()
-        .pipe(skip(1)) // skip initial empty value
-        .subscribe((result) => {
-          expect(result).toBe(tournament1);
-          done();
-        });
+      service.getApplicationTournament().subscribe((result) => {
+        expect(result).toBe(tournament1);
+        done();
+      });
 
       const testRequest = httpMock.expectOne(service['tournamentsUrl']);
       expect(testRequest.request.method).toBe('GET');
@@ -75,7 +77,7 @@ describe('TournamentsService', () => {
     it('should get the application tournament', (done: DoneCallback) => {
       service
         .getApplicationTournament()
-        .pipe(skip(2)) // skip initial empty value & first default value
+        .pipe(skip(1)) // skip first default value
         .subscribe((result) => {
           expect(result).toBe(tournament2);
           done();

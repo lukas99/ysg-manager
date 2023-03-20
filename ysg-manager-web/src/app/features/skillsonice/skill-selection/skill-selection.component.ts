@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SkillsService } from '../../../core/services/skills.service';
-import { forkJoin, Subject } from 'rxjs';
+import { combineLatest, Subject } from 'rxjs';
 import { Skill, SkillType } from '../../../types';
 import { Router } from '@angular/router';
 import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
@@ -34,12 +34,12 @@ export class SkillSelectionComponent implements OnInit {
       .isRoleSelectedObservable()
       .pipe(takeUntil(this.destroy))
       .subscribe((isRoleSelected) => (this.isRoleSelected = isRoleSelected));
-    forkJoin({
-      loading: this.loadingIndicator.startLoading(),
-      skills: this.skillsService.getSkills()
-    })
+    combineLatest([
+      this.loadingIndicator.startLoading(),
+      this.skillsService.getSkills()
+    ])
       .pipe(takeUntil(this.destroy))
-      .subscribe(({ skills }) => {
+      .subscribe(([loading, skills]) => {
         this.skills = skills;
         this.loadingIndicator.finishLoading();
       });

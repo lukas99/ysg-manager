@@ -3,7 +3,7 @@ import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-st
 import { Team } from '../../../types';
 import { Router } from '@angular/router';
 import { TeamsService } from '../../../core/services/teams.service';
-import { forkJoin, Subject } from 'rxjs';
+import { combineLatest, Subject } from 'rxjs';
 import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
 import { takeUntil } from 'rxjs/operators';
 
@@ -24,12 +24,12 @@ export class TeamSelectionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    forkJoin({
-      loading: this.loadingIndicator.startLoading(),
-      teams: this.teamsService.getTeams()
-    })
+    combineLatest([
+      this.loadingIndicator.startLoading(),
+      this.teamsService.getTeams()
+    ])
       .pipe(takeUntil(this.destroy))
-      .subscribe(({ teams }) => {
+      .subscribe(([loading, teams]) => {
         this.teams = teams;
         this.loadingIndicator.finishLoading();
       });

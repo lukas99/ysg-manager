@@ -44,14 +44,9 @@ export class TournamentPickerComponent implements OnInit, OnDestroy {
     this.tournamentService
       .getApplicationTournament()
       .pipe(takeUntil(this.destroy))
-      .subscribe((tournament) => {
-        // first initial value is empty
-        if (tournament._links) {
-          this.selectedTournamentName = tournament.name;
-        } else {
-          this.selectedTournamentName = '';
-        }
-      });
+      .subscribe(
+        (tournament) => (this.selectedTournamentName = tournament.name)
+      );
   }
 
   useTournament(tournament: Tournament) {

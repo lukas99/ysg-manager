@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Link, Team, TeamList, Tournament } from '../../types';
-import { map } from 'rxjs/operators';
+import { flatMap, map } from 'rxjs/operators';
 import { TournamentsService } from './tournaments.service';
 import { CrudStateService } from './crud-state.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
@@ -11,16 +11,15 @@ import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
   providedIn: 'root'
 })
 export class TeamsService extends CrudStateService implements CrudService {
-  private applicationTournament!: Tournament;
+  private applicationTournament$: Observable<Tournament>;
 
   constructor(
     private http: HttpClient,
     private tournamentService: TournamentsService
   ) {
     super();
-    this.tournamentService
-      .getApplicationTournament()
-      .subscribe((tournament) => (this.applicationTournament = tournament));
+    this.applicationTournament$ =
+      this.tournamentService.getApplicationTournament();
   }
 
   getTeam(teamLink: Link): Observable<Team> {
@@ -28,23 +27,25 @@ export class TeamsService extends CrudStateService implements CrudService {
   }
 
   getTeams(): Observable<Team[]> {
-    return this.http
-      .get<TeamList>(this.applicationTournament._links.teams.href)
-      .pipe(
-        map((list) => {
-          if (list && list._embedded && list._embedded.teamModelList) {
-            return list._embedded.teamModelList;
-          } else {
-            return [];
-          }
-        })
-      );
+    return this.applicationTournament$.pipe(
+      flatMap((applicationTournament) =>
+        this.http.get<TeamList>(applicationTournament._links.teams.href)
+      ),
+      map((list) => {
+        if (list && list._embedded && list._embedded.teamModelList) {
+          return list._embedded.teamModelList;
+        } else {
+          return [];
+        }
+      })
+    );
   }
 
   createTeam(team: Team): Observable<Team> {
-    return this.http.post<Team>(
-      this.applicationTournament._links.teams.href,
-      team
+    return this.applicationTournament$.pipe(
+      flatMap((applicationTournament) =>
+        this.http.post<Team>(applicationTournament._links.teams.href, team)
+      )
     );
   }
 

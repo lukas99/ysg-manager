@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Tournament, TournamentList } from '../../types';
-import { map } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { CrudStateService } from './crud-state.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
@@ -40,24 +40,25 @@ export class TournamentsService
 
   /**
    * @return The tournament selected by the user to be used all over the application.
-   * Initial respectively first value is empty. You can use skip(1) to skip it.
    */
   getApplicationTournament(): Observable<Tournament> {
     if (!this.applicationTournament$.value._links) {
-      this.getTournaments().subscribe((tournaments) => {
-        if (tournaments.length > 0) {
-          let activeTournament = tournaments.find(
-            (tournament) => tournament.active
-          );
-          if (activeTournament) {
-            this.setApplicationTournament(activeTournament);
-          } else {
-            this.setApplicationTournament(tournaments[0]);
-          }
-        }
-      });
+      this.getTournaments()
+        .pipe(
+          filter((tournaments) => tournaments.length > 0),
+          map((tournaments) => {
+            let activeTournament = tournaments.find(
+              (tournament) => tournament.active
+            );
+            return activeTournament ? activeTournament : tournaments[0];
+          })
+        )
+        .subscribe((tournament) => this.setApplicationTournament(tournament));
     }
-    return this.applicationTournament$;
+    return this.applicationTournament$.pipe(
+      // filter initial empty value
+      filter((applicationTournament) => !!applicationTournament._links)
+    );
   }
 
   getTournaments(): Observable<Tournament[]> {

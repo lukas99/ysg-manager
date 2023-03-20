@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { flatMap, map } from 'rxjs/operators';
 import {
   SkillTournamentRanking,
   SkillTournamentRankingList,
@@ -18,36 +18,36 @@ export class SkillTournamentRankingsService
   extends CrudStateService
   implements CrudService
 {
-  private applicationTournament!: Tournament;
+  private applicationTournament$: Observable<Tournament>;
 
   constructor(
     private http: HttpClient,
     private tournamentService: TournamentsService
   ) {
     super();
-    this.tournamentService
-      .getApplicationTournament()
-      .subscribe((tournament) => (this.applicationTournament = tournament));
+    this.applicationTournament$ =
+      this.tournamentService.getApplicationTournament();
   }
 
   getSkillTournamentRankings(): Observable<SkillTournamentRanking[]> {
-    return this.http
-      .get<SkillTournamentRankingList>(
-        this.applicationTournament._links.skilltournamentrankings.href
-      )
-      .pipe(
-        map((list) => {
-          if (
-            list &&
-            list._embedded &&
-            list._embedded.skillTournamentRankingModelList
-          ) {
-            return list._embedded.skillTournamentRankingModelList;
-          } else {
-            return [];
-          }
-        })
-      );
+    return this.applicationTournament$.pipe(
+      flatMap((applicationTournament) =>
+        this.http.get<SkillTournamentRankingList>(
+          applicationTournament._links.skilltournamentrankings.href
+        )
+      ),
+      map((list) => {
+        if (
+          list &&
+          list._embedded &&
+          list._embedded.skillTournamentRankingModelList
+        ) {
+          return list._embedded.skillTournamentRankingModelList;
+        } else {
+          return [];
+        }
+      })
+    );
   }
 
   getItems(): Observable<any[]> {

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Skill, SkillList, Tournament } from '../../types';
-import { map } from 'rxjs/operators';
+import { flatMap, map } from 'rxjs/operators';
 import { TournamentsService } from './tournaments.service';
 import { CrudStateService } from './crud-state.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
@@ -11,33 +11,31 @@ import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
   providedIn: 'root'
 })
 export class SkillsService extends CrudStateService implements CrudService {
-  private applicationTournament!: Tournament;
+  private applicationTournament$: Observable<Tournament>;
 
   constructor(
     private http: HttpClient,
     private tournamentService: TournamentsService
   ) {
     super();
-    this.tournamentService
-      .getApplicationTournament()
-      .subscribe((tournament) => (this.applicationTournament = tournament));
+    this.applicationTournament$ =
+      this.tournamentService.getApplicationTournament();
   }
 
   getSkills(): Observable<Skill[]> {
-    return this.http
-      .get<SkillList>(this.applicationTournament._links.skills.href)
-      .pipe(
-        map((list) => {
-          if (list && list._embedded && list._embedded.skillModelList) {
-            const skills = this.sortBySkillNumber(
-              list._embedded.skillModelList
-            );
-            return skills;
-          } else {
-            return [];
-          }
-        })
-      );
+    return this.applicationTournament$.pipe(
+      flatMap((applicationTournament) =>
+        this.http.get<SkillList>(applicationTournament._links.skills.href)
+      ),
+      map((list) => {
+        if (list && list._embedded && list._embedded.skillModelList) {
+          const skills = this.sortBySkillNumber(list._embedded.skillModelList);
+          return skills;
+        } else {
+          return [];
+        }
+      })
+    );
   }
 
   private sortBySkillNumber(skills: Skill[]): Skill[] {
@@ -45,9 +43,10 @@ export class SkillsService extends CrudStateService implements CrudService {
   }
 
   createSkill(skill: Skill): Observable<Skill> {
-    return this.http.post<Skill>(
-      this.applicationTournament._links.skills.href,
-      skill
+    return this.applicationTournament$.pipe(
+      flatMap((applicationTournament) =>
+        this.http.post<Skill>(applicationTournament._links.skills.href, skill)
+      )
     );
   }
 
@@ -86,8 +85,14 @@ export class SkillsService extends CrudStateService implements CrudService {
   }
 
   calculateSkillRankings(): Observable<void> {
-    const rankingCalculationLink =
-      this.applicationTournament._links.calculateskillrankings;
-    return this.http.post<void>(rankingCalculationLink.href, {});
+    return this.applicationTournament$.pipe(
+      map(
+        (applicationTournament) =>
+          applicationTournament._links.calculateskillrankings
+      ),
+      flatMap((rankingCalculationLink) =>
+        this.http.post<void>(rankingCalculationLink.href, {})
+      )
+    );
   }
 }
