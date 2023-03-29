@@ -2,7 +2,7 @@
   <button
     mat-icon-button
     class="back-button"
-    *ngIf="!!backRoute"
+    *ngIf="!disableBackLink"
     (click)="navigateBack()"
   >
     <mat-icon>arrow_back</mat-icon>

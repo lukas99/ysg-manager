@@ -1,5 +1,4 @@
-import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import {
   Link,
   PlayerPosition,
@@ -12,48 +11,61 @@ import { RatingDetailComponent } from './rating-detail.component';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
 import { of } from 'rxjs';
 import { fakeAsync, tick } from '@angular/core/testing';
+import { SkillsService } from '../../../core/services/skills.service';
+import { TeamsService } from '../../../core/services/teams.service';
 
 describe('RatingDetailComponent', () => {
   let component: RatingDetailComponent;
-  let stateService: SkillsOnIceStateService;
+
+  let skillsService: SkillsService;
+  let teamsService: TeamsService;
   let skillRatingsService: any;
   let router: Router;
+  let route: ActivatedRoute;
 
   let selectedTeamLink: Link;
   let selectedSkillLink: Link;
   let selectedTeam: Team;
   let selectedSkill: Skill;
+  let existingRating: SkillRating;
 
   let showAlertDialogRatingAlreadyExists: any;
 
   beforeEach(() => {
-    stateService = new SkillsOnIceStateService();
+    selectedTeamLink = {} as Link;
+    selectedSkillLink = {} as Link;
+    selectedTeam = { id: 11, _links: { self: selectedTeamLink } } as Team;
+    selectedSkill = { id: 22, _links: { self: selectedSkillLink } } as Skill;
+    existingRating = { id: 40 } as SkillRating;
+
+    skillsService = <any>{ getSkill: jest.fn(() => of(selectedSkill)) };
+    teamsService = <any>{ getTeam: jest.fn(() => of(selectedTeam)) };
     skillRatingsService = <any>{
-      // no item is selected -> would create new item
-      getSelectedItemValue: jest.fn(() => {
-        return {};
-      }),
+      getSkillRating: jest.fn(() => of()),
       deleteSkillRating: jest.fn(() => of({})),
-      removeSelectedItem: jest.fn(),
       updateSkillRating: jest.fn(() => of({})),
       createSkillRating: jest.fn(() => of({})),
       // rating for same player does not yet exist
       getSkillRatingsBySkillAndTeamAndPlayerShirtNumber: jest.fn(() => of([]))
     };
-    router = <any>{ navigateByUrl: jest.fn() };
+    router = <any>{ navigate: jest.fn() };
+    route = <any>{
+      snapshot: {
+        paramMap: convertToParamMap({
+          skillId: selectedSkill.id,
+          teamId: selectedTeam.id,
+          ratingId: existingRating.id
+        })
+      }
+    };
     component = new RatingDetailComponent(
-      stateService,
+      skillsService,
+      teamsService,
       skillRatingsService,
       new SkillTypeService(),
-      router
+      router,
+      route
     );
-
-    selectedTeamLink = {} as Link;
-    selectedSkillLink = {} as Link;
-    selectedTeam = { _links: { self: selectedTeamLink } } as Team;
-    selectedSkill = { _links: { self: selectedSkillLink } } as Skill;
-    stateService.setSelectedTeam(selectedTeam);
-    stateService.setSelectedSkill(selectedSkill);
 
     showAlertDialogRatingAlreadyExists = jest.spyOn(
       component,
@@ -63,63 +75,75 @@ describe('RatingDetailComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    it('sets the selected skill and team', () => {
-      const existingRating = { score: 80 } as SkillRating;
-      skillRatingsService.getSelectedItemValue = jest.fn(() => existingRating);
-
+    it('sets the selected skill and team', fakeAsync(() => {
       component.ngOnInit();
+      tick(50); // delay from loading-delay-indicator
 
       expect(component.selectedTeam).toBe(selectedTeam);
       expect(component.selectedSkill).toBe(selectedSkill);
-    });
+    }));
 
     describe('rating exists', () => {
-      let existingRating: SkillRating;
-
       beforeEach(() => {
-        existingRating = { score: 80 } as SkillRating;
-        skillRatingsService.getSelectedItemValue = jest.fn(
-          () => existingRating
-        );
+        skillRatingsService.getSkillRating = jest.fn(() => of(existingRating));
       });
 
-      it('loads an existing rating', () => {
+      it('loads an existing rating', fakeAsync(() => {
         component.ngOnInit();
-        expect(component.skillRating).toBe(existingRating);
-      });
+        tick(50); // delay from loading-delay-indicator
 
-      it('disables the player position toggle', () => {
+        expect(component.skillRating).toBe(existingRating);
+      }));
+
+      it('disables the player position toggle', fakeAsync(() => {
         selectedSkill.name = 'Controlled Jumble';
         selectedSkill.typeForPlayers = SkillType.TIME;
         selectedSkill.typeForGoaltenders = SkillType.RATING;
-        stateService.setSelectedSkill(selectedSkill);
 
         component.ngOnInit();
+        tick(50); // delay from loading-delay-indicator
 
         expect(component.disablePlayerPositionToggle).toBeTruthy();
         expect(component.skillRating).toBe(existingRating);
-      });
+      }));
 
-      it('enables the player position toggle', () => {
+      it('enables the player position toggle', fakeAsync(() => {
         selectedSkill.name = 'Hit the Road';
         selectedSkill.typeForPlayers = SkillType.TIME_WITH_RATING;
         selectedSkill.typeForGoaltenders = SkillType.RATING;
-        stateService.setSelectedSkill(selectedSkill);
 
         component.ngOnInit();
+        tick(50); // delay from loading-delay-indicator
 
         expect(component.disablePlayerPositionToggle).toBeFalsy();
         expect(component.skillRating).toBe(existingRating);
-      });
+      }));
     });
 
     describe('new rating', () => {
       beforeEach(() => {
-        expect(skillRatingsService.getSelectedItemValue()).toEqual({});
+        route = <any>{
+          snapshot: {
+            // without ratingId
+            paramMap: convertToParamMap({
+              skillId: selectedSkill.id,
+              teamId: selectedTeam.id
+            })
+          }
+        };
+        component = new RatingDetailComponent(
+          skillsService,
+          teamsService,
+          skillRatingsService,
+          new SkillTypeService(),
+          router,
+          route
+        );
       });
 
-      it('initializes a new rating', () => {
+      it('initializes a new rating', fakeAsync(() => {
         component.ngOnInit();
+        tick(50); // delay from loading-delay-indicator
 
         expect(component.skillRating.score).toBe(0);
         expect(component.skillRating.player.team).toBe(selectedTeam);
@@ -128,39 +152,42 @@ describe('RatingDetailComponent', () => {
         );
         expect(component.skillRating.player._links.team).toBe(selectedTeamLink);
         expect(component.skillRating._links.skill).toBe(selectedSkillLink);
-      });
+      }));
 
-      it('disables the player position toggle and preselects the position value', () => {
+      it('disables the player position toggle and preselects the position value', fakeAsync(() => {
         selectedSkill.name = 'Controlled Jumble';
         selectedSkill.typeForPlayers = SkillType.TIME;
         selectedSkill.typeForGoaltenders = SkillType.RATING;
-        stateService.setSelectedSkill(selectedSkill);
 
         component.ngOnInit();
+        tick(50); // delay from loading-delay-indicator
 
         expect(component.disablePlayerPositionToggle).toBeTruthy();
         expect(component.skillRating.player.position).toBe(
           PlayerPosition.GOALTENDER
         );
-      });
+      }));
 
-      it('enables the player position toggle', () => {
+      it('enables the player position toggle', fakeAsync(() => {
         selectedSkill.name = 'Hit the Road';
         selectedSkill.typeForPlayers = SkillType.TIME_WITH_RATING;
         selectedSkill.typeForGoaltenders = SkillType.RATING;
-        stateService.setSelectedSkill(selectedSkill);
 
         component.ngOnInit();
+        tick(50); // delay from loading-delay-indicator
 
         expect(component.disablePlayerPositionToggle).toBeFalsy();
         expect(component.skillRating.player.position).toBe(
           PlayerPosition.SKATER
         );
-      });
+      }));
     });
   });
 
   it('should delete a skill rating', fakeAsync(() => {
+    component.selectedSkill = selectedSkill;
+    component.selectedTeam = selectedTeam;
+
     const skillRating = {} as SkillRating;
     component.skillRating = skillRating;
     skillRatingsService.deleteSkillRating = jest.fn(() => of(skillRating));
@@ -171,32 +198,59 @@ describe('RatingDetailComponent', () => {
     expect(skillRatingsService.deleteSkillRating).toHaveBeenCalledWith(
       skillRating
     );
-    expect(skillRatingsService.removeSelectedItem).toHaveBeenCalled();
     expect(component.loadingIndicator.isLoading).toBe(false);
-    expect(router.navigateByUrl).toHaveBeenCalledWith('skillsonice/ratinglist');
+    expect(router.navigate).toHaveBeenCalledWith(
+      [
+        'skillsonice',
+        'skills',
+        selectedSkill.id,
+        'teams',
+        selectedTeam.id,
+        'ratings'
+      ],
+      { queryParamsHandling: 'merge' }
+    );
   }));
 
   it('should cancel the skill rating editing', () => {
+    component.selectedSkill = selectedSkill;
+    component.selectedTeam = selectedTeam;
+
     component.cancel();
 
-    expect(skillRatingsService.removeSelectedItem).toHaveBeenCalled();
-    expect(router.navigateByUrl).toHaveBeenCalledWith('skillsonice/ratinglist');
+    expect(router.navigate).toHaveBeenCalledWith(
+      [
+        'skillsonice',
+        'skills',
+        selectedSkill.id,
+        'teams',
+        selectedTeam.id,
+        'ratings'
+      ],
+      { queryParamsHandling: 'merge' }
+    );
   });
 
   describe('save', () => {
+    beforeEach(() => {
+      component.selectedSkill = selectedSkill;
+      component.selectedTeam = selectedTeam;
+    });
+
     it('should allow to update own rating which already exists', fakeAsync(() => {
       const existingRating = {
+        id: 40,
         score: 90,
         player: { shirtNumber: 20 },
         _links: { self: { href: 'self-link' } }
       } as SkillRating;
-      skillRatingsService.getSelectedItemValue = jest.fn(() => existingRating);
-      component.ngOnInit();
+      component.skillRating = existingRating;
       // rating for this player already exists (it's the rating we want to update)
       skillRatingsService.getSkillRatingsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() =>
           of([
             {
+              id: 40,
               score: 90,
               player: { shirtNumber: 20 },
               _links: { self: { href: 'self-link' } }
@@ -210,26 +264,33 @@ describe('RatingDetailComponent', () => {
       expect(skillRatingsService.updateSkillRating).toHaveBeenCalledWith(
         existingRating
       );
-      expect(skillRatingsService.removeSelectedItem).toHaveBeenCalled();
       expect(component.loadingIndicator.isLoading).toBe(false);
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
-        'skillsonice/ratinglist'
+      expect(router.navigate).toHaveBeenCalledWith(
+        [
+          'skillsonice',
+          'skills',
+          selectedSkill.id,
+          'teams',
+          selectedTeam.id,
+          'ratings'
+        ],
+        { queryParamsHandling: 'merge' }
       );
     }));
 
     it('should prevent to update rating to player which already exists', fakeAsync(() => {
-      const existingRating = {
+      component.skillRating = {
+        id: 40,
         score: 90,
         player: { shirtNumber: 20 },
         _links: { self: { href: 'self-link' } }
       } as SkillRating;
-      skillRatingsService.getSelectedItemValue = jest.fn(() => existingRating);
-      component.ngOnInit();
       // rating for this player already exists (it's another rating)
       skillRatingsService.getSkillRatingsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() =>
           of([
             {
+              id: 40,
               score: 90,
               player: { shirtNumber: 20 },
               _links: { self: { href: 'other-link' } }
@@ -244,14 +305,12 @@ describe('RatingDetailComponent', () => {
 
       expect(skillRatingsService.updateSkillRating).toHaveBeenCalledTimes(0);
       expect(skillRatingsService.createSkillRating).toHaveBeenCalledTimes(0);
-      expect(skillRatingsService.removeSelectedItem).toHaveBeenCalledTimes(0);
       expect(component.loadingIndicator.isLoading).toBe(false);
-      expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
+      expect(router.navigate).toHaveBeenCalledTimes(0);
     }));
 
     it('should create new rating', fakeAsync(() => {
-      expect(skillRatingsService.getSelectedItemValue()).toEqual({});
-      component.ngOnInit();
+      component.skillRating = { player: { shirtNumber: 20 } } as SkillRating;
       // rating for this player doesn't yet exist
       skillRatingsService.getSkillRatingsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() => of([]));
@@ -263,16 +322,22 @@ describe('RatingDetailComponent', () => {
         component.skillRating,
         selectedSkill
       );
-      expect(skillRatingsService.removeSelectedItem).toHaveBeenCalled();
       expect(component.loadingIndicator.isLoading).toBe(false);
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
-        'skillsonice/ratinglist'
+      expect(router.navigate).toHaveBeenCalledWith(
+        [
+          'skillsonice',
+          'skills',
+          selectedSkill.id,
+          'teams',
+          selectedTeam.id,
+          'ratings'
+        ],
+        { queryParamsHandling: 'merge' }
       );
     }));
 
     it('should prevent to create a new rating when a rating already exists', fakeAsync(() => {
-      expect(skillRatingsService.getSelectedItemValue()).toEqual({});
-      component.ngOnInit();
+      component.skillRating = { player: { shirtNumber: 20 } } as SkillRating;
       // rating for this player already exists
       skillRatingsService.getSkillRatingsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() =>
@@ -292,19 +357,15 @@ describe('RatingDetailComponent', () => {
 
       expect(skillRatingsService.updateSkillRating).toHaveBeenCalledTimes(0);
       expect(skillRatingsService.createSkillRating).toHaveBeenCalledTimes(0);
-      expect(skillRatingsService.removeSelectedItem).toHaveBeenCalledTimes(0);
       expect(component.loadingIndicator.isLoading).toBe(false);
-      expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
+      expect(router.navigate).toHaveBeenCalledTimes(0);
     }));
   });
 
   describe('playerChanged', () => {
     beforeEach(() => {
-      // create new rating
-      expect(skillRatingsService.getSelectedItemValue()).toEqual({});
-      component.ngOnInit();
-      // set shirt number
-      component.skillRating.player.shirtNumber = 20;
+      // created new rating
+      component.skillRating = { player: { shirtNumber: 20 } } as SkillRating;
     });
 
     it('detects that a skill rating for a player already exists', fakeAsync(() => {
@@ -324,8 +385,8 @@ describe('RatingDetailComponent', () => {
       tick(50); // delay from loading-delay-indicator
 
       expect(component.skillRating.player.shirtNumber).toBe(0);
-      expect(showAlertDialogRatingAlreadyExists).toHaveBeenCalledTimes(1);
       expect(component.loadingIndicator.isLoading).toBe(false);
+      expect(showAlertDialogRatingAlreadyExists).toHaveBeenCalledTimes(1);
     }));
 
     it('detects that a skill rating for a player not yet exists', fakeAsync(() => {
@@ -337,8 +398,8 @@ describe('RatingDetailComponent', () => {
       tick(50); // delay from loading-delay-indicator
 
       expect(component.skillRating.player.shirtNumber).toBe(20);
-      expect(showAlertDialogRatingAlreadyExists).toHaveBeenCalledTimes(0);
       expect(component.loadingIndicator.isLoading).toBe(false);
+      expect(showAlertDialogRatingAlreadyExists).toHaveBeenCalledTimes(0);
     }));
   });
 });

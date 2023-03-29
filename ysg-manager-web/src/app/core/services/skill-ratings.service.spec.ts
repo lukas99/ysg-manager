@@ -11,18 +11,45 @@ import {
   SkillRating,
   SkillRatingList,
   SkillType,
-  Team
+  Team,
+  Tournament,
+  TournamentList
 } from '../../types';
 import { SkillRatingsService } from './skill-ratings.service';
 import { SkillsService } from './skills.service';
+import { TournamentsService } from './tournaments.service';
 import DoneCallback = jest.DoneCallback;
 
 describe('SkillRatingsService', () => {
   let service: SkillRatingsService;
   let skillsService: SkillsService;
+  let tournamentService: TournamentsService;
   let httpMock: HttpTestingController;
 
+  let tournament: Tournament = {
+    name: 'YSG 2019',
+    dateDescription: '2019',
+    active: false,
+    _links: {
+      self: { href: 'tournaments/1' },
+      teams: { href: 'tournaments/1/teams' },
+      skills: { href: 'tournaments/1/skills' },
+      calculateskillrankings: {
+        href: 'tournaments/1/skills/calculate-rankings'
+      },
+      skillrankings: { href: 'tournaments/1/skill-rankings' },
+      skilltournamentrankings: {
+        href: 'tournaments/1/skill-tournament-rankings'
+      },
+      team: { href: 'teams/:teamId' },
+      skill: { href: 'skills/:skillId' },
+      skillresult: { href: 'skill-results/:resultId' },
+      skillrating: { href: 'skill-ratings/:ratingId' }
+    }
+  };
+
   let skill: Skill = {
+    id: 25,
     name: 'Best Shot',
     typeForPlayers: SkillType.POINTS,
     typeForGoaltenders: SkillType.POINTS,
@@ -72,7 +99,18 @@ describe('SkillRatingsService', () => {
     });
     service = TestBed.inject(SkillRatingsService);
     skillsService = TestBed.inject(SkillsService);
+    tournamentService = TestBed.inject(TournamentsService);
     httpMock = TestBed.inject(HttpTestingController);
+
+    const getDefaultTournament = httpMock.expectOne(
+      tournamentService['tournamentsUrl']
+    );
+    expect(getDefaultTournament.request.method).toBe('GET');
+    getDefaultTournament.flush(<TournamentList>{
+      _embedded: {
+        tournamentModelList: [tournament]
+      }
+    });
   });
 
   afterEach(() => {
@@ -81,6 +119,19 @@ describe('SkillRatingsService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should get a skill rating', (done) => {
+    const skillRating = <SkillRating>{ id: 2, score: 5 };
+
+    service.getSkillRating(2).subscribe((result) => {
+      expect(result).toBe(skillRating);
+      done();
+    });
+
+    const testRequest = httpMock.expectOne('skill-ratings/2');
+    expect(testRequest.request.method).toBe('GET');
+    testRequest.flush(skillRating);
   });
 
   describe('getSkillRatings', () => {

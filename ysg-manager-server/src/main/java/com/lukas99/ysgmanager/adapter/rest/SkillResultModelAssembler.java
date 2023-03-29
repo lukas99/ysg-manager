@@ -20,6 +20,7 @@ public class SkillResultModelAssembler extends
   public SkillResultModel toModel(SkillResult skillResult) {
     SkillResultModel model = instantiateModel(skillResult);
 
+    model.setId(skillResult.getId());
     model.setTime(skillResult.getTime());
     model.setFailures(skillResult.getFailures());
     model.setPoints(skillResult.getPoints());

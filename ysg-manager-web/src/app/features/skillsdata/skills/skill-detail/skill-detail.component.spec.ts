@@ -19,6 +19,7 @@ describe('SkillDetailComponent', () => {
 
   beforeEach(() => {
     skill = {
+      id: 40,
       name: 'Magic Transitions',
       typeForPlayers: SkillType.TIME_WITH_RATING,
       typeForGoaltenders: SkillType.TIME_WITH_RATING,

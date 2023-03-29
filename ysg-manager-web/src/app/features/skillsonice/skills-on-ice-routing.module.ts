@@ -12,20 +12,55 @@ import { RatingDetailComponent } from './skill-ratings/rating-detail.component';
 
 const routes: Routes = [
   { path: '', component: SkillSelectionComponent },
-  { path: 'teamselection', component: TeamSelectionComponent },
-  { path: 'resultlist', component: ResultListComponent },
-  { path: 'resultdetailforpoints', component: ResultDetailForPointsComponent },
-  { path: 'resultdetailfortime', component: ResultDetailForTimeComponent },
+  { path: 'skills/:skillId/teams', component: TeamSelectionComponent },
   {
-    path: 'resultdetailfortimemanual',
+    path: 'skills/:skillId/teams/:teamId/results',
+    component: ResultListComponent
+  },
+  {
+    path: 'skills/:skillId/teams/:teamId/resultdetailforpoints',
+    component: ResultDetailForPointsComponent
+  },
+  {
+    path: 'skills/:skillId/teams/:teamId/resultdetailforpoints/:resultId',
+    component: ResultDetailForPointsComponent
+  },
+  {
+    path: 'skills/:skillId/teams/:teamId/resultdetailfortime',
+    component: ResultDetailForTimeComponent
+  },
+  {
+    path: 'skills/:skillId/teams/:teamId/resultdetailfortime/:resultId',
+    component: ResultDetailForTimeComponent
+  },
+  {
+    path: 'skills/:skillId/teams/:teamId/resultdetailfortimemanual',
     component: ResultDetailForTimeManualComponent
   },
   {
-    path: 'resultdetailfortimewithpoints',
+    path: 'skills/:skillId/teams/:teamId/resultdetailfortimemanual/:resultId',
+    component: ResultDetailForTimeManualComponent
+  },
+  {
+    path: 'skills/:skillId/teams/:teamId/resultdetailfortimewithpoints',
     component: ResultDetailForTimeWithPointsComponent
   },
-  { path: 'ratinglist', component: RatingListComponent },
-  { path: 'ratingdetail', component: RatingDetailComponent }
+  {
+    path: 'skills/:skillId/teams/:teamId/resultdetailfortimewithpoints/:resultId',
+    component: ResultDetailForTimeWithPointsComponent
+  },
+  {
+    path: 'skills/:skillId/teams/:teamId/ratings',
+    component: RatingListComponent
+  },
+  {
+    path: 'skills/:skillId/teams/:teamId/ratingdetail',
+    component: RatingDetailComponent
+  },
+  {
+    path: 'skills/:skillId/teams/:teamId/ratingdetail/:ratingId',
+    component: RatingDetailComponent
+  }
 ];
 
 @NgModule({

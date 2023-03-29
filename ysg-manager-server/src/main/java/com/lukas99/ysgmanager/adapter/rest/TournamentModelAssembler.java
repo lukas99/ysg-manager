@@ -45,6 +45,20 @@ public class TournamentModelAssembler
                 .getSkillTournamentRankings(tournament.getId()))
             .withRel("skilltournamentrankings"));
 
+
+    model.add(
+        linkTo(methodOn(TeamRestController.class).getTeam(null))
+            .withRel("team").expand(":teamId"));
+    model.add(
+        linkTo(methodOn(SkillRestController.class).getSkill(null))
+            .withRel("skill").expand(":skillId"));
+    model.add(
+        linkTo(methodOn(SkillResultRestController.class).getSkillResult(null))
+            .withRel("skillresult").expand(":resultId"));
+    model.add(
+        linkTo(methodOn(SkillRatingRestController.class).getSkillRating(null))
+            .withRel("skillrating").expand(":ratingId"));
+
     return model;
   }
 

@@ -32,9 +32,9 @@ import com.lukas99.ysgmanager.domain.TeamService;
 import com.lukas99.ysgmanager.domain.TeamTemplates;
 import com.lukas99.ysgmanager.domain.Tournament;
 import com.lukas99.ysgmanager.domain.TournamentTemplates;
+import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -244,6 +244,8 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.links", empty()))
         .andExpect(jsonPath("$.content", hasSize(1)))
         .andExpect(
+            jsonPath("$.content.[0].id").value(is(magicTransitionsRating.getId().intValue())))
+        .andExpect(
             jsonPath("$.content.[0].score").value(is(SkillRatingTemplates.NINTY.doubleValue())))
         .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
@@ -273,12 +275,15 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.links", empty()))
         .andExpect(jsonPath("$.content", hasSize(2)))
-        .andExpect(jsonPath("$.content.[0].player.firstName")
-            .value(is(romanJosi.getFirstName())))
+        .andExpect(
+            jsonPath("$.content.[0].id").value(is(magicTransitionsRating1.getId().intValue())))
+        .andExpect(jsonPath("$.content.[0].player.firstName").value(is(romanJosi.getFirstName())))
         .andExpect(jsonPath("$.content.[0].player.lastName")
             .value(is(romanJosi.getLastName())))
         .andExpect(jsonPath("$.content.[0].player.team.name").value(is(ehcEngelberg.getName())))
         .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
+        .andExpect(
+            jsonPath("$.content.[1].id").value(is(magicTransitionsRating2.getId().intValue())))
         .andExpect(jsonPath("$.content.[1].player.firstName")
             .value(is(martinGerber.getFirstName())))
         .andExpect(jsonPath("$.content.[1].player.lastName")
@@ -306,8 +311,9 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.links", empty()))
         .andExpect(jsonPath("$.content", hasSize(1)))
-        .andExpect(jsonPath("$.content.[0].player.firstName")
-            .value(is(romanJosi.getFirstName())))
+        .andExpect(
+            jsonPath("$.content.[0].id").value(is(magicTransitionsRating1.getId().intValue())))
+        .andExpect(jsonPath("$.content.[0].player.firstName").value(is(romanJosi.getFirstName())))
         .andExpect(jsonPath("$.content.[0].player.lastName")
             .value(is(romanJosi.getLastName())))
         .andExpect(jsonPath("$.content.[0].player.team.name").value(is(ehcEngelberg.getName())))
@@ -328,6 +334,7 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.links", empty()))
         .andExpect(jsonPath("$.content", hasSize(1)))
+        .andExpect(jsonPath("$.content.[0].id").value(controlledJumbleRating.getId().intValue()))
         .andExpect(jsonPath("$.content.[0].score").value(SkillRatingTemplates.EIGHTY.doubleValue()))
         .andExpect(jsonPath("$.content.[0].links", hasSize(3)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
@@ -345,6 +352,7 @@ public class SkillRatingRestControllerIT extends IntegrationTest {
     restSkillRatingMockMvc.perform(get("/api/skill-ratings/{id}", magicTransitionsRating.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.id").value(magicTransitionsRating.getId().intValue()))
         .andExpect(jsonPath("$.score").value(SkillRatingTemplates.NINTY.doubleValue()))
         .andExpect(jsonPath("$.links", hasSize(3)))
         .andExpect(jsonPath("$.links.[0].rel").value(is("self")))

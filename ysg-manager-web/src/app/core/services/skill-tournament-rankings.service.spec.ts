@@ -33,7 +33,11 @@ describe('SkillTournamentRankingsService', () => {
       skillrankings: { href: 'tournaments/1/skill-rankings' },
       skilltournamentrankings: {
         href: 'tournaments/1/skill-tournament-rankings'
-      }
+      },
+      team: { href: 'teams/:teamId' },
+      skill: { href: 'skills/:skillId' },
+      skillresult: { href: 'skill-results/:resultId' },
+      skillrating: { href: 'skill-ratings/:ratingId' }
     }
   };
 

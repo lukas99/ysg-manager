@@ -1,18 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { Skill, SkillResult, SkillType, Team } from '../../../types';
-import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
-import { forkJoin } from 'rxjs';
+import { combineLatest, Subject } from 'rxjs';
 import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import { SkillsService } from '../../../core/services/skills.service';
+import { TeamsService } from '../../../core/services/teams.service';
+import { tap, flatMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ysg-result-list',
   templateUrl: './result-list.component.html',
   styleUrls: ['./result-list.component.css']
 })
-export class ResultListComponent implements OnInit {
+export class ResultListComponent implements OnInit, OnDestroy {
+  private destroy = new Subject<void>();
   selectedSkill!: Skill;
   selectedTeam!: Team;
   skillResults: SkillResult[] = [];
@@ -21,58 +24,93 @@ export class ResultListComponent implements OnInit {
   loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
-    private stateService: SkillsOnIceStateService,
+    private skillsService: SkillsService,
+    private teamsService: TeamsService,
     private skillResultsService: SkillResultsService,
     private skillTypeService: SkillTypeService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.selectedSkill = this.stateService.getSelectedSkill();
-    this.selectedTeam = this.stateService.getSelectedTeam();
-    this.showTime = this.skillTypeService.isWithTime(this.selectedSkill);
-    this.showPoints = this.skillTypeService.isWithPoints(this.selectedSkill);
+    const skillId = Number(this.route.snapshot.paramMap.get('skillId'));
+    const teamId = Number(this.route.snapshot.paramMap.get('teamId'));
 
-    forkJoin({
-      loading: this.loadingIndicator.startLoading(),
-      skillResults: this.skillResultsService.getSkillResultsBySkillAndTeam(
-        this.selectedSkill,
-        this.selectedTeam
+    combineLatest([
+      this.loadingIndicator.startLoading(),
+      this.skillsService.getSkill(skillId),
+      this.teamsService.getTeam(teamId)
+    ])
+      .pipe(
+        takeUntil(this.destroy),
+        tap(([loading, skill, team]) => {
+          this.selectedSkill = skill;
+          this.selectedTeam = team;
+          this.showTime = this.skillTypeService.isWithTime(this.selectedSkill);
+          this.showPoints = this.skillTypeService.isWithPoints(
+            this.selectedSkill
+          );
+        }),
+        flatMap(([loading, skill, team]) =>
+          this.skillResultsService.getSkillResultsBySkillAndTeam(skill, team)
+        )
       )
-    }).subscribe(({ skillResults }) => {
-      this.skillResults = skillResults;
-      this.loadingIndicator.finishLoading();
-    });
+      .subscribe((skillResults) => {
+        this.skillResults = skillResults;
+        this.loadingIndicator.finishLoading();
+      });
   }
 
   editResult(skillResult: SkillResult) {
-    this.skillResultsService.setSelectedItem(skillResult);
-    this.navigateToDetailView();
+    this.navigateToDetailView(skillResult.id);
   }
 
   createResult() {
-    this.skillResultsService.removeSelectedItem();
-    this.navigateToDetailView();
+    this.navigateToDetailView(null);
   }
 
-  private navigateToDetailView() {
+  private navigateToDetailView(skillResultId: number | null) {
     const skillTypeForPlayers = this.selectedSkill.typeForPlayers;
     const skillName = this.selectedSkill.name;
-    let url = '';
+    const navigationCommands = [
+      'skillsonice',
+      'skills',
+      this.selectedSkill.id,
+      'teams',
+      this.selectedTeam.id
+    ];
     if (
       skillTypeForPlayers === SkillType.TIME_WITH_RATING ||
       skillTypeForPlayers === SkillType.TIME
     ) {
       if ('hit the road' === skillName.toLowerCase()) {
-        url = 'skillsonice/resultdetailfortimemanual';
+        navigationCommands.push('resultdetailfortimemanual');
       } else {
-        url = 'skillsonice/resultdetailfortime';
+        navigationCommands.push('resultdetailfortime');
       }
     } else if (skillTypeForPlayers === SkillType.TIME_WITH_POINTS) {
-      url = 'skillsonice/resultdetailfortimewithpoints';
+      navigationCommands.push('resultdetailfortimewithpoints');
     } else if (skillTypeForPlayers === SkillType.POINTS) {
-      url = 'skillsonice/resultdetailforpoints';
+      navigationCommands.push('resultdetailforpoints');
     }
-    this.router.navigateByUrl(url);
+    if (skillResultId !== null) {
+      navigationCommands.push(skillResultId);
+    }
+    this.router.navigate(
+      navigationCommands,
+      { queryParamsHandling: 'merge' } // to preserve isSkillChef
+    );
+  }
+
+  navigateBack() {
+    this.router.navigate(
+      ['skillsonice', 'skills', this.selectedSkill.id, 'teams'],
+      { queryParamsHandling: 'merge' } // to preserve isSkillChef
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }

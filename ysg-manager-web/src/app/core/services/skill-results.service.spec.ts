@@ -11,24 +11,45 @@ import {
   SkillResult,
   SkillResultList,
   SkillType,
-  Team
+  Team,
+  Tournament,
+  TournamentList
 } from '../../types';
-import {
-  SkillResultsService,
-  STORAGE_KEY as SKILL_RESULTS_STORAGE_KEY
-} from './skill-results.service';
+import { SkillResultsService } from './skill-results.service';
 import { SkillsService } from './skills.service';
-import * as uuid from 'uuid';
+import { TournamentsService } from './tournaments.service';
 import DoneCallback = jest.DoneCallback;
-
-jest.mock('uuid');
 
 describe('SkillResultsService', () => {
   let service: SkillResultsService;
   let skillsService: SkillsService;
+  let tournamentService: TournamentsService;
   let httpMock: HttpTestingController;
 
+  let tournament: Tournament = {
+    name: 'YSG 2019',
+    dateDescription: '2019',
+    active: false,
+    _links: {
+      self: { href: 'tournaments/1' },
+      teams: { href: 'tournaments/1/teams' },
+      skills: { href: 'tournaments/1/skills' },
+      calculateskillrankings: {
+        href: 'tournaments/1/skills/calculate-rankings'
+      },
+      skillrankings: { href: 'tournaments/1/skill-rankings' },
+      skilltournamentrankings: {
+        href: 'tournaments/1/skill-tournament-rankings'
+      },
+      team: { href: 'teams/:teamId' },
+      skill: { href: 'skills/:skillId' },
+      skillresult: { href: 'skill-results/:resultId' },
+      skillrating: { href: 'skill-ratings/:ratingId' }
+    }
+  };
+
   let skill: Skill = {
+    id: 25,
     name: 'Best Shot',
     typeForPlayers: SkillType.POINTS,
     typeForGoaltenders: SkillType.POINTS,
@@ -68,10 +89,6 @@ describe('SkillResultsService', () => {
   };
 
   beforeEach(() => {
-    const uuidSpy = jest.spyOn(uuid, 'v4');
-    // do not use multiple mockReturnValueOnce because it's not reinitialized for each test
-    uuidSpy.mockReturnValue('1111');
-
     skillsService = <any>{
       getSkills: jest.fn(),
       getSelectedItemValue: jest.fn(() => skill)
@@ -83,18 +100,39 @@ describe('SkillResultsService', () => {
     });
     service = TestBed.inject(SkillResultsService);
     skillsService = TestBed.inject(SkillsService);
+    tournamentService = TestBed.inject(TournamentsService);
     httpMock = TestBed.inject(HttpTestingController);
 
-    localStorage.removeItem(SKILL_RESULTS_STORAGE_KEY);
+    const getDefaultTournament = httpMock.expectOne(
+      tournamentService['tournamentsUrl']
+    );
+    expect(getDefaultTournament.request.method).toBe('GET');
+    getDefaultTournament.flush(<TournamentList>{
+      _embedded: {
+        tournamentModelList: [tournament]
+      }
+    });
   });
 
   afterEach(() => {
     httpMock.verify();
-    localStorage.removeItem(SKILL_RESULTS_STORAGE_KEY);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should get a skill result', (done) => {
+    const skillResult = <SkillResult>{ id: 2, points: 5 };
+
+    service.getSkillResult(2).subscribe((result) => {
+      expect(result).toBe(skillResult);
+      done();
+    });
+
+    const testRequest = httpMock.expectOne('skill-results/2');
+    expect(testRequest.request.method).toBe('GET');
+    testRequest.flush(skillResult);
   });
 
   describe('getSkillResults', () => {

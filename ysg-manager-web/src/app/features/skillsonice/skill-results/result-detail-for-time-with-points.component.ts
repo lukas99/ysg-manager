@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ResultDetailModel } from './result-detail.model';
 
 @Component({
@@ -6,12 +6,4 @@ import { ResultDetailModel } from './result-detail.model';
   templateUrl: './result-detail-for-time-with-points.component.html',
   styleUrls: ['./result-detail-for-time-with-points.component.css']
 })
-export class ResultDetailForTimeWithPointsComponent
-  extends ResultDetailModel
-  implements OnInit
-{
-  resultExists(): boolean {
-    // all values of selected item are undefined, we use time here for testing
-    return this.skillResultsService.getSelectedItemValue().time;
-  }
-}
+export class ResultDetailForTimeWithPointsComponent extends ResultDetailModel {}

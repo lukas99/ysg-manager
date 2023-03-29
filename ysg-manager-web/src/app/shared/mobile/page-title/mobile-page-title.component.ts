@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'ysg-mobile-page-title',
@@ -7,11 +6,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./mobile-page-title.component.css']
 })
 export class MobilePageTitleComponent {
-  @Input('backRoute') backRoute!: string;
-
-  constructor(private router: Router) {}
+  @Input('disableBackLink') disableBackLink = false;
+  @Output() backClicked = new EventEmitter<any>();
 
   navigateBack() {
-    this.router.navigateByUrl(this.backRoute);
+    this.backClicked.next({});
   }
 }

@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Skill, SkillResult, SkillResultList, Team } from '../../types';
+import { flatMap, map } from 'rxjs/operators';
+import {
+  Skill,
+  SkillResult,
+  SkillResultList,
+  Team,
+  Tournament
+} from '../../types';
 import { CrudStateService } from './crud-state.service';
 import { SkillsService } from './skills.service';
 import { CrudService } from '../../shared/crud/crud-list/crud-list.component';
-
-export const STORAGE_KEY = 'ysg-skill-results';
+import { TournamentsService } from './tournaments.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +21,27 @@ export class SkillResultsService
   extends CrudStateService
   implements CrudService
 {
-  constructor(private http: HttpClient, private skillsService: SkillsService) {
+  private applicationTournament$: Observable<Tournament>;
+
+  constructor(
+    private http: HttpClient,
+    private skillsService: SkillsService,
+    private tournamentService: TournamentsService
+  ) {
     super();
+    this.applicationTournament$ =
+      this.tournamentService.getApplicationTournament();
+  }
+
+  getSkillResult(id: number): Observable<SkillResult> {
+    return this.applicationTournament$.pipe(
+      map(
+        (applicationTournament) => applicationTournament._links.skillresult.href
+      ),
+      map((templateUrl) => decodeURIComponent(templateUrl)),
+      map((decodedUrl) => decodedUrl.replace(':resultId', id.toString())),
+      flatMap((url) => this.http.get<SkillResult>(url))
+    );
   }
 
   getSkillResults(skill: Skill): Observable<SkillResult[]> {

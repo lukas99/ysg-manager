@@ -20,6 +20,7 @@ public class SkillRatingModelAssembler extends
   public SkillRatingModel toModel(SkillRating skillRating) {
     SkillRatingModel model = instantiateModel(skillRating);
 
+    model.setId(skillRating.getId());
     model.setScore(skillRating.getScore());
     model.setPlayer(new PlayerModelAssembler().toModel(skillRating.getPlayer()));
 

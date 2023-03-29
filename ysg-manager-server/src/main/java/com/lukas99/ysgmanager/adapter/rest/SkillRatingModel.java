@@ -16,6 +16,8 @@ import org.springframework.hateoas.RepresentationModel;
 @Setter
 public class SkillRatingModel extends RepresentationModel<SkillRatingModel> {
 
+  private Long id;
+
   @NotNull
   private BigDecimal score;
 

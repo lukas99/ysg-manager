@@ -13,6 +13,10 @@ export interface Tournament {
     calculateskillrankings: Link;
     skillrankings: Link;
     skilltournamentrankings: Link;
+    team: Link;
+    skill: Link;
+    skillresult: Link;
+    skillrating: Link;
   };
 }
 
@@ -61,6 +65,7 @@ export interface PlayerList {
 }
 
 export interface Skill {
+  id: number;
   typeForPlayers: SkillType;
   typeForGoaltenders: SkillType;
   tournamentRankingPlayerPosition: PlayerPosition;
@@ -95,6 +100,7 @@ export interface SkillList {
 }
 
 export interface SkillResult {
+  id: number;
   time: number;
   failures: number;
   points: number;
@@ -113,6 +119,7 @@ export interface SkillResultList {
 }
 
 export interface SkillRating {
+  id: number;
   score: number;
   player: Player;
   _links: {

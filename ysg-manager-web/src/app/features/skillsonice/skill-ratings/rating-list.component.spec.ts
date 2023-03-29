@@ -1,55 +1,60 @@
 import { RatingListComponent } from './rating-list.component';
 import { SkillRatingsService } from '../../../core/services/skill-ratings.service';
-import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { Skill, SkillRating, SkillType, Team } from '../../../types';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
 import { of } from 'rxjs';
 import { fakeAsync, tick } from '@angular/core/testing';
+import { SkillsService } from '../../../core/services/skills.service';
+import { TeamsService } from '../../../core/services/teams.service';
 
 describe('RatingListComponent', () => {
   let component: RatingListComponent;
 
-  let stateService: SkillsOnIceStateService;
+  let skillsService: SkillsService;
+  let teamsService: TeamsService;
   let skillRatingsService: SkillRatingsService;
   let router: Router;
+  let route: ActivatedRoute;
+
+  const team = { id: 11, name: 'EHC Engelberg' } as Team;
+  const skill = { id: 22, typeForPlayers: SkillType.TIME_WITH_RATING } as Skill;
+  const rating = { id: 40 } as SkillRating;
 
   beforeEach(() => {
-    stateService = new SkillsOnIceStateService();
+    skillsService = <any>{ getSkill: jest.fn(() => of(skill)) };
+    teamsService = <any>{ getTeam: jest.fn(() => of(team)) };
     skillRatingsService = <any>{
       getSkillRatingsBySkillAndTeam: jest.fn(() => of([])),
       setSelectedItem: jest.fn(),
       removeSelectedItem: jest.fn()
     };
-    router = <any>{
-      navigateByUrl: jest.fn()
+    router = <any>{ navigate: jest.fn() };
+    route = <any>{
+      snapshot: {
+        paramMap: convertToParamMap({ skillId: skill.id }),
+        queryParamMap: convertToParamMap({ isSkillChef: 'true' })
+      }
     };
 
     component = new RatingListComponent(
-      stateService,
+      skillsService,
+      teamsService,
       skillRatingsService,
       new SkillTypeService(),
-      router
+      router,
+      route
     );
   });
 
   describe('ngOnInit', () => {
-    let skill: Skill;
-    let team: Team;
-
-    beforeEach(() => {
-      skill = { typeForPlayers: SkillType.TIME_WITH_RATING } as Skill;
-
-      stateService.setSelectedSkill(skill);
-      stateService.setSelectedTeam(team);
-    });
-
-    it('sets the selected skill and team', () => {
+    it('sets the selected skill and team', fakeAsync(() => {
       component.ngOnInit();
+      tick(50); // delay from loading-delay-indicator
 
       expect(component.selectedSkill).toBe(skill);
       expect(component.selectedTeam).toBe(team);
-    });
+    }));
 
     it('should load the skill ratings', fakeAsync(() => {
       const rating1 = {
@@ -84,83 +89,134 @@ describe('RatingListComponent', () => {
   });
 
   it('should edit a rating', () => {
+    component.selectedTeam = team;
     component.selectedSkill = {
+      id: 30,
       typeForPlayers: SkillType.TIME_WITH_RATING,
       name: 'Magic Transitions'
     } as Skill;
-    const rating = {} as SkillRating;
 
     component.editRating(rating);
 
-    expect(skillRatingsService.setSelectedItem).toHaveBeenCalledWith(rating);
-    expect(router.navigateByUrl).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(
+      [
+        'skillsonice',
+        'skills',
+        30,
+        'teams',
+        team.id,
+        'ratingdetail',
+        rating.id
+      ],
+      { queryParamsHandling: 'merge' }
+    );
   });
 
   it('should create a rating', () => {
+    component.selectedTeam = team;
     component.selectedSkill = {
+      id: 30,
       typeForPlayers: SkillType.TIME_WITH_RATING,
       name: 'Magic Transitions'
     } as Skill;
 
     component.createRating();
 
-    expect(skillRatingsService.removeSelectedItem).toHaveBeenCalled();
-    expect(router.navigateByUrl).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(
+      ['skillsonice', 'skills', 30, 'teams', team.id, 'ratingdetail'],
+      { queryParamsHandling: 'merge' }
+    );
   });
 
   describe('navigateToDetailView', () => {
+    beforeEach(() => {
+      component.selectedTeam = team;
+    });
+
     it('should navigate to the page for skill Magic Transitions', () => {
       component.selectedSkill = {
+        id: 30,
         name: 'Magic Transitions',
         typeForPlayers: SkillType.TIME_WITH_RATING,
         typeForGoaltenders: SkillType.TIME_WITH_RATING
       } as Skill;
-      component['navigateToDetailView']();
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
-        'skillsonice/ratingdetail'
+      component.editRating(rating);
+      expect(router.navigate).toHaveBeenCalledWith(
+        [
+          'skillsonice',
+          'skills',
+          30,
+          'teams',
+          team.id,
+          'ratingdetail',
+          rating.id
+        ],
+        { queryParamsHandling: 'merge' }
       );
     });
 
     it('should navigate to the page for skill Best Shot', () => {
       component.selectedSkill = {
+        id: 30,
         typeForPlayers: SkillType.POINTS,
         typeForGoaltenders: SkillType.POINTS
       } as Skill;
-      component['navigateToDetailView']();
-      expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
+      component.editRating(rating);
+      expect(router.navigate).toHaveBeenCalledTimes(0);
     });
 
     it('should navigate to the page for skill Pass and Go', () => {
       component.selectedSkill = {
+        id: 30,
         name: 'Pass and Go',
         typeForPlayers: SkillType.TIME_WITH_POINTS,
         typeForGoaltenders: SkillType.TIME_WITH_POINTS
       } as Skill;
-      component['navigateToDetailView']();
-      expect(router.navigateByUrl).toHaveBeenCalledTimes(0);
+      component.editRating(rating);
+      expect(router.navigate).toHaveBeenCalledTimes(0);
     });
 
     it('should navigate to the page for skill Controlled Jumble', () => {
       component.selectedSkill = {
+        id: 30,
         name: 'Controlled Jumble',
         typeForPlayers: SkillType.TIME,
         typeForGoaltenders: SkillType.RATING
       } as Skill;
-      component['navigateToDetailView']();
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
-        'skillsonice/ratingdetail'
+      component.editRating(rating);
+      expect(router.navigate).toHaveBeenCalledWith(
+        [
+          'skillsonice',
+          'skills',
+          30,
+          'teams',
+          team.id,
+          'ratingdetail',
+          rating.id
+        ],
+        { queryParamsHandling: 'merge' }
       );
     });
 
     it('should navigate to the page for skill Hit the Road', () => {
       component.selectedSkill = {
+        id: 30,
         name: 'hit the road',
         typeForPlayers: SkillType.TIME_WITH_RATING,
         typeForGoaltenders: SkillType.RATING
       } as Skill;
-      component['navigateToDetailView']();
-      expect(router.navigateByUrl).toHaveBeenCalledWith(
-        'skillsonice/ratingdetail'
+      component.editRating(rating);
+      expect(router.navigate).toHaveBeenCalledWith(
+        [
+          'skillsonice',
+          'skills',
+          30,
+          'teams',
+          team.id,
+          'ratingdetail',
+          rating.id
+        ],
+        { queryParamsHandling: 'merge' }
       );
     });
   });

@@ -33,7 +33,11 @@ describe('CrudListAgComponent', () => {
         skills: { href: '' },
         calculateskillrankings: { href: '' },
         skillrankings: { href: '' },
-        skilltournamentrankings: { href: '' }
+        skilltournamentrankings: { href: '' },
+        team: { href: '' },
+        skill: { href: '' },
+        skillresult: { href: '' },
+        skillrating: { href: '' }
       }
     };
     tournament2 = {
@@ -46,7 +50,11 @@ describe('CrudListAgComponent', () => {
         skills: { href: '' },
         calculateskillrankings: { href: '' },
         skillrankings: { href: '' },
-        skilltournamentrankings: { href: '' }
+        skilltournamentrankings: { href: '' },
+        team: { href: '' },
+        skill: { href: '' },
+        skillresult: { href: '' },
+        skillrating: { href: '' }
       }
     };
     tournaments = [tournament1, tournament2];

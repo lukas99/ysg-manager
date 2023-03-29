@@ -5,20 +5,22 @@ import {
   SkillResult,
   Team
 } from '../../../types';
-import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
-import { Router } from '@angular/router';
-import { Directive } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Directive, OnDestroy, OnInit } from '@angular/core';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
-import { defaultIfEmpty, flatMap, map, take } from 'rxjs/operators';
-import { forkJoin, Observable } from 'rxjs';
+import { defaultIfEmpty, flatMap, map, take, takeUntil } from 'rxjs/operators';
+import { combineLatest, forkJoin, Observable, Subject } from 'rxjs';
 import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import { SkillsService } from '../../../core/services/skills.service';
+import { TeamsService } from '../../../core/services/teams.service';
 
 /**
  * Base class for skill result detail components.
  */
 @Directive()
-export abstract class ResultDetailModel {
+export abstract class ResultDetailModel implements OnInit, OnDestroy {
+  private destroy = new Subject<void>();
   selectedSkill!: Skill;
   selectedTeam!: Team;
   skillResult!: SkillResult;
@@ -28,37 +30,56 @@ export abstract class ResultDetailModel {
   loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
-    protected stateService: SkillsOnIceStateService,
+    protected skillsService: SkillsService,
+    protected teamsService: TeamsService,
     protected skillResultsService: SkillResultsService,
     protected skillTypeService: SkillTypeService,
-    protected router: Router
+    protected router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.selectedSkill = this.stateService.getSelectedSkill();
-    this.selectedTeam = this.stateService.getSelectedTeam();
+    const skillId = Number(this.route.snapshot.paramMap.get('skillId'));
+    const teamId = Number(this.route.snapshot.paramMap.get('teamId'));
 
-    let singlePossiblePosition = this.getSinglePossiblePlayerPosition(
-      this.selectedSkill
-    );
-    this.disablePlayerPositionToggle = !!singlePossiblePosition;
+    const resultId = this.route.snapshot.paramMap.get('resultId');
+    const skillResultId = resultId === null ? null : Number(resultId);
 
-    if (this.resultExists()) {
-      // empty object if no value present
-      this.skillResult = this.skillResultsService.getSelectedItemValue();
-    } else {
-      this.skillResult = {
-        time: 0,
-        failures: 0,
-        points: 0,
-        player: {
-          team: this.selectedTeam,
-          position: singlePossiblePosition || PlayerPosition.SKATER,
-          _links: { team: this.selectedTeam._links.self }
-        } as Player,
-        _links: { skill: this.selectedSkill._links.self }
-      } as SkillResult;
-    }
+    combineLatest([
+      this.loadingIndicator.startLoading(),
+      this.skillsService.getSkill(skillId),
+      this.teamsService.getTeam(teamId)
+    ])
+      .pipe(takeUntil(this.destroy))
+      .subscribe(([loading, skill, team]) => {
+        this.selectedSkill = skill;
+        this.selectedTeam = team;
+
+        let singlePossiblePosition =
+          this.getSinglePossiblePlayerPosition(skill);
+        this.disablePlayerPositionToggle = !!singlePossiblePosition;
+
+        if (skillResultId !== null) {
+          // empty object if no value present
+          this.skillResultsService
+            .getSkillResult(skillResultId)
+            .subscribe((skillResult) => (this.skillResult = skillResult));
+        } else {
+          this.skillResult = {
+            time: 0,
+            failures: 0,
+            points: 0,
+            player: {
+              team: this.selectedTeam,
+              position: singlePossiblePosition || PlayerPosition.SKATER,
+              _links: { team: this.selectedTeam._links.self }
+            } as Player,
+            _links: { skill: this.selectedSkill._links.self }
+          } as SkillResult;
+        }
+
+        this.loadingIndicator.finishLoading();
+      });
   }
 
   private getSinglePossiblePlayerPosition(skill: Skill): PlayerPosition | null {
@@ -76,11 +97,6 @@ export abstract class ResultDetailModel {
       return null;
     }
   }
-
-  /**
-   * @return Whether the current result already exists. Returns false in case it's a new result.
-   */
-  abstract resultExists(): boolean;
 
   playerChanged() {
     forkJoin({
@@ -140,9 +156,22 @@ export abstract class ResultDetailModel {
     });
   }
 
+  protected resultExists(): boolean {
+    return !!this.skillResult.id;
+  }
+
   private navigateToResultList() {
-    this.skillResultsService.removeSelectedItem();
-    this.router.navigateByUrl('skillsonice/resultlist');
+    this.router.navigate(
+      [
+        'skillsonice',
+        'skills',
+        this.selectedSkill.id,
+        'teams',
+        this.selectedTeam.id,
+        'results'
+      ],
+      { queryParamsHandling: 'merge' } // to preserve isSkillChef
+    );
   }
 
   private resultForSkillExists(): Observable<boolean> {
@@ -171,5 +200,10 @@ export abstract class ResultDetailModel {
     window.alert(
       'Ein Resultat für diesen Spieler und für diesen Skill existiert bereits!'
     );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 }

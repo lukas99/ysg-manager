@@ -27,7 +27,11 @@ describe('TeamsService', () => {
       skillrankings: { href: 'tournaments/1/skill-rankings' },
       skilltournamentrankings: {
         href: 'tournaments/1/skill-tournament-rankings'
-      }
+      },
+      team: { href: 'teams/:teamId' },
+      skill: { href: 'skills/:skillId' },
+      skillresult: { href: 'skill-results/:resultId' },
+      skillrating: { href: 'skill-ratings/:ratingId' }
     }
   };
 
@@ -59,16 +63,24 @@ describe('TeamsService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('should get a team', (done) => {
+    const team = <Team>{ id: 2, name: 'EHC Engelberg' };
+
+    service.getTeam(2).subscribe((result) => {
+      expect(result).toBe(team);
+      done();
+    });
+
+    const testRequest = httpMock.expectOne('teams/2');
+    expect(testRequest.request.method).toBe('GET');
+    testRequest.flush(team);
+  });
+
   describe('getTeams', () => {
     let teams: Team[];
 
     beforeEach(() => {
       teams = [<Team>{ name: 'EHC Engelberg' }, <Team>{ name: 'SC Bern' }];
-      localStorage.removeItem('ysg-teams');
-    });
-
-    afterEach(() => {
-      localStorage.removeItem('ysg-teams');
     });
 
     it('should get the teams of a tournament', (done: DoneCallback) => {

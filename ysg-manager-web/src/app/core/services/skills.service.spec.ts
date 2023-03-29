@@ -27,7 +27,11 @@ describe('SkillsService', () => {
       skillrankings: { href: 'tournaments/1/skill-rankings' },
       skilltournamentrankings: {
         href: 'tournaments/1/skill-tournament-rankings'
-      }
+      },
+      team: { href: 'teams/:teamId' },
+      skill: { href: 'skills/:skillId' },
+      skillresult: { href: 'skill-results/:resultId' },
+      skillrating: { href: 'skill-ratings/:ratingId' }
     }
   };
 
@@ -57,6 +61,19 @@ describe('SkillsService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should get a skill', (done) => {
+    const skill = <Skill>{ id: 2, name: 'Magic Transitions', number: 1 };
+
+    service.getSkill(2).subscribe((result) => {
+      expect(result).toBe(skill);
+      done();
+    });
+
+    const testRequest = httpMock.expectOne('skills/2');
+    expect(testRequest.request.method).toBe('GET');
+    testRequest.flush(skill);
   });
 
   describe('getSkills', () => {

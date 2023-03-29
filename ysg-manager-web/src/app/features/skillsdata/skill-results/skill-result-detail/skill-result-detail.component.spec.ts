@@ -49,6 +49,7 @@ describe('SkillResultDetailComponent', () => {
     };
     players = [player1, player2];
     skill = {
+      id: 40,
       name: 'Magic Transitions',
       typeForPlayers: SkillType.TIME_WITH_RATING,
       typeForGoaltenders: SkillType.TIME_WITH_RATING,

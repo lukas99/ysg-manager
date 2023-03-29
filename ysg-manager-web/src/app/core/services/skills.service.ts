@@ -22,6 +22,15 @@ export class SkillsService extends CrudStateService implements CrudService {
       this.tournamentService.getApplicationTournament();
   }
 
+  getSkill(id: number): Observable<Skill> {
+    return this.applicationTournament$.pipe(
+      map((applicationTournament) => applicationTournament._links.skill.href),
+      map((templateUrl) => decodeURIComponent(templateUrl)),
+      map((decodedUrl) => decodedUrl.replace(':skillId', id.toString())),
+      flatMap((url) => this.http.get<Skill>(url))
+    );
+  }
+
   getSkills(): Observable<Skill[]> {
     return this.applicationTournament$.pipe(
       flatMap((applicationTournament) =>

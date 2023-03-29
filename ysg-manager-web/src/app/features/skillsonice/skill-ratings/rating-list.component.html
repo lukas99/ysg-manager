@@ -2,7 +2,7 @@
   [showProgress]="loadingIndicator.isLoading"
 ></ysg-progress-bar>
 
-<ysg-mobile-page-title [backRoute]="'skillsonice/teamselection'">
+<ysg-mobile-page-title (backClicked)="navigateBack()" *ngIf="selectedSkill">
   {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
   {{ selectedTeam?.name }}
 </ysg-mobile-page-title>

@@ -181,6 +181,7 @@ public class SkillRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.links", empty()))
         .andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.content.[0].id").value(is(magicTransitions.getId().intValue())))
         .andExpect(jsonPath("$.content.[0].typeForPlayers").value(
             is(SkillType.TIME_WITH_RATING.toString())))
         .andExpect(jsonPath("$.content.[0].typeForGoaltenders").value(
@@ -193,6 +194,7 @@ public class SkillRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href",
             endsWith("/skills/" + magicTransitions.getId())))
+        .andExpect(jsonPath("$.content.[1].id").value(is(bestShot.getId().intValue())))
         .andExpect(jsonPath("$.content.[1].typeForPlayers").value(
             is(SkillType.POINTS.toString())))
         .andExpect(jsonPath("$.content.[1].typeForGoaltenders").value(
@@ -217,6 +219,7 @@ public class SkillRestControllerIT extends IntegrationTest {
     restSkillMockMvc.perform(get("/api/skills/{id}", magicTransitions.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(jsonPath("$.id").value(magicTransitions.getId().intValue()))
         .andExpect(jsonPath("$.typeForPlayers").value(SkillType.TIME_WITH_RATING.toString()))
         .andExpect(jsonPath("$.typeForGoaltenders").value(SkillType.TIME_WITH_RATING.toString()))
         .andExpect(

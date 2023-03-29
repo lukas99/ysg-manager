@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Link, Team, TeamList, Tournament } from '../../types';
+import { Team, TeamList, Tournament } from '../../types';
 import { flatMap, map } from 'rxjs/operators';
 import { TournamentsService } from './tournaments.service';
 import { CrudStateService } from './crud-state.service';
@@ -22,8 +22,13 @@ export class TeamsService extends CrudStateService implements CrudService {
       this.tournamentService.getApplicationTournament();
   }
 
-  getTeam(teamLink: Link): Observable<Team> {
-    return this.http.get<Team>(teamLink.href);
+  getTeam(id: number): Observable<Team> {
+    return this.applicationTournament$.pipe(
+      map((applicationTournament) => applicationTournament._links.team.href),
+      map((templateUrl) => decodeURIComponent(templateUrl)),
+      map((decodedUrl) => decodedUrl.replace(':teamId', id.toString())),
+      flatMap((url) => this.http.get<Team>(url))
+    );
   }
 
   getTeams(): Observable<Team[]> {

@@ -1,7 +1,7 @@
 <ysg-progress-bar
   [showProgress]="loadingIndicator.isLoading"
 ></ysg-progress-bar>
-<ysg-mobile-page-title [backRoute]="'skillsonice'">
+<ysg-mobile-page-title (backClicked)="navigateBack()">
   {{ 'SKILLS_ON_ICE_TEAM_SELECTION' | translate }}
 </ysg-mobile-page-title>
 <ng-container *ngFor="let team of teams">

@@ -16,6 +16,8 @@ import org.springframework.hateoas.RepresentationModel;
 @Setter
 public class SkillModel extends RepresentationModel<SkillModel> {
 
+  private Long id;
+
   @NotNull
   private SkillType typeForPlayers;
 

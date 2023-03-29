@@ -1,27 +1,29 @@
-<ysg-mobile-page-title [backRoute]="'skillsonice/ratinglist'">
+<ysg-mobile-page-title (backClicked)="cancel()">
   {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
   {{ selectedTeam?.name }}
 </ysg-mobile-page-title>
-<ysg-player
-  [(player)]="skillRating.player"
-  (playerChange)="playerChanged()"
-  [disablePositionToggle]="
-    disablePlayerPositionToggle || loadingIndicator.isLoading
-  "
-></ysg-player>
-<ysg-rating
-  [(rating)]="skillRating.score"
-  [disabled]="loadingIndicator.isLoading"
-></ysg-rating>
-<ysg-crud-buttons
-  (deleteClicked)="delete()"
-  [deleteDisabled]="loadingIndicator.isLoading || !ratingExists()"
-  (cancelClicked)="cancel()"
-  [cancelDisabled]="loadingIndicator.isLoading"
-  (saveClicked)="save()"
-  [saveDisabled]="
-    loadingIndicator.isLoading ||
-    !(skillRating.player.shirtNumber > 0 && skillRating.score > 0)
-  "
->
-</ysg-crud-buttons>
+<ng-container *ngIf="skillRating">
+  <ysg-player
+    [(player)]="skillRating.player"
+    (playerChange)="playerChanged()"
+    [disablePositionToggle]="
+      disablePlayerPositionToggle || loadingIndicator.isLoading
+    "
+  ></ysg-player>
+  <ysg-rating
+    [(rating)]="skillRating.score"
+    [disabled]="loadingIndicator.isLoading"
+  ></ysg-rating>
+  <ysg-crud-buttons
+    (deleteClicked)="delete()"
+    [deleteDisabled]="loadingIndicator.isLoading || !ratingExists()"
+    (cancelClicked)="cancel()"
+    [cancelDisabled]="loadingIndicator.isLoading"
+    (saveClicked)="save()"
+    [saveDisabled]="
+      loadingIndicator.isLoading ||
+      !(skillRating.player.shirtNumber > 0 && skillRating.score > 0)
+    "
+  >
+  </ysg-crud-buttons>
+</ng-container>

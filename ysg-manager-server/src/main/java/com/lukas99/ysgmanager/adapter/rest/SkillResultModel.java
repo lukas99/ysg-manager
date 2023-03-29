@@ -15,6 +15,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Setter
 public class SkillResultModel extends RepresentationModel<SkillResultModel> {
 
+  private Long id;
   private BigDecimal time;
   private Integer failures;
   private Integer points;

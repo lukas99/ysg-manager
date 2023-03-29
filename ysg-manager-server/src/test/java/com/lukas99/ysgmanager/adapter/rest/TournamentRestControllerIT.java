@@ -114,14 +114,14 @@ public class TournamentRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.content.[0].name").value(is(YSG_2019)))
         .andExpect(jsonPath("$.content.[0].dateDescription").value(is(YSG_2019_DATE_DESCRIPTION)))
         .andExpect(jsonPath("$.content.[0].active").value(is(true)))
-        .andExpect(jsonPath("$.content.[0].links", hasSize(6)))
+        .andExpect(jsonPath("$.content.[0].links", hasSize(10)))
         .andExpect(jsonPath("$.content.[0].links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.content.[0].links.[0].href").value(
             endsWith(ysg2019.getId().toString())))
         .andExpect(jsonPath("$.content.[1].name").value(is(YSG_2020)))
         .andExpect(jsonPath("$.content.[1].dateDescription").value(is(YSG_2020_DATE_DESCRIPTION)))
         .andExpect(jsonPath("$.content.[1].active").value(is(false)))
-        .andExpect(jsonPath("$.content.[1].links", hasSize(6)))
+        .andExpect(jsonPath("$.content.[1].links", hasSize(10)))
         .andExpect(jsonPath("$.content.[1].links.[0].rel").value(is("self"))).andExpect(
             jsonPath("$.content.[1].links.[0].href").value(endsWith(ysg2020.getId().toString())));
   }
@@ -138,7 +138,7 @@ public class TournamentRestControllerIT extends IntegrationTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.name").value(YSG_2019))
         .andExpect(jsonPath("$.dateDescription").value(YSG_2019_DATE_DESCRIPTION))
-        .andExpect(jsonPath("$.links", hasSize(6)))
+        .andExpect(jsonPath("$.links", hasSize(10)))
         .andExpect(jsonPath("$.links.[0].rel").value(is("self")))
         .andExpect(jsonPath("$.links.[0].href").value(endsWith(ysg2019.getId().toString())))
         .andExpect(jsonPath("$.links.[1].rel").value(is("teams")))
@@ -146,6 +146,10 @@ public class TournamentRestControllerIT extends IntegrationTest {
         .andExpect(jsonPath("$.links.[3].rel").value(is("calculateskillrankings")))
         .andExpect(jsonPath("$.links.[4].rel").value(is("skillrankings")))
         .andExpect(jsonPath("$.links.[5].rel").value(is("skilltournamentrankings")))
+        .andExpect(jsonPath("$.links.[6].rel").value(is("team")))
+        .andExpect(jsonPath("$.links.[7].rel").value(is("skill")))
+        .andExpect(jsonPath("$.links.[8].rel").value(is("skillresult")))
+        .andExpect(jsonPath("$.links.[9].rel").value(is("skillrating")))
     ;
   }
 
@@ -201,4 +205,5 @@ public class TournamentRestControllerIT extends IntegrationTest {
     List<Tournament> tournamentList = tournamentRepository.findAll();
     assertThat(tournamentList).hasSize(databaseSizeBeforeDelete - 1);
   }
+
 }

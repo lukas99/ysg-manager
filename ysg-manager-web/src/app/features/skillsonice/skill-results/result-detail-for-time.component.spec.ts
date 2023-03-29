@@ -1,18 +1,21 @@
 import { ResultDetailForTimeComponent } from './result-detail-for-time.component';
-import { SkillsOnIceStateService } from '../../../core/services/skills-on-ice-state.service';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
+import { SkillsService } from '../../../core/services/skills.service';
+import { TeamsService } from '../../../core/services/teams.service';
 
 describe('ResultDetailForTimeComponent', () => {
   let component: ResultDetailForTimeComponent;
 
   beforeEach(() => {
     component = new ResultDetailForTimeComponent(
-      {} as SkillsOnIceStateService,
+      {} as SkillsService,
+      {} as TeamsService,
       {} as SkillResultsService,
       {} as SkillTypeService,
-      {} as Router
+      {} as Router,
+      {} as ActivatedRoute
     );
   });
 
