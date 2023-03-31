@@ -142,7 +142,7 @@ class SkillRankingCalculationServiceIT extends IntegrationTest {
     List<SkillRanking> goaltendersRanking =
         skillRankingRepository.findBySkillOrderBySequenceAsc(goaltenders);
     assertThat(goaltendersRanking.size()).isEqualTo(19);
-    assertFirstSixRanks(goaltendersRanking, 1, 627, 2, 1, 3, 130, 4, 815, 5, 901, null, null);
+    assertFirstSixRanks(goaltendersRanking, 1, 1, 2, 627, 3, 130, 4, 540, 5, 701, 6, 501);
   }
 
   private void assertCorrectTournamentSkillResults() {
@@ -174,16 +174,16 @@ class SkillRankingCalculationServiceIT extends IntegrationTest {
     List<SkillTournamentRanking> goaltendersTotalRanking =
         skillTournamentRankingRepository.findBySkillOrderBySequenceAsc(goaltenders);
     assertThat(goaltendersTotalRanking.size()).isEqualTo(4);
-    assertFirstSixRanks(goaltendersTotalRanking, 1, 627, 2, 1, 3, 130, 4, 815, null, null, null,
-        null);
+    assertFirstSixRanks(
+        goaltendersTotalRanking, 1, 1, 2, 627, 3, 130, 4, 540, null, null, null, null);
   }
 
-  private void assertFirstSixRanks(List<? extends Ranking> ranking, Integer rank1, Integer player1,
+  private void assertFirstSixRanks(List<? extends Ranking> ranking, Integer rank1, Integer first,
       Integer rank2, Integer second, Integer rank3, Integer third, Integer rank4, Integer forth,
       Integer rank5, Integer fifth, Integer rank6, Integer sixth) {
     assertThat(ranking.get(0).getRank()).isEqualTo(rank1);
     assertThat(ranking.get(0).getSequence()).isEqualTo(1);
-    assertThat(ranking.get(0).getPlayer()).isEqualTo(helper.getPlayer(player1));
+    assertThat(ranking.get(0).getPlayer()).isEqualTo(helper.getPlayer(first));
     assertThat(ranking.get(1).getRank()).isEqualTo(rank2);
     assertThat(ranking.get(1).getSequence()).isEqualTo(2);
     assertThat(ranking.get(1).getPlayer()).isEqualTo(helper.getPlayer(second));
@@ -197,11 +197,15 @@ class SkillRankingCalculationServiceIT extends IntegrationTest {
       assertThat(ranking.get(4).getRank()).isEqualTo(rank5);
       assertThat(ranking.get(4).getSequence()).isEqualTo(5);
       assertThat(ranking.get(4).getPlayer()).isEqualTo(helper.getPlayer(fifth));
+    } else {
+      assertThat(ranking.size()).isEqualTo(4);
     }
     if (nonNull(sixth)) {
       assertThat(ranking.get(5).getRank()).isEqualTo(rank6);
       assertThat(ranking.get(5).getSequence()).isEqualTo(6);
       assertThat(ranking.get(5).getPlayer()).isEqualTo(helper.getPlayer(sixth));
+    } else {
+      assertThat(ranking.size()).isEqualTo(4);
     }
   }
 

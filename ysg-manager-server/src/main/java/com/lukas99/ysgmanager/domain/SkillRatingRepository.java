@@ -39,4 +39,11 @@ public interface SkillRatingRepository extends JpaRepository<SkillRating, Long> 
    */
   List<SkillRating> findByPlayer(Player player);
 
+  /**
+   * @param player     The player for which the ratings should be retrieved.
+   * @param tournament The tournament for which the ratings should be retrieved.
+   * @return All ratings for a player of a tournament.
+   */
+  List<SkillRating> findByPlayerAndSkillTournament(Player player, Tournament tournament);
+
 }

@@ -170,10 +170,12 @@ public class SkillRankingCalculator {
     List<Player> goaltenders = playerRepository.findByPosition(GOALTENDER);
     // create arbitrary ranking first and resort them later
     List<SkillRanking> rankings = createLinearRanking(skill, goaltenders);
-    Comparator<RankingPlus> byOverallAverageAndMaxOverallRank =
-        comparing(RankingPlus::getOverallAverageRank)
-            .thenComparing(RankingPlus::getOverallMaxRank);
-    resortRankings(tournament, rankings, byOverallAverageAndMaxOverallRank, true);
+    // the goaltender with the best average skill rating score will be ranked first
+    Comparator<RankingPlus> goaltenderOverallRankingComparator =
+        comparing(RankingPlus::getOverallAverageScore).reversed()
+            .thenComparing(RankingPlus::getOverallAverageRank)
+            .thenComparing(RankingPlus::getOverallMaxRank)        ;
+    resortRankings(tournament, rankings, goaltenderOverallRankingComparator, true);
   }
 
   private List<SkillRanking> createLinearRanking(Skill skill, List<Player> players) {
@@ -304,7 +306,7 @@ public class SkillRankingCalculator {
         .collect(Collectors.toSet());
     List<SkillRanking> equalRankedRankings = rankings.stream()
         .filter(ranking -> equalRanks.contains(ranking.getRank()))
-        .collect(Collectors.toList());
+        .toList();
     return equalRankedRankings.stream().collect(Collectors.groupingBy(
         SkillRanking::getRank, Collectors.mapping(Function.identity(), Collectors.toList())
     ));
@@ -328,6 +330,8 @@ public class SkillRankingCalculator {
     rankings.forEach(ranking -> {
       List<SkillRanking> allRankingsForPlayer =
           rankingRepository.findByPlayerAndSkillTournament(ranking.getPlayer(), tournament);
+      List<SkillRating> allRatingsForPlayer =
+          ratingRepository.findByPlayerAndSkillTournament(ranking.getPlayer(), tournament);
       // a goaltender can have no rankings in case he is part of a team but did not participate
       // in a skill (means has no rankings)
       if (!allRankingsForPlayer.isEmpty()) {
@@ -336,11 +340,14 @@ public class SkillRankingCalculator {
         Integer overallMaxRank = allRankingsForPlayer.stream()
             .max(comparing(SkillRanking::getRank))
             .map(SkillRanking::getRank).orElseThrow();
+        BigDecimal overallAverageScore = BigDecimalUtils.average(
+            allRatingsForPlayer.stream().map(SkillRating::getScore).toList());
         RankingPlus rankingPlus = RankingPlus.builder()
             .ranking(ranking).currentSequence(ranking.getSequence())
             .currentRank(ranking.getRank())
             .overallAverageRank(overallAverageRank)
             .overallMaxRank(overallMaxRank)
+            .overallAverageScore(overallAverageScore)
             .totalRankingCount(allRankingsForPlayer.size())
             .build();
         log.info(
@@ -391,6 +398,7 @@ public class SkillRankingCalculator {
     private Double overallAverageRank;
     private Integer overallMaxRank;
     private Integer totalRankingCount;
+    private BigDecimal overallAverageScore;
 
   }
 
