@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -60,10 +59,13 @@ public class SkillTournamentRankingCalculator {
             + "{} ranks for skaters and {} ranks for goaltenders will be calculated.",
         tournamentRankingsAmountForSkaterSkill, tournamentRankingsAmountForGoaltenderSkill);
     List<Skill> skills = skillRepository.findByTournament(tournament).stream()
-        .sorted(comparing(Skill::getNumber)).collect(Collectors.toList());
+        .sorted(comparing(Skill::getNumber)).toList();
     List<SkillWithRankings> skillsWithRankings = new ArrayList<>();
     List<SkillWithTournamentRankings> skillsWithTournamentRankings = new ArrayList<>();
     skills.forEach(skill -> {
+      // tournament ranking for skill 'goaltender overall' will be the same as the
+      // skill ranking of skill 'goaltender overall' because it's the only skill for
+      // position GOALTENDER (value of tournamentRankingPlayerPosition)
       skillsWithRankings.add(
           SkillWithRankings.builder()
               .skill(skill)
@@ -73,7 +75,7 @@ public class SkillTournamentRankingCalculator {
       skillsWithTournamentRankings.add(
           SkillWithTournamentRankings.builder()
               .skill(skill)
-              .skillRankings(new ArrayList<>())
+              .skillRankings(new ArrayList<>()) // will be populated later
               .build());
     });
     Set<Player> rankedPlayers = new HashSet<>();
@@ -85,7 +87,8 @@ public class SkillTournamentRankingCalculator {
 
         if (hasType(withRankings.getSkill(), NO_RESULTS, GOALTENDERS_OVERALL) // goaltenders overall
             && i > tournamentRankingsAmountForGoaltenderSkill) {
-          // fewer amount of rankings for goaltender skill than for skater skill
+          // because we need fewer amount of rankings for goaltender skill than for skater skill,
+          // do this check inside loop over tournamentRankingsAmountForSkaterSkill
           continue;
         }
 
