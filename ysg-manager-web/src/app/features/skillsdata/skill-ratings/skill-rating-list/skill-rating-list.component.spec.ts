@@ -30,7 +30,7 @@ describe('SkillRatingListComponent', () => {
 
     const options = component.crudListOptions;
 
-    expect(options.columnDefs.length).toBe(5);
+    expect(options.columnDefs.length).toBe(6);
     expect(translateService.instant).toHaveBeenCalled();
 
     expect(options.crudService).toBe(skillRatingsService);

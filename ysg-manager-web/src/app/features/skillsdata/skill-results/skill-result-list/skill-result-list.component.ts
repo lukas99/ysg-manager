@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SkillResultsService } from '../../../../core/services/skill-results.service';
-import { Team } from '../../../../types';
+import { PlayerPosition, Team } from '../../../../types';
 import { SkillsService } from '../../../../core/services/skills.service';
 import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.component';
 
@@ -49,6 +49,15 @@ export class SkillResultListComponent implements OnInit {
           )
         },
         {
+          field: 'player.position',
+          headerName: this.translateService.instant(
+            'SKILL_RANKING_PLAYER_POSITION'
+          ),
+          cellRenderer: (params) => this.translatePlayerPosition(params.value),
+          filterValueGetter: (params) =>
+            this.translatePlayerPosition(params.data.player.position)
+        },
+        {
           field: 'time',
           headerName: this.translateService.instant('SKILL_RESULT_TIME'),
           filter: 'agNumberColumnFilter'
@@ -67,5 +76,19 @@ export class SkillResultListComponent implements OnInit {
       crudService: this.skillResultsService,
       routerDetailUrl: '/skillresults/detail'
     };
+  }
+
+  private translatePlayerPosition(playerPosition: PlayerPosition) {
+    switch (playerPosition) {
+      case PlayerPosition.SKATER: {
+        return this.translateService.instant('PLAYER_POSITION_SKATER');
+      }
+      case PlayerPosition.GOALTENDER: {
+        return this.translateService.instant('PLAYER_POSITION_GOALTENDER');
+      }
+      default: {
+        return playerPosition;
+      }
+    }
   }
 }
