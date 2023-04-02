@@ -167,7 +167,8 @@ public class SkillRankingCalculator {
   }
 
   void createRankingsForGoaltendersOverall(Tournament tournament, Skill skill) {
-    List<Player> goaltenders = playerRepository.findByPosition(GOALTENDER);
+    List<Player> goaltenders =
+        playerRepository.findByPositionAndTeamTournament(GOALTENDER, tournament);
     // create arbitrary ranking first and resort them later
     List<SkillRanking> rankings = createLinearRanking(skill, goaltenders);
     // the goaltender with the best average skill rating score will be ranked first

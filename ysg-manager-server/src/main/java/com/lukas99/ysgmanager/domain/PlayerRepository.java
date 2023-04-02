@@ -27,8 +27,11 @@ public interface PlayerRepository
   List<Player> findByTeam(Team team);
 
   /**
-   * @param position The players with this position will be retrieved.
-   * @return The players with the given position.
+   * @param position   The players with this position will be retrieved.
+   * @param tournament The tournament to which the retrieved players should belong.
+   * @return The players with the given position and the given tournament.
    */
-  List<Player> findByPosition(PlayerPosition position);
+  List<Player> findByPositionAndTeamTournament(
+      PlayerPosition position, Tournament tournament);
+
 }

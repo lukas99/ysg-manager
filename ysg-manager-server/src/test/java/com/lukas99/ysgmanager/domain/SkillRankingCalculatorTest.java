@@ -255,7 +255,7 @@ class SkillRankingCalculatorTest {
 
   @Test
   public void resortRankings_forGoaltenders_withoutRankings() {
-    when(playerRepository.findByPosition(GOALTENDER))
+    when(playerRepository.findByPositionAndTeamTournament(GOALTENDER, ysg2019))
         .thenReturn(List.of(player1, player2, player3));
 
     when(rankingRepository.findByPlayerAndSkillTournament(player1, ysg2019)).thenReturn(List.of(
@@ -280,7 +280,7 @@ class SkillRankingCalculatorTest {
 
   @Test
   public void resortRankings_forGoaltenders_rankPlayersWithMoreSkillResultsBetter() {
-    when(playerRepository.findByPosition(GOALTENDER))
+    when(playerRepository.findByPositionAndTeamTournament(GOALTENDER, ysg2019))
         .thenReturn(List.of(player1, player2, player3));
 
     when(rankingRepository.findByPlayerAndSkillTournament(player1, ysg2019)).thenReturn(List.of(
