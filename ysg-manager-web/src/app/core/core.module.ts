@@ -14,6 +14,18 @@ import { SharedModule } from '../shared/shared.module';
 import { TournamentPickerComponent } from './tournament-picker/tournament-picker.component';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
+import { OKTA_CONFIG, OktaAuthModule } from '@okta/okta-angular';
+import { OktaAuth, OktaAuthOptions } from '@okta/okta-auth-js';
+import { AuthInterceptor } from './authentication/auth.interceptor';
+
+const config: OktaAuthOptions = {
+  clientId: '0oaavzvotnqkm2vUe4x6',
+  issuer: 'https://dev-280604.okta.com/oauth2/default',
+  redirectUri: window.location.origin + '/implicit/callback',
+  scopes: ['openid', 'profile'],
+  pkce: true
+};
+const oktaAuth = new OktaAuth(config);
 
 /**
  * Import HttpClient with TranslateHttpLoader to load translation files using this factory method.
@@ -41,6 +53,9 @@ export function TranslationLoaderFactory(http: HttpClient) {
     BrowserModule,
     HttpClientModule,
 
+    // okta
+    OktaAuthModule,
+
     // ngx-translate
     TranslateModule.forRoot({
       loader: {
@@ -54,8 +69,15 @@ export function TranslationLoaderFactory(http: HttpClient) {
     HotkeyModule.forRoot()
   ],
   providers: [
-    [{ provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }]
+    { provide: OKTA_CONFIG, useValue: { oktaAuth } },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }
   ],
-  exports: [LoginComponent, LanguagePickerComponent, TournamentPickerComponent]
+  exports: [
+    OktaAuthModule,
+    LoginComponent,
+    LanguagePickerComponent,
+    TournamentPickerComponent
+  ]
 })
 export class CoreModule {}

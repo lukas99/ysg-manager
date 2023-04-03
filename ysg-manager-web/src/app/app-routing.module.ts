@@ -1,23 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {
-  OKTA_CONFIG,
-  OktaAuthModule,
-  OktaCallbackComponent
-} from '@okta/okta-angular';
+import { OktaCallbackComponent } from '@okta/okta-angular';
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { AuthInterceptor } from './core/authentication/auth.interceptor';
-import { OktaAuth, OktaAuthOptions } from '@okta/okta-auth-js';
-
-const config: OktaAuthOptions = {
-  clientId: '0oaavzvotnqkm2vUe4x6',
-  issuer: 'https://dev-280604.okta.com/oauth2/default',
-  redirectUri: window.location.origin + '/implicit/callback',
-  scopes: ['openid', 'profile'],
-  pkce: true
-};
-const oktaAuth = new OktaAuth(config);
+import { HttpClientModule } from '@angular/common/http';
 
 /**
  * The available routes of this app.
@@ -107,16 +92,8 @@ export const routes: Routes = [
  */
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    OktaAuthModule,
-    RouterModule.forRoot(routes)
-  ],
-  providers: [
-    { provide: OKTA_CONFIG, useValue: { oktaAuth } },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
-  ],
+  imports: [CommonModule, HttpClientModule, RouterModule.forRoot(routes)],
+  providers: [],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

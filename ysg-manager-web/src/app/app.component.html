@@ -39,14 +39,14 @@
       <span>{{ 'NAVIGATION_HOME' | translate }}</span>
     </button>
 
-    <mat-divider *ngIf="isAuthenticated"></mat-divider>
+    <mat-divider *oktaHasAnyGroup="'ysg-admins'"></mat-divider>
 
     <button
       mat-button
       color="white"
       class="menu-button"
       routerLink="tournaments"
-      *ngIf="isAuthenticated"
+      *oktaHasAnyGroup="'ysg-admins'"
     >
       <mat-icon>calendar_month</mat-icon>
       <span>{{ 'NAVIGATION_TOURNAMENTS' | translate }}</span>
@@ -56,20 +56,22 @@
       color="white"
       class="menu-button"
       routerLink="teams"
-      *ngIf="isAuthenticated"
+      *oktaHasAnyGroup="'ysg-admins'"
     >
       <mat-icon>group</mat-icon>
       <span>{{ 'NAVIGATION_TEAMS' | translate }}</span>
     </button>
 
-    <mat-divider *ngIf="isAuthenticated"></mat-divider>
+    <mat-divider
+      *oktaHasAnyGroup="['ysg-admins', 'ysg-skill-operators']"
+    ></mat-divider>
 
     <button
       mat-button
       color="white"
       class="menu-button"
       routerLink="skills"
-      *ngIf="isAuthenticated"
+      *oktaHasAnyGroup="'ysg-admins'"
     >
       <mat-icon>assessment</mat-icon>
       <span>{{ 'NAVIGATION_SKILLS' | translate }}</span>
@@ -79,7 +81,7 @@
       color="white"
       class="menu-button"
       routerLink="skillsonice"
-      *ngIf="isAuthenticated"
+      *oktaHasAnyGroup="['ysg-admins', 'ysg-skill-operators']"
     >
       <mat-icon>sports_hockey</mat-icon>
       <span>{{ 'NAVIGATION_SKILLS_ON_ICE' | translate }}</span>
@@ -89,7 +91,7 @@
       color="white"
       class="menu-button"
       routerLink="skillrankings"
-      *ngIf="isAuthenticated"
+      *oktaHasAnyGroup="'ysg-admins'"
     >
       <mat-icon>list</mat-icon>
       <span>{{ 'NAVIGATION_SKILL_RANKINGS' | translate }}</span>
@@ -99,7 +101,7 @@
       color="white"
       class="menu-button"
       routerLink="skilltournamentrankings"
-      *ngIf="isAuthenticated"
+      *oktaHasAnyGroup="'ysg-admins'"
     >
       <mat-icon>format_list_numbered_rtl</mat-icon>
       <span>{{ 'NAVIGATION_TOURNAMENT_SKILL_RANKINGS' | translate }}</span>
