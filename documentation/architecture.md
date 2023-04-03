@@ -64,7 +64,7 @@ Which technology should be used for the application which is used to collect the
 * (-) separate artifacts needed for separate mobile OS's
 * (-) needs to be installed by transferring artifact to device (by app store or by connecting device to computer)
 
-**Desicion**: PWA. Features of PWAs are sufficient for requirements. Installation of the app is very easy, no installation of an artifact needed. App doesn't need to be pushed to app stores. I currently don't have a mac computer.
+**Decision**: PWA. Features of PWAs are sufficient for requirements. Installation of the app is very easy, no installation of an artifact needed. App doesn't need to be pushed to app stores. I currently don't have a mac computer.
 
 ### Identity Management
 How to solve identity management?
@@ -82,8 +82,8 @@ How to solve identity management?
 * (+) decreases complexity because only one container needs to be run
 * (-) non-existing know-how
 
-**Self made with Spring Security**
-* (-) error prone because it's self made
+**Self-made with Spring Security**
+* (-) error-prone because it's self-made
 * (-) Components and features (like login form or forgot password feature) need to be developed
 * (+) simple, quick to build
 * (+) ysg-manager can still be run as single container, no container orchestration needed -> cheap
