@@ -96,7 +96,7 @@ export const routes: Routes = [
       ).then((m) => m.SkillTournamentRankingsModule)
   },
   {
-    // redirect to home when a route doesn't exist (or or redirect to dedicated "not found" route)
+    // redirect to home when a route doesn't exist (or redirect to dedicated "not found" route)
     path: '**',
     redirectTo: 'home'
   }
