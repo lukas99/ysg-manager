@@ -19,6 +19,15 @@ public class SecurityConfiguration {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    /*
+      In Okta, add 2 'groups' claims (Access Token & ID Token) and add the applications to
+      the corresponding groups. See:
+      https://developer.okta.com/blog/2019/06/20/spring-preauthorize
+      Use @EnableGlobalMethodSecurity(prePostEnabled = true) in case @PreAuthorize
+      should be used on REST controller methods. Or configure it in SecurityConfiguration e.g.
+      .requestMatchers("/api/v1/secure").hasAuthority("ysg-admins")
+     */
+
     // disable CSRF protection for now, otherwise POST requests do not work with https
     http.csrf().disable();
     http.authorizeHttpRequests()
@@ -26,15 +35,6 @@ public class SecurityConfiguration {
             "/", "/index.html", "/**.js", "/**.css", "/favicon.ico",
             "/assets/images/**.jpg", "/assets/i18n/**.json").permitAll()
         .requestMatchers("manifest.webmanifest", "ngsw.json").permitAll() // to support PWA
-        .requestMatchers("/api/v1/application").permitAll()
-        /*
-          In Okta, add 2 'groups' claims (Access Token & ID Token) and add the applications to
-          the corresponding groups. See:
-          https://developer.okta.com/blog/2019/06/20/spring-preauthorize
-          Use @EnableGlobalMethodSecurity(prePostEnabled = true) in case @PreAuthorize
-          should be used on REST controller methods.
-         */
-        .requestMatchers("/api/v1/secure").hasAuthority("ysg-admins")
         .anyRequest().authenticated()
         // enable OAuth2/OIDC
         .and().oauth2Login()
