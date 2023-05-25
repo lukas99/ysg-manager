@@ -1,10 +1,13 @@
 package com.lukas99.ysgmanager;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,19 +30,20 @@ public class SecurityConfiguration {
       should be used on REST controller methods. Or configure it in SecurityConfiguration e.g.
       .requestMatchers("/api/v1/secure").hasAuthority("ysg-admins")
      */
-
-    // disable CSRF protection for now, otherwise POST requests do not work with https
-    http.csrf().disable();
-    http.authorizeHttpRequests()
-        .requestMatchers(
-            "/", "/index.html", "/**.js", "/**.css", "/favicon.ico",
-            "/assets/images/**.jpg", "/assets/i18n/**.json").permitAll()
-        .requestMatchers("manifest.webmanifest", "ngsw.json").permitAll() // to support PWA
-        .anyRequest().authenticated()
+    return http
+        // disable CSRF protection for now, otherwise POST requests do not work with https
+        .csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(customizer -> customizer
+            .requestMatchers("/", "/index.html", "/**.js", "/**.css", "/favicon.ico",
+                "/assets/images/**.jpg", "/assets/i18n/**.json").permitAll()
+            // to support PWA
+            .requestMatchers("manifest.webmanifest", "ngsw.json").permitAll()
+            .anyRequest().authenticated()
+        )
         // enable OAuth2/OIDC
-        .and().oauth2Login()
-        .and().oauth2ResourceServer().jwt();
-    return http.build();
+        .oauth2Login(withDefaults())
+        .oauth2ResourceServer(customizer -> customizer.jwt(withDefaults()))
+        .build();
   }
 
   /**
