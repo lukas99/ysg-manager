@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subject } from 'rxjs';
+import { fromEvent, merge, of, Subject } from 'rxjs';
 import { OKTA_AUTH, OktaAuthStateService } from '@okta/okta-angular';
-import { delay, filter, takeUntil } from 'rxjs/operators';
+import { delay, filter, mapTo, takeUntil } from 'rxjs/operators';
 import { AuthState, OktaAuth } from '@okta/okta-auth-js';
 import { MatSidenav } from '@angular/material/sidenav';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -18,6 +18,7 @@ import { NavigationEnd, Router } from '@angular/router';
   styleUrls: ['app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
+  isOnline = true;
   isAuthenticated = false;
   private destroy = new Subject<void>();
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
@@ -30,6 +31,19 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
+    this.initializeOnlineStatus();
+    await this.initializeAuthentication();
+  }
+
+  private initializeOnlineStatus() {
+    merge(
+      of(navigator.onLine),
+      fromEvent(window, 'online').pipe(mapTo(true)),
+      fromEvent(window, 'offline').pipe(mapTo(false))
+    ).subscribe((isOnline) => (this.isOnline = isOnline));
+  }
+
+  private async initializeAuthentication() {
     this.isAuthenticated = await this.oktaAuth.isAuthenticated();
     // Subscribe to authentication state changes
     this.authStateService.authState$
