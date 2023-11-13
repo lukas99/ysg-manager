@@ -1,8 +1,8 @@
 <h1 mat-dialog-title *ngIf="data.title">
   {{ data.title | translate }}
 </h1>
-<div mat-dialog-content *ngIf="data.text">
-  <p>{{ data.text | translate }}'</p>
+<div mat-dialog-content *ngIf="data.text" class="dialog-text">
+  <p>{{ data.text | translate }}</p>
 </div>
 <div mat-dialog-actions align="end">
   <button

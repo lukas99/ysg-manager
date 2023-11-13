@@ -8,6 +8,9 @@
   "MORE_ACTIONS": "More actions",
   "NO": "No",
   "SAVE": "Save",
+  "ERROR": "Error",
+
+  "HTTP_ERROR_MESSAGE": "Got HTTP error {{errorCode}} from '{{errorUrl}}'",
 
   "DELETE_CONFIRMATION_DIALOG_TITLE": "Delete Element",
   "DELETE_CONFIRMATION_DIALOG_TEXT": "Are you sure you want to delete '{{itemName}}'?",

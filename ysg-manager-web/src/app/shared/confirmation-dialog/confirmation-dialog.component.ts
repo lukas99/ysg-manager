@@ -14,7 +14,7 @@ export interface ConfirmationDialogData {
 @Component({
   selector: 'ysg-confirmation-dialog',
   templateUrl: './confirmation-dialog.component.html',
-  styleUrls: []
+  styleUrls: ['./confirmation-dialog.component.css']
 })
 export class ConfirmationDialogComponent {
   constructor(

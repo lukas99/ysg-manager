@@ -17,6 +17,7 @@ import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
 import { OKTA_CONFIG, OktaAuthModule } from '@okta/okta-angular';
 import { OktaAuth, OktaAuthOptions } from '@okta/okta-auth-js';
 import { AuthInterceptor } from './authentication/auth.interceptor';
+import { HttpErrorInterceptor } from './interceptors/http-error.interceptor';
 
 const config: OktaAuthOptions = {
   clientId: '0oaavzvotnqkm2vUe4x6',
@@ -71,7 +72,8 @@ export function TranslationLoaderFactory(http: HttpClient) {
   providers: [
     { provide: OKTA_CONFIG, useValue: { oktaAuth } },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: TimeoutInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true }
   ],
   exports: [
     OktaAuthModule,
