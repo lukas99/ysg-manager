@@ -3,7 +3,7 @@ Young Star Games Management System.
 
 Look at the [software architecture documentation](./documentation/architecture.md).
 
-Hint: [Markdown cheat sheet]().
+Hint: [Markdown cheat sheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 
 # ysg-manager server
 
