@@ -119,6 +119,10 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.graalvm.buildtools</groupId>
+        <artifactId>native-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
@@ -162,6 +166,23 @@
             <publish>false</publish>
           </image>
         </configuration>
+        <executions>
+          <execution>
+            <id>process-aot</id>
+            <goals>
+              <goal>process-aot</goal>
+            </goals>
+            <configuration>
+              <!-- For AOT processing we need to set dummy values to the environment variables.
+                   See https://github.com/spring-attic/spring-native/issues/1470 -->
+              <systemPropertyVariables>
+                <OKTA_CLIENT_ID>id</OKTA_CLIENT_ID>
+                <OKTA_CLIENT_SECRET>secret</OKTA_CLIENT_SECRET>
+                <OKTA_DOMAIN>okta.com</OKTA_DOMAIN>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

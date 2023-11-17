@@ -34,6 +34,19 @@
         <tests.skip>true</tests.skip>
       </properties>
     </profile>
+    <!-- spring profiles -->
+    <profile>
+      <id>spring-profile-gcloud-gcloudsql</id>
+      <properties>
+        <spring.profiles.active>gcloud,gcloudsql</spring.profiles.active>
+      </properties>
+    </profile>
+    <profile>
+      <id>spring-profile-gcloud-h2</id>
+      <properties>
+        <spring.profiles.active>gcloud,h2</spring.profiles.active>
+      </properties>
+    </profile>
   </profiles>
 
   <dependencies>
