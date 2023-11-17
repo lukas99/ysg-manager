@@ -21,6 +21,25 @@ Also see:
 * https://docs.docker.com/samples/library/postgres/
 * https://hackernoon.com/dont-install-postgres-docker-pull-postgres-bee20e200198
 
+Execute the following commands to start pgAdmin:
+
+```
+docker pull dpage/pgadmin4
+docker run --name pgadmin -e PGADMIN_DEFAULT_EMAIL=user@domain.com -e PGADMIN_DEFAULT_PASSWORD=postgres -d -p 80:80 dpage/pgadmin4
+```
+
+pgAdmin is then available in your browser under http://localhost:80.
+Then register a new server with the following configurations:
+* Name: localhost
+* Host name/address: host.docker.internal
+* Post: 5432
+* Maintenance database: postgres
+* Username: postgres
+* Password: postgres
+
+Also see:
+* https://stackoverflow.com/a/56617524
+
 ### Set Environment Variables
 In IntelliJ: Edit Run Configurations -> Spring Boot Application -> Environment variables.
 
