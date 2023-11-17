@@ -49,7 +49,7 @@ docker run -d --name ysg-server -p 443:443 -e OKTA_CLIENT_ID='<client-id>' -e OK
 ```
 
 #### Environment Variables for Okta
-Set the following environment variables for [Okta](www.okta.com) cloud service (see file `application.properties`):
+Set the following environment variables for [Okta](https://www.okta.com/) cloud service (see file `application.properties`):
 * OKTA_DOMAIN
 * OKTA_CLIENT_ID
 * OKTA_CLIENT_SECRET
