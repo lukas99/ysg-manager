@@ -29,6 +29,9 @@ docker run --name pgadmin -e PGADMIN_DEFAULT_EMAIL=user@domain.com -e PGADMIN_DE
 ```
 
 pgAdmin is then available in your browser under http://localhost:80.
+In the pgAdmin preferences dialog, set the binary path of the correct PostgreSQL version (to use backup and restore functionalities). 
+
+#### Connect to local database
 Then register a new server with the following configurations:
 * Name: localhost
 * Host name/address: host.docker.internal
@@ -39,6 +42,19 @@ Then register a new server with the following configurations:
 
 Also see:
 * https://stackoverflow.com/a/56617524
+
+#### Connect to Google Cloud SQL
+To register a new server with the Google Cloud SQL instance, use the public IP address of the Cloud SQL
+instance and the corresponding username and password.
+
+#### Backup from Google Cloud SQL with pgAdmin
+
+To back up a Google Cloud database for local use, set the following options (additional to the default settings):
+* Format: Custom
+* Do not save: Owner
+* Do not save: Privileges
+
+Then restore the exported file to a local database.
 
 ### Set Environment Variables
 In IntelliJ: Edit Run Configurations -> Spring Boot Application -> Environment variables.
