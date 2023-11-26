@@ -123,6 +123,9 @@ Manually added database flag:
 * max_connections: 100 (needed by YSG Manager server component respectively by Spring Boot)
 
 ### Cloud Run Configuration
+#### Slow Configuration
+Use this configuration when the application is seldom used.
+
 * Container image: From Artifact Registry 'us-east1-docker.pkg.dev/original-advice-370409/ysg-manager', subfolder 'ysg-manager-server'
 * Containerport: 8080
 * Ressourcen:
@@ -139,7 +142,7 @@ Manually added database flag:
 * Ausführungsumgebung: Standard
 * Autoscaling
     * Mindestanzahl von Instanzen: 0
-    * Maximale Anzahl von Instanzen: 100
+    * Maximale Anzahl von Instanzen: 50
 * Cloud SQL-Verbindung: Cloud SQL-Instanz 1 / original-advice-370409:europe-west4:ysg-db
 * Umgebungsvariablen
     * SPRING_PROFILES_ACTIVE: gcloud,gcloudsql
@@ -149,6 +152,18 @@ Manually added database flag:
     * OKTA_DOMAIN (aus Secret Manager)
     * CLOUD_SQL_INSTANCE_CONNECTION_NAME (aus Secret Manager)
     * CLOUD_SQL_INSTANCE_PASSWORD (aus Secret Manager)
+
+#### Fast Configuration
+Use this configuration when application is in use e.g. during the tournament.
+
+Differences to "Slow Configuration":
+* CPU-Zuweisungen und -Preise: CPU wird immer zugewiesen
+* Autoscaling
+  * Mindestanzahl von Instanzen: 1
+  * Maximale Anzahl von Instanzen: 50
+* Ressourcen:
+  * Speicher: 4 GiB
+* Ausführungsumgebung: Zweite Generation
 
 ## Build Container Image and Deploy it to the Google Cloud
 
