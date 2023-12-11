@@ -32,10 +32,10 @@ pgAdmin is then available in your browser under http://localhost:80.
 In the pgAdmin preferences dialog, set the binary path of the correct PostgreSQL version (to use backup and restore functionalities). 
 
 #### Connect to local database
-Then register a new server with the following configurations:
+To connect pgAdmin with the local database, add a new server in pgAdmin with the following configurations:
 * Name: localhost
 * Host name/address: host.docker.internal
-* Post: 5432
+* Port: 5432
 * Maintenance database: postgres
 * Username: postgres
 * Password: postgres
@@ -44,8 +44,12 @@ Also see:
 * https://stackoverflow.com/a/56617524
 
 #### Connect to Google Cloud SQL
-To register a new server with the Google Cloud SQL instance, use the public IP address of the Cloud SQL
-instance and the corresponding username and password.
+First, find out your public IP address, e.g. here http://ipv4.whatismyv6.com.
+Then add this address in the Google Cloud Console: SQL -> your DB -> Connections -> Network -> Authorized Networks.
+Also see https://cloud.google.com/sql/docs/postgres/connect-admin-ip
+
+To connect pgAdmin with the Google Cloud SQL instance, add a new server in pgAdmin and use the public IP address of the Cloud SQL
+instance (visible in the Google Cloud Console), port 5432 and the corresponding database username and password.
 
 #### Backup from Google Cloud SQL with pgAdmin
 
