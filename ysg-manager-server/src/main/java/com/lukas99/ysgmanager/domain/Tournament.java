@@ -1,5 +1,7 @@
 package com.lukas99.ysgmanager.domain;
 
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.SequenceGenerator;
 import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +29,8 @@ import lombok.ToString;
 public class Tournament extends Auditable {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+  @SequenceGenerator(name = "hibernate_sequence", allocationSize = 1)
   private Long id;
 
   @NotNull
