@@ -179,6 +179,11 @@
         <configuration>
           <image>
             <name>google.com/lukas99/ysg-manager/${project.artifactId}</name>
+            <env>
+              <!-- otherwise, executing the goal build-image fails with error
+                   'Builder lifecycle 'creator' failed with status code 62' -->
+              <BP_JVM_VERSION>${java.version}</BP_JVM_VERSION>
+            </env>
             <publish>false</publish>
           </image>
         </configuration>
