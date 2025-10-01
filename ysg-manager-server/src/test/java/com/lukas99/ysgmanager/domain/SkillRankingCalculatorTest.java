@@ -12,11 +12,11 @@ import static org.mockito.Mockito.when;
 
 import com.lukas99.ysgmanager.domain.SkillRankingCalculator.ResultWithRating;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -265,7 +265,7 @@ class SkillRankingCalculatorTest {
         SkillRanking.builder().player(player2).rank(3).build(),
         SkillRanking.builder().player(player2).rank(3).build()));
     when(rankingRepository.findByPlayerAndSkillTournament(player3, ysg2019))
-        .thenReturn(Lists.emptyList());
+        .thenReturn(Collections.emptyList());
 
     calculator.createRankingsForGoaltendersOverall(ysg2019, SkillTemplates.goaltenders(ysg2019));
 
