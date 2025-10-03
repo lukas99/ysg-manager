@@ -7,14 +7,15 @@
 Use [Google Code Style for Java](https://github.com/google/styleguide/blob/gh-pages/eclipse-java-google-style.xml)
 
 ### Install Docker
-Install Docker e.g. for Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows
+Install Docker e.g. for Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows.
+Or for Ubuntu/Linux: https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
 
 ### Prepare PostgreSQL
 Execute the following commands to create the databases:
 
 ```
-docker pull postgres:14.6
-docker run --name ysg-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=ysg-server -d -p 5432:5432 postgres:14.6
+docker pull postgres:18.0
+docker run --name ysg-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=ysg-server -d -p 5432:5432 postgres:18.0
 ```
 
 Also see: 
@@ -40,8 +41,17 @@ To connect pgAdmin with the local database, add a new server in pgAdmin with the
 * Username: postgres
 * Password: postgres
 
+When host.docker.internal doesn't work, run
+
+```
+docker inspect ysg-db -f "{{json .NetworkSettings.Networks }}"
+```
+
+and use the 'IPAddress' value as value for 'Host name/address' of the PgAdmin server.
+
 Also see:
 * https://stackoverflow.com/a/56617524
+* https://stackoverflow.com/questions/25540711/docker-postgres-pgadmin-local-connection
 
 #### Connect to Google Cloud SQL
 First, find out your public IP address, e.g. here http://ipv4.whatismyv6.com.
@@ -88,6 +98,8 @@ Hint: When running the application in Google Cloud, it's not needed to configure
 So, we don't need to set this environment variable in Google Cloud Run. 
 
 ### Spring Profiles
+Set a profile using VM options, e.g. `-Dspring.profiles.active=local`
+
 The following Spring profiles are available:
 * local: use a local PostgreSQL DB
 * h2: use H2 DB
