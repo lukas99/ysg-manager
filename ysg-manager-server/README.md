@@ -189,13 +189,37 @@ cd C:\Development\git\ysg-manager
 ```
 **Build** the container image:
 ```
-.\mvnw spring-boot:build-image -Pskip-tests --file .\ysg-manager-server\pom.xml
+.\mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=google.com/lukas99/ysg-manager/ysgmanager-server -Pskip-tests --file .\ysg-manager-server\pom.xml
 ```
 Alternative: Build the container image using **native** compilation (Spring profile needs to be set):
 ```
 .\mvnw spring-boot:build-image -Pnative -Pspring-profile-gcloud-gcloudsql -Pskip-tests --file .\ysg-manager-server\pom.xml
 ```
 **Tag** the image:
+```
+docker tag google.com/lukas99/ysg-manager/ysgmanager-server:latest us-east1-docker.pkg.dev/original-advice-370409/ysg-manager/ysg-manager-server:latest
+```
+Then, in the **Google Cloud Shell**, login to the Google Cloud:
+```
+gcloud auth login
+gcloud auth print-access-token
+docker login -u oauth2accesstoken -p "<access-token>" https://us-east1-docker.pkg.dev
+docker push us-east1-docker.pkg.dev/original-advice-370409/ysg-manager/ysg-manager-server:latest
+```
+Then, in the [Google Cloud Console](https://console.cloud.google.com), change to "Cloud Run", create
+a new deployment and select the previously uploaded container image from the artifact registry.
+
+## Build Container Image and Deploy it to Azure
+
+With a **command line tool**, change to the folder where the Git repository is cloned:
+```
+cd C:\Development\git\ysg-manager
+```
+**Build** the container image:
+```
+.\mvnw spring-boot:build-image -Pskip-tests --file .\ysg-manager-server\pom.xml
+```
+**Tag** the image for **Google Cloud**:
 ```
 docker tag google.com/lukas99/ysg-manager/ysgmanager-server:latest us-east1-docker.pkg.dev/original-advice-370409/ysg-manager/ysg-manager-server:latest
 ```
