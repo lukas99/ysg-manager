@@ -17,8 +17,8 @@ See [Trello board](https://trello.com/b/cTCQho4q/ysg-manager-skills) with requir
 ## Architecture Constraints
 
 ## System Scope and Context
-###Business Context
-###Technical Context
+### Business Context
+### Technical Context
 System context diagram:
 
 ![System context diagram](./ysg-manager_system-context-diagram.png "System context diagram")
@@ -104,3 +104,4 @@ Quality Scenarios
 * **Skill Chef**: Person who collects the skill results like execution time or execution failures on the ice
 * **Skill Expert**: Person who rates the skill executions and collects these results on the ice
 * **Skills Mobile App**: Mobile application used by skill chefs and skill experts to collect skill results.
+
