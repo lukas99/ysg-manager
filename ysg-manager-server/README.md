@@ -113,7 +113,7 @@ The following Spring profiles are available:
 * ysg-server: localhost:8080
 * Okta cloud service for identity and access management
 
-## Google Cloud Deployment
+## Google Cloud Infrastructure
 YSG Manager is currently deployed to the Google Cloud, the following services are in use:
 * Cloud SQL for PostgreSQL
 * Cloud Run
@@ -181,7 +181,89 @@ Differences to "Slow Configuration":
   * Speicher: 4 GiB
 * Ausführungsumgebung: Zweite Generation
 
-## Build Container Image and Deploy it to the Google Cloud
+## Azure Infrastructure
+
+Install
+* Azure CLI
+* Hashicorp Terraform
+
+Open a console and login to the Azure CLI by
+
+```
+az login
+```
+
+Set the following environment variables (replace the values from the Azure Service Principal and from Okta):
+
+```
+export ARM_CLIENT_ID="<APPID_VALUE>"
+export ARM_CLIENT_SECRET="<PASSWORD_VALUE>"
+export ARM_SUBSCRIPTION_ID="<SUBSCRIPTION_ID>"
+export ARM_TENANT_ID="<TENANT_VALUE>"
+
+export TF_VAR_okta_domain="<OKTA_DOMAIN>"
+export TF_VAR_okta_client_id="<OKTA_CLIENT_ID>"
+export TF_VAR_okta_client_secret="<OKTA_CLIENT_SECRET>"
+```
+
+Terraform scripts are located in
+- `terraform/azure/infra`: Infrastructure resources (independent of container image version)
+- `terraform/azure/app`: Container app related resources (including container image to use)
+
+In the console, execute in each of these folders (if not yet done)
+
+```
+terraform init
+```
+
+Before commiting changes to the Terraform configuration, use the following commands to format and validate it.
+
+```
+terraform fmt
+terraform validate
+```
+
+To apply infrastructure changes, run
+
+```
+terraform apply
+```
+
+Hints:
+* Don't check in the Terraform state files because they contain sensitive information.
+* Ensure that in the Azure subscription settings, under 'Resource providers', the provider 'Microsoft.App' is registered. Otherwise, the creation of the App Environment (`azurerm_container_app_environment`) fails with the error `The subscription is not registered to use namespace 'Microsoft.App`.
+
+# Build and Deployment of Container Image 
+
+## Azure
+
+With a **command line tool**, change to the folder where the Git repository is cloned:
+```
+cd C:\Development\git\ysg-manager
+```
+**Build** the container image:
+```
+.\mvnw spring-boot:build-image -Pskip-tests --file .\ysg-manager-server\pom.xml
+```
+**Tag** the image for **Azure** (adapt the version):
+```
+docker tag ysgcontainers.azurecr.io/ysg-manager/ysgmanager-server:latest ysgcontainers.azurecr.io/ysg-manager/ysgmanager-server:3.0.1-SNAPSHOT-000001
+```
+Then, login into **Azure CLI** and push the container to the container registry (adapt the version):
+```
+az login
+az acr login --name ysgcontainers
+docker push ysgcontainers.azurecr.io/ysg-manager/ysgmanager-server:3.0.1-SNAPSHOT-000001
+```
+Then, in `terraform/azure/app/main.tf`, update the container image version of the resource `azurerm_container_app.ysg_manager`
+and, in the folder `terraform/azure/app`, run
+```
+terraform fmt
+terraform validate
+terraform apply
+```
+
+## Google Cloud
 
 With a **command line tool**, change to the folder where the Git repository is cloned:
 ```
@@ -208,27 +290,3 @@ docker push us-east1-docker.pkg.dev/original-advice-370409/ysg-manager/ysg-manag
 ```
 Then, in the [Google Cloud Console](https://console.cloud.google.com), change to "Cloud Run", create
 a new deployment and select the previously uploaded container image from the artifact registry.
-
-## Build Container Image and Deploy it to Azure
-
-With a **command line tool**, change to the folder where the Git repository is cloned:
-```
-cd C:\Development\git\ysg-manager
-```
-**Build** the container image:
-```
-.\mvnw spring-boot:build-image -Pskip-tests --file .\ysg-manager-server\pom.xml
-```
-**Tag** the image for **Google Cloud**:
-```
-docker tag google.com/lukas99/ysg-manager/ysgmanager-server:latest us-east1-docker.pkg.dev/original-advice-370409/ysg-manager/ysg-manager-server:latest
-```
-Then, in the **Google Cloud Shell**, login to the Google Cloud:
-```
-gcloud auth login
-gcloud auth print-access-token
-docker login -u oauth2accesstoken -p "<access-token>" https://us-east1-docker.pkg.dev
-docker push us-east1-docker.pkg.dev/original-advice-370409/ysg-manager/ysg-manager-server:latest
-```
-Then, in the [Google Cloud Console](https://console.cloud.google.com), change to "Cloud Run", create
-a new deployment and select the previously uploaded container image from the artifact registry. 
