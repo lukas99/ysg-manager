@@ -178,7 +178,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
           <image>
-            <name>ysgcontainers.azurecr.io/ysg-manager/${project.artifactId}</name>
+            <name>lukas99/ysg-manager:${project.parent.version}</name>
             <env>
               <!-- otherwise, executing the goal build-image fails with error
                    'Builder lifecycle 'creator' failed with status code 62' -->

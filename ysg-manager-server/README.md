@@ -245,15 +245,15 @@ cd C:\Development\git\ysg-manager
 ```
 .\mvnw spring-boot:build-image -Pskip-tests --file .\ysg-manager-server\pom.xml
 ```
-**Tag** the image for **Azure** (adapt the version):
+**Tag** the image for **Azure** (adapt the version and ensure it's unique):
 ```
-docker tag ysgcontainers.azurecr.io/ysg-manager/ysgmanager-server:latest ysgcontainers.azurecr.io/ysg-manager/ysgmanager-server:3.0.1-SNAPSHOT-000001
+docker tag lukas99/ysg-manager:3.0.1-SNAPSHOT ysgcontainers.azurecr.io/ysg-manager:3.0.1-SNAPSHOT-000001
 ```
 Then, login into **Azure CLI** and push the container to the container registry (adapt the version):
 ```
 az login
 az acr login --name ysgcontainers
-docker push ysgcontainers.azurecr.io/ysg-manager/ysgmanager-server:3.0.1-SNAPSHOT-000001
+docker push ysgcontainers.azurecr.io/ysg-manager:3.0.1-SNAPSHOT-000001
 ```
 Then, in `terraform/azure/app/main.tf`, update the container image version of the resource `azurerm_container_app.ysg_manager`
 and, in the folder `terraform/azure/app`, run
@@ -271,22 +271,22 @@ cd C:\Development\git\ysg-manager
 ```
 **Build** the container image:
 ```
-.\mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=google.com/lukas99/ysg-manager/ysgmanager-server -Pskip-tests --file .\ysg-manager-server\pom.xml
+.\mvnw spring-boot:build-image -Pskip-tests --file .\ysg-manager-server\pom.xml
 ```
 Alternative: Build the container image using **native** compilation (Spring profile needs to be set):
 ```
 .\mvnw spring-boot:build-image -Pnative -Pspring-profile-gcloud-gcloudsql -Pskip-tests --file .\ysg-manager-server\pom.xml
 ```
-**Tag** the image:
+**Tag** the image (adapt the version and ensure it's unique):
 ```
-docker tag google.com/lukas99/ysg-manager/ysgmanager-server:latest us-east1-docker.pkg.dev/original-advice-370409/ysg-manager/ysg-manager-server:latest
+docker tag lukas99/ysg-manager:3.0.1-SNAPSHOT us-east1-docker.pkg.dev/original-advice-370409/ysg-manager:3.0.1-SNAPSHOT-000001
 ```
-Then, in the **Google Cloud Shell**, login to the Google Cloud:
+Then, in the **Google Cloud Shell**, login to the Google Cloud (adapt the version):
 ```
 gcloud auth login
 gcloud auth print-access-token
 docker login -u oauth2accesstoken -p "<access-token>" https://us-east1-docker.pkg.dev
-docker push us-east1-docker.pkg.dev/original-advice-370409/ysg-manager/ysg-manager-server:latest
+docker push us-east1-docker.pkg.dev/original-advice-370409/ysg-manager:3.0.1-SNAPSHOT-000001
 ```
 Then, in the [Google Cloud Console](https://console.cloud.google.com), change to "Cloud Run", create
 a new deployment and select the previously uploaded container image from the artifact registry.
