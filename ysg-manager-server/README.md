@@ -233,9 +233,9 @@ Hints:
 * Don't check in the Terraform state files because they contain sensitive information.
 * Ensure that in the Azure subscription settings, under 'Resource providers', the provider 'Microsoft.App' is registered. Otherwise, the creation of the App Environment (`azurerm_container_app_environment`) fails with the error `The subscription is not registered to use namespace 'Microsoft.App`.
 
-# Build and Deployment of Container Image 
+# Build and Deployment of Container Image
 
-## Azure
+## Build Container Image
 
 With a **command line tool**, change to the folder where the Git repository is cloned:
 ```
@@ -245,6 +245,9 @@ cd C:\Development\git\ysg-manager
 ```
 .\mvnw spring-boot:build-image -Pskip-tests --file .\ysg-manager-server\pom.xml
 ```
+
+## Deploy Image to Azure
+
 **Tag** the image for **Azure** (adapt the version and ensure it's unique):
 ```
 docker tag lukas99/ysg-manager:3.0.1-SNAPSHOT ysgcontainers.azurecr.io/ysg-manager:3.0.1-SNAPSHOT-000001
@@ -263,16 +266,8 @@ terraform validate
 terraform apply
 ```
 
-## Google Cloud
+## Deploy Image to Google Cloud
 
-With a **command line tool**, change to the folder where the Git repository is cloned:
-```
-cd C:\Development\git\ysg-manager
-```
-**Build** the container image:
-```
-.\mvnw spring-boot:build-image -Pskip-tests --file .\ysg-manager-server\pom.xml
-```
 Alternative: Build the container image using **native** compilation (Spring profile needs to be set):
 ```
 .\mvnw spring-boot:build-image -Pnative -Pspring-profile-gcloud-gcloudsql -Pskip-tests --file .\ysg-manager-server\pom.xml
