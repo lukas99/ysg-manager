@@ -154,7 +154,7 @@ Use this configuration when the application is seldom used.
 * Anfragen
     * Zeitüberschreitung bei Anfrage: 300 seconds
     * Maximale Anzahl gleichzeitiger Anfragen pro Instanz: 80
-* CPU-Zuweisungen und -Preise: CPU wird nur während der Anfrageverarbeitung zugewiesen
+* Abrechung: Anfragebasiert (CPU wird nur während der Anfrageverarbeitung zugewiesen)
 * Ausführungsumgebung: Standard
 * Autoscaling
     * Mindestanzahl von Instanzen: 0
@@ -173,7 +173,7 @@ Use this configuration when the application is seldom used.
 Use this configuration when application is in use e.g. during the tournament.
 
 Differences to "Slow Configuration":
-* CPU-Zuweisungen und -Preise: CPU wird immer zugewiesen
+* Abrechnung: Instanzbasiert (CPU wird immer zugewiesen)
 * Autoscaling
   * Mindestanzahl von Instanzen: 1
   * Maximale Anzahl von Instanzen: 50
