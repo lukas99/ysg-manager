@@ -248,22 +248,19 @@ cd C:\Development\git\ysg-manager
 
 ## Deploy Image to Azure
 
-**Tag** the image for **Azure** (adapt the version and ensure it's unique):
+**Tag** the image for **Azure**:
 ```
-docker tag lukas99/ysg-manager:3.0.1-SNAPSHOT ysgcontainers.azurecr.io/ysg-manager:3.0.1-SNAPSHOT-000001
+docker tag lukas99/ysg-manager:3.0.1-SNAPSHOT ysgcontainers.azurecr.io/ysg-manager/ysgmanager-server:latest
 ```
-Then, login into **Azure CLI** and push the container to the container registry (adapt the version):
+Then, login into **Azure CLI** and push the container to the container registry:
 ```
 az login
 az acr login --name ysgcontainers
-docker push ysgcontainers.azurecr.io/ysg-manager:3.0.1-SNAPSHOT-000001
+docker push ysgcontainers.azurecr.io/ysg-manager/ysgmanager-server:latest
 ```
-Then, in `terraform/azure/app/main.tf`, update the container image version of the resource `azurerm_container_app.ysg_manager`
-and, in the folder `terraform/azure/app`, run
+Then, using **Azure CLI**, pull and restart the container by
 ```
-terraform fmt
-terraform validate
-terraform apply
+az containerapp update --name ysg-manager --resource-group ysg-group --image ysgcontainers.azurecr.io/ysg-manager/ysgmanager-server:latest
 ```
 
 ## Deploy Image to Google Cloud
