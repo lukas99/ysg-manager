@@ -8,7 +8,7 @@ import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 
 /**
  * Use this class as base class for all integration tests.
@@ -29,10 +29,10 @@ import org.testcontainers.containers.PostgreSQLContainer;
 @ContextConfiguration(initializers = {IntegrationTest.Initializer.class})
 public abstract class IntegrationTest {
 
-  private static PostgreSQLContainer<?> sqlContainer;
+  private static final PostgreSQLContainer sqlContainer;
 
   static {
-    sqlContainer = new PostgreSQLContainer<>("postgres:14.6");
+    sqlContainer = new PostgreSQLContainer("postgres:14.6");
     sqlContainer.start();
   }
 

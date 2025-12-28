@@ -37,7 +37,7 @@ public class SecurityConfiguration {
             .requestMatchers("/", "/index.html", "/**.js", "/**.css", "/favicon.ico",
                 "/assets/images/**.jpg", "/assets/i18n/**.json").permitAll()
             // to support PWA
-            .requestMatchers("manifest.webmanifest", "ngsw.json").permitAll()
+            .requestMatchers("/manifest.webmanifest", "/ngsw.json").permitAll()
             .anyRequest().authenticated()
         )
         // enable OAuth2/OIDC

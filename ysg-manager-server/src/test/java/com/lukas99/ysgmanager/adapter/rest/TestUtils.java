@@ -1,7 +1,6 @@
 package com.lukas99.ysgmanager.adapter.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -17,8 +16,8 @@ import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.http.MediaType;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Utility class for testing REST controllers.
@@ -31,10 +30,9 @@ public final class TestUtils {
   public static final MediaType APPLICATION_JSON = MediaType.APPLICATION_JSON;
 
   private static ObjectMapper createObjectMapper() {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-    mapper.registerModule(new JavaTimeModule());
-    return mapper;
+    return JsonMapper.builder()
+        .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_EMPTY))
+        .build();
   }
 
   /**
@@ -42,9 +40,8 @@ public final class TestUtils {
    *
    * @param object the object to convert.
    * @return the JSON byte array.
-   * @throws IOException
    */
-  public static byte[] convertObjectToJsonBytes(Object object) throws IOException {
+  public static byte[] convertObjectToJsonBytes(Object object) {
     return mapper.writeValueAsBytes(object);
   }
 
@@ -100,7 +97,7 @@ public final class TestUtils {
   /**
    * Creates a matcher that matches when the examined string represents the same instant as the
    * reference datetime.
-   * 
+   *
    * @param date the reference datetime against which the examined string is checked.
    */
   public static ZonedDateTimeMatcher sameInstant(ZonedDateTime date) {
@@ -129,7 +126,7 @@ public final class TestUtils {
   /**
    * Create a {@link FormattingConversionService} which use ISO date format, instead of the
    * localized one.
-   * 
+   *
    * @return the {@link FormattingConversionService}.
    */
   public static FormattingConversionService createFormattingConversionService() {
@@ -142,7 +139,7 @@ public final class TestUtils {
 
   /**
    * Makes a an executes a query to the EntityManager finding all stored objects.
-   * 
+   *
    * @param <T> The type of objects to be searched
    * @param em The instance of the EntityManager
    * @param clss The class type to be searched
