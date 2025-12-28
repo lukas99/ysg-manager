@@ -50,7 +50,7 @@ resource "azurerm_container_app" "ysg_manager" {
   template {
     container {
       name  = "ysg-manager"
-      image = "ysgcontainers.azurecr.io/ysg-manager/ysgmanager-server:latest" # image pushed to container registry
+      image = "docker.io/lukas999/ysg-manager:latest" # image pushed to Docker Hub
       # Possible CPU - Memory combinations:
       # [cpu: 0.25, memory: 0.5Gi]; [cpu: 0.5, memory: 1.0Gi]; [cpu: 0.75, memory: 1.5Gi]; │ [cpu: 1.0, memory: 2.0Gi];
       # [cpu: 1.25, memory: 2.5Gi]; [cpu: 1.5, memory: 3.0Gi]; [cpu: 1.75, memory: 3.5Gi]; [cpu: 2.0, memory: 4.0Gi]
@@ -97,18 +97,21 @@ resource "azurerm_container_app" "ysg_manager" {
     }
   }
 
+  secret {
+    name  = "ysg-postgresql-admin-password"
+    value = data.terraform_remote_state.ysg_infra.outputs.ysg_postgresql_server_administrator_password
+  }
+
+  // uncomment when Azure Container Registry is needed
+  /*
   registry {
     server               = "ysgcontainers.azurecr.io"
     username             = data.terraform_remote_state.ysg_infra.outputs.ysg_registry_admin_username
     password_secret_name = "ysg-registry-password"
   }
-
   secret {
     name  = "ysg-registry-password"
     value = data.terraform_remote_state.ysg_infra.outputs.ysg_registry_admin_password
   }
-  secret {
-    name  = "ysg-postgresql-admin-password"
-    value = data.terraform_remote_state.ysg_infra.outputs.ysg_postgresql_server_administrator_password
-  }
+  */
 }

@@ -71,6 +71,8 @@ resource "azurerm_private_dns_zone_virtual_network_link" "ysg_postgres_zone_link
   virtual_network_id    = azurerm_virtual_network.ysg_vnet.id
 }
 
+// uncomment to create an Azure Container Registry (when image isn't pulled from Docker Hub)
+/*
 resource "azurerm_container_registry" "ysg_registry" {
   name                = "ysgcontainers"
   location            = azurerm_resource_group.ysg_group.location
@@ -78,6 +80,7 @@ resource "azurerm_container_registry" "ysg_registry" {
   sku                 = "Basic"
   admin_enabled       = true
 }
+*/
 
 resource "azurerm_postgresql_flexible_server" "ysg_postgresql" {
   name                = "ysg-postgresql-server"

@@ -10,15 +10,17 @@ output "ysg_subnet_apps_id" {
   value = azurerm_subnet.ysg_subnet_apps.id
 }
 
+// uncomment when Azure Container Registry is needed
+/*
 output "ysg_registry_admin_username" {
   value     = azurerm_container_registry.ysg_registry.admin_username
   sensitive = true
 }
-
 output "ysg_registry_admin_password" {
   value     = azurerm_container_registry.ysg_registry.admin_password
   sensitive = true
 }
+*/
 
 output "ysg_postgresql_server_fqdn" {
   value = azurerm_postgresql_flexible_server.ysg_postgresql.fqdn
