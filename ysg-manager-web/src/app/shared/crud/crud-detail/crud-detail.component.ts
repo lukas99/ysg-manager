@@ -30,7 +30,8 @@ export interface CrudDetailOptions {
 @Component({
   selector: 'ysg-crud-detail',
   templateUrl: 'crud-detail.component.html',
-  styleUrls: ['crud-detail.component.css']
+  styleUrls: ['crud-detail.component.css'],
+  standalone: false
 })
 export class CrudDetailComponent implements OnInit, AfterContentInit {
   @Input() options!: CrudDetailOptions;

@@ -15,7 +15,8 @@ interface ViewObject {
 @Component({
   selector: 'ysg-skill-detail',
   templateUrl: './skill-detail.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class SkillDetailComponent implements OnInit {
   crudDetailOptions!: CrudDetailOptions;

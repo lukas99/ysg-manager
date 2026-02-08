@@ -5,16 +5,16 @@ import {
   HttpRequest
 } from '@angular/common/http';
 import { from, Observable } from 'rxjs';
-import { OKTA_AUTH } from '@okta/okta-angular';
-import { Inject, Injectable } from '@angular/core';
-import { OktaAuth } from '@okta/okta-auth-js';
+import { Injectable } from '@angular/core';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { map, switchMap } from 'rxjs/operators';
 
 /**
  * HttpInterceptor which adds an access token to outgoing HTTP requests.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(@Inject(OKTA_AUTH) private oktaAuth: OktaAuth) {}
+  constructor(private oidcSecurityService: OidcSecurityService) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -23,24 +23,28 @@ export class AuthInterceptor implements HttpInterceptor {
     return from(this.handleAccess(request, next));
   }
 
-  private async handleAccess(
+  private handleAccess(
     request: HttpRequest<any>,
     next: HttpHandler
-  ): Promise<HttpEvent<any>> {
+  ): Observable<HttpEvent<any>> {
     // only add an access token to whitelisted origins
     const allowedOrigins = [
       'http://localhost',
-      'https://youngstargames.zapto.org',
-      'https://ysg-manager-server-24h6rzjfpa-ew.a.run.app'
+      'https://ysg-manager-server-24h6rzjfpa-ew.a.run.app',
+      'https://ysg-manager--k8vb2jl.jollydesert-aef2d738.northeurope.azurecontainerapps.io'
     ];
     if (allowedOrigins.some((url) => request.urlWithParams.includes(url))) {
-      const accessToken = await this.oktaAuth.getAccessToken();
-      request = request.clone({
-        setHeaders: {
-          Authorization: 'Bearer ' + accessToken
-        }
-      });
+      return this.oidcSecurityService.getAccessToken().pipe(
+        map((accessToken) =>
+          request.clone({
+            setHeaders: {
+              Authorization: 'Bearer ' + accessToken
+            }
+          })
+        ),
+        switchMap((clonedRequest) => next.handle(clonedRequest))
+      );
     }
-    return next.handle(request).toPromise();
+    return next.handle(request);
   }
 }

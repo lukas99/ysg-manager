@@ -39,73 +39,61 @@
       <span>{{ 'NAVIGATION_HOME' | translate }}</span>
     </button>
 
-    <mat-divider *oktaHasAnyGroup="'ysg-admins'"></mat-divider>
-
+    @if (isAdmin) {
+    <mat-divider></mat-divider>
+    } @if (isAdmin) {
     <button
       mat-button
       color="white"
       class="menu-button"
       routerLink="tournaments"
-      *oktaHasAnyGroup="'ysg-admins'"
     >
       <mat-icon>calendar_month</mat-icon>
       <span>{{ 'NAVIGATION_TOURNAMENTS' | translate }}</span>
     </button>
-    <button
-      mat-button
-      color="white"
-      class="menu-button"
-      routerLink="teams"
-      *oktaHasAnyGroup="'ysg-admins'"
-    >
+    } @if (isAdmin) {
+    <button mat-button color="white" class="menu-button" routerLink="teams">
       <mat-icon>group</mat-icon>
       <span>{{ 'NAVIGATION_TEAMS' | translate }}</span>
     </button>
-
-    <mat-divider
-      *oktaHasAnyGroup="['ysg-admins', 'ysg-skill-operators']"
-    ></mat-divider>
-
-    <button
-      mat-button
-      color="white"
-      class="menu-button"
-      routerLink="skills"
-      *oktaHasAnyGroup="'ysg-admins'"
-    >
+    } @if (isAdmin || isSkillOperator) {
+    <mat-divider></mat-divider>
+    } @if (isAdmin) {
+    <button mat-button color="white" class="menu-button" routerLink="skills">
       <mat-icon>assessment</mat-icon>
       <span>{{ 'NAVIGATION_SKILLS' | translate }}</span>
     </button>
+    } @if (isAdmin || isSkillOperator) {
     <button
       mat-button
       color="white"
       class="menu-button"
       routerLink="skillsonice"
-      *oktaHasAnyGroup="['ysg-admins', 'ysg-skill-operators']"
     >
       <mat-icon>sports_hockey</mat-icon>
       <span>{{ 'NAVIGATION_SKILLS_ON_ICE' | translate }}</span>
     </button>
+    } @if (isAdmin) {
     <button
       mat-button
       color="white"
       class="menu-button"
       routerLink="skillrankings"
-      *oktaHasAnyGroup="'ysg-admins'"
     >
       <mat-icon>list</mat-icon>
       <span>{{ 'NAVIGATION_SKILL_RANKINGS' | translate }}</span>
     </button>
+    } @if (isAdmin) {
     <button
       mat-button
       color="white"
       class="menu-button"
       routerLink="skilltournamentrankings"
-      *oktaHasAnyGroup="'ysg-admins'"
     >
       <mat-icon>format_list_numbered_rtl</mat-icon>
       <span>{{ 'NAVIGATION_TOURNAMENT_SKILL_RANKINGS' | translate }}</span>
     </button>
+    }
   </mat-sidenav>
   <mat-sidenav-content
     [ngClass]="{ 'sidenav-content-mobile': sidenav.mode === 'over' }"

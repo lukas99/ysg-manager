@@ -12,7 +12,8 @@ import {
 @Component({
   selector: 'ysg-skill-list',
   templateUrl: './skill-list.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class SkillListComponent {
   crudListOptions: CrudListOptions;
@@ -36,7 +37,7 @@ export class SkillListComponent {
         {
           field: 'typeForPlayers',
           headerName: this.translateService.instant('SKILL_TYPE_FOR_PLAYERS'),
-          cellRenderer: (params) => this.translateSkillType(params.value),
+          cellRenderer: (params: any) => this.translateSkillType(params.value),
           filterValueGetter: (params) =>
             this.translateSkillType(params.data.typeForPlayers)
         },
@@ -45,7 +46,7 @@ export class SkillListComponent {
           headerName: this.translateService.instant(
             'SKILL_TYPE_FOR_GOALTENDERS'
           ),
-          cellRenderer: (params) => this.translateSkillType(params.value),
+          cellRenderer: (params: any) => this.translateSkillType(params.value),
           filterValueGetter: (params) =>
             this.translateSkillType(params.data.typeForGoaltenders)
         },
@@ -54,7 +55,8 @@ export class SkillListComponent {
           headerName: this.translateService.instant(
             'SKILL_TOURNAMENT_RANKING_PLAYER_POSITION'
           ),
-          cellRenderer: (params) => this.translatePlayerPosition(params.value),
+          cellRenderer: (params: any) =>
+            this.translatePlayerPosition(params.value),
           filterValueGetter: (params) =>
             this.translatePlayerPosition(
               params.data.tournamentRankingPlayerPosition

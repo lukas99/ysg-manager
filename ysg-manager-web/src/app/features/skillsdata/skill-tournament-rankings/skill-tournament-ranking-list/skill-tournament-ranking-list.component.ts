@@ -7,7 +7,8 @@ import { SkillTournamentRankingsService } from '../../../../core/services/skill-
 @Component({
   selector: 'ysg-skill-tournament-ranking-list',
   templateUrl: './skill-tournament-ranking-list.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class SkillTournamentRankingListComponent {
   crudListOptions: CrudListOptions;
@@ -34,7 +35,8 @@ export class SkillTournamentRankingListComponent {
           headerName: this.translateService.instant(
             'SKILL_RANKING_PLAYER_POSITION'
           ),
-          cellRenderer: (params) => this.translatePlayerPosition(params.value),
+          cellRenderer: (params: any) =>
+            this.translatePlayerPosition(params.value),
           filterValueGetter: (params) =>
             this.translatePlayerPosition(params.data.player.position),
           sort: 'asc'

@@ -1,12 +1,8 @@
 <div>
-  <button
-    mat-button
-    *ngIf="!isAuthenticated"
-    (click)="oktaAuth.signInWithRedirect()"
-  >
+  <button mat-button *ngIf="!isAuthenticated" (click)="signIn()">
     <mat-icon>login</mat-icon>
   </button>
-  <button mat-button *ngIf="isAuthenticated" (click)="oktaAuth.signOut()">
+  <button mat-button *ngIf="isAuthenticated" (click)="signOut()">
     <mat-icon>logout</mat-icon>
   </button>
 </div>

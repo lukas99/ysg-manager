@@ -6,7 +6,8 @@ import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.com
 @Component({
   selector: 'ysg-team-list',
   templateUrl: 'team-list.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class TeamListComponent {
   crudListOptions: CrudListOptions;

@@ -46,7 +46,8 @@ export interface CrudService {
 @Component({
   selector: 'ysg-crud-list',
   templateUrl: 'crud-list.component.html',
-  styleUrls: ['crud-list.component.css']
+  styleUrls: ['crud-list.component.css'],
+  standalone: false
 })
 export class CrudListComponent implements OnInit {
   @Input() options!: CrudListOptions;

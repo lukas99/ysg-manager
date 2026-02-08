@@ -69,18 +69,6 @@ resource "azurerm_container_app" "ysg_manager" {
         name        = "SPRING_DATASOURCE_PASSWORD"
         secret_name = "ysg-postgresql-admin-password"
       }
-      env {
-        name  = "OKTA_DOMAIN"
-        value = var.okta_domain
-      }
-      env {
-        name  = "OKTA_CLIENT_ID"
-        value = var.okta_client_id
-      }
-      env {
-        name  = "OKTA_CLIENT_SECRET"
-        value = var.okta_client_secret
-      }
     }
     max_replicas = 1
   }

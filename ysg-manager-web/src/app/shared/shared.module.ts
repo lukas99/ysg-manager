@@ -78,7 +78,7 @@ import { ProgressBarComponent } from './progress-bar/progress-bar.component';
     MatProgressBarModule,
 
     // agGrid
-    AgGridModule.withComponents([])
+    AgGridModule
   ],
   exports: [
     // angular

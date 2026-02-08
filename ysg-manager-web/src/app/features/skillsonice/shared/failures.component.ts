@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 @Component({
   selector: 'ysg-failures',
   templateUrl: './failures.component.html',
-  styleUrls: ['./failures.component.css']
+  styleUrls: ['./failures.component.css'],
+  standalone: false
 })
 export class FailuresComponent {
   @Input() failures: number = 0;

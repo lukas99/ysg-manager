@@ -14,7 +14,8 @@ import { take } from 'rxjs/operators';
 @Component({
   selector: 'ysg-player',
   templateUrl: './player.component.html',
-  styleUrls: ['./player.component.css']
+  styleUrls: ['./player.component.css'],
+  standalone: false
 })
 export class PlayerComponent implements AfterViewInit {
   positionSkater: PlayerPosition = PlayerPosition.SKATER;

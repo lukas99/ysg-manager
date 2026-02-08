@@ -6,7 +6,8 @@ import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.com
 @Component({
   selector: 'ysg-tournament-list',
   templateUrl: 'tournament-list.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class TournamentListComponent {
   crudListOptions: CrudListOptions;
@@ -31,7 +32,7 @@ export class TournamentListComponent {
         {
           field: 'active',
           headerName: this.translateService.instant('TOURNAMENT_ACTIVE'),
-          cellRenderer: (params) => this.translateActive(params.value),
+          cellRenderer: (params: any) => this.translateActive(params.value),
           filterValueGetter: (params) =>
             this.translateActive(params.data.active)
         }

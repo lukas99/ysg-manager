@@ -75,14 +75,8 @@ In IntelliJ: Edit Run Configurations -> Spring Boot Application -> Environment v
 
 Or when running the container image via Docker:
 ```
-docker run -d --name ysg-server -p 443:443 -e OKTA_CLIENT_ID='<client-id>' -e OKTA_CLIENT_SECRET='<client-secret>' -e OKTA_DOMAIN='<okta-domain>'
+docker run -d --name ysg-server -p 443:443 -e'
 ```
-
-#### Environment Variables for Okta
-Set the following environment variables for [Okta](https://www.okta.com/) cloud service (see file `application.properties`):
-* OKTA_DOMAIN
-* OKTA_CLIENT_ID
-* OKTA_CLIENT_SECRET
 
 #### Environment Variables for Google Cloud
 Add the following environment variables to run the application using the Google Cloud SQL (see files `application-gcloud.properties` and `application-gcloudsql.properties`):
@@ -111,7 +105,7 @@ The following Spring profiles are available:
 
 ## Local Development
 * ysg-server: localhost:8080
-* Okta cloud service for identity and access management
+* Cloud-IAM (Keycloak) cloud service for identity and access management
 
 ## Google Cloud Infrastructure
 YSG Manager is currently deployed to the Google Cloud, the following services are in use:
@@ -163,9 +157,6 @@ Use this configuration when the application is seldom used.
 * Umgebungsvariablen
     * SPRING_PROFILES_ACTIVE: gcloud,gcloudsql
     * CLOUD_SQL_INSTANCE_USERNAME (aus Secret Manager)
-    * OKTA_CLIENT_SECRET (aus Secret Manager)
-    * OKTA_CLIENT_ID (aus Secret Manager)
-    * OKTA_DOMAIN (aus Secret Manager)
     * CLOUD_SQL_INSTANCE_CONNECTION_NAME (aus Secret Manager)
     * CLOUD_SQL_INSTANCE_PASSWORD (aus Secret Manager)
 
@@ -193,17 +184,13 @@ Open a console and login to the Azure CLI by
 az login
 ```
 
-Set the following environment variables (replace the values from the Azure Service Principal and from Okta):
+Set the following environment variables (replace the values from the Azure Service Principal):
 
 ```
 export ARM_CLIENT_ID="<APPID_VALUE>"
 export ARM_CLIENT_SECRET="<PASSWORD_VALUE>"
 export ARM_SUBSCRIPTION_ID="<SUBSCRIPTION_ID>"
 export ARM_TENANT_ID="<TENANT_VALUE>"
-
-export TF_VAR_okta_domain="<OKTA_DOMAIN>"
-export TF_VAR_okta_client_id="<OKTA_CLIENT_ID>"
-export TF_VAR_okta_client_secret="<OKTA_CLIENT_SECRET>"
 ```
 
 Terraform scripts are located in

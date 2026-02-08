@@ -6,7 +6,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 @Component({
   selector: 'ysg-more-actions',
   templateUrl: './more-actions.component.html',
-  styleUrls: ['./more-actions.component.css']
+  styleUrls: ['./more-actions.component.css'],
+  standalone: false
 })
 export class MoreActionsComponent {
   @Input() button1Text!: string;

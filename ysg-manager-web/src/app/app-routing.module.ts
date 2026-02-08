@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { OktaCallbackComponent } from '@okta/okta-angular';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -12,10 +11,6 @@ export const routes: Routes = [
     path: '',
     loadChildren: () =>
       import('./features/home/home.module').then((m) => m.HomeModule)
-  },
-  {
-    path: 'implicit/callback',
-    component: OktaCallbackComponent
   },
   {
     path: 'tournaments',

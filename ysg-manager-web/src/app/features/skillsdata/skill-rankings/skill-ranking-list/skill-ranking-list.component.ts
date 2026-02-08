@@ -7,7 +7,8 @@ import { PlayerPosition } from '../../../../types';
 @Component({
   selector: 'ysg-skill-ranking-list',
   templateUrl: './skill-ranking-list.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class SkillRankingListComponent {
   crudListOptions: CrudListOptions;
@@ -34,7 +35,8 @@ export class SkillRankingListComponent {
           headerName: this.translateService.instant(
             'SKILL_RANKING_PLAYER_POSITION'
           ),
-          cellRenderer: (params) => this.translatePlayerPosition(params.value),
+          cellRenderer: (params: any) =>
+            this.translatePlayerPosition(params.value),
           filterValueGetter: (params) =>
             this.translatePlayerPosition(params.data.player.position),
           sort: 'asc'

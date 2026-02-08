@@ -40,9 +40,11 @@ mat-sidenav-content {
   font-size: 1rem;
   margin-bottom: 3.5px;
   padding: 0 2px;
+  color: white !important;
 }
 .menu-button mat-icon {
   margin-right: 8px;
+  color: white;
 }
 
 .avatar {

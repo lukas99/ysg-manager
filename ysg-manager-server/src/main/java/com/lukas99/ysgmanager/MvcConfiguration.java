@@ -16,16 +16,12 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
   /**
    * Redirects all requests which are not handled by Spring Boot to index.html allowing Angular to
-   * take care of them.
-   * <p>
-   * This is needed for Okta's redirect URL '/implicit/callback' which needs to be handled by
-   * Angular and cannot be handled by Spring Boot (otherwise a 404 error occurs when Okta redirects
-   * back to our application after user logged in our application runs on port 8080)
+   * take care of them. Otherwise, trying to access any route other than the root page will result
+   * in a Whitelabel Error Page
    * <p>
    * Also see https://keepgrowing.in/java/springboot/make-spring-boot-surrender-routing-control-to-angular/
-   * and https://devforum.okta.com/t/404-response-after-succesfully-logging-in/6188
    *
-   * @param registry
+   * @param registry stores registrations of resource handlers for serving static resources
    */
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {

@@ -8,7 +8,8 @@ import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.com
 @Component({
   selector: 'ysg-skill-result-list',
   templateUrl: './skill-result-list.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class SkillResultListComponent implements OnInit {
   crudListOptions!: CrudListOptions;
@@ -53,7 +54,8 @@ export class SkillResultListComponent implements OnInit {
           headerName: this.translateService.instant(
             'SKILL_RANKING_PLAYER_POSITION'
           ),
-          cellRenderer: (params) => this.translatePlayerPosition(params.value),
+          cellRenderer: (params: any) =>
+            this.translatePlayerPosition(params.value),
           filterValueGetter: (params) =>
             this.translatePlayerPosition(params.data.player.position)
         },

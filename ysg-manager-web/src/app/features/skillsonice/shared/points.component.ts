@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 @Component({
   selector: 'ysg-points',
   templateUrl: './points.component.html',
-  styleUrls: ['./points.component.css']
+  styleUrls: ['./points.component.css'],
+  standalone: false
 })
 export class PointsComponent {
   @Input() allow3PointsAddition: boolean = false;

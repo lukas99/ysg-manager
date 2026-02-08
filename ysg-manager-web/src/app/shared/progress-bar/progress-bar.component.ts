@@ -6,7 +6,8 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'ysg-progress-bar',
   templateUrl: './progress-bar.component.html',
-  styleUrls: ['./progress-bar.component.css']
+  styleUrls: ['./progress-bar.component.css'],
+  standalone: false
 })
 export class ProgressBarComponent {
   @Input() showProgress = false;

@@ -12,7 +12,8 @@ import { tap, flatMap, takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'ysg-result-list',
   templateUrl: './result-list.component.html',
-  styleUrls: ['./result-list.component.css']
+  styleUrls: ['./result-list.component.css'],
+  standalone: false
 })
 export class ResultListComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();

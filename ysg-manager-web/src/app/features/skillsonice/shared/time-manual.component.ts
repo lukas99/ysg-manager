@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 @Component({
   selector: 'ysg-time-manual',
   templateUrl: './time-manual.component.html',
-  styleUrls: ['./time-manual.component.css']
+  styleUrls: ['./time-manual.component.css'],
+  standalone: false
 })
 export class TimeManualComponent implements OnInit {
   /**

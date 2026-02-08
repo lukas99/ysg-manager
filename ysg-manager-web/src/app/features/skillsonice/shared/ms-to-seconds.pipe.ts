@@ -3,7 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 /**
  * Pipe which transforms milliseconds to seconds and hundredths of seconds.
  */
-@Pipe({ name: 'msToSeconds' })
+@Pipe({ name: 'msToSeconds', standalone: false })
 export class MsToSecondsPipe implements PipeTransform {
   transform(milliseconds: number): string {
     const roundedMilliseconds = this.roundOnTen(milliseconds);

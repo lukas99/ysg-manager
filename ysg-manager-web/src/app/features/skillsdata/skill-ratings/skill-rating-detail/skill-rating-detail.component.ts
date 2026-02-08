@@ -16,7 +16,8 @@ import { SkillTypeService } from '../../../../core/services/skill-type.service';
 @Component({
   selector: 'ysg-skill-rating-detail',
   templateUrl: './skill-rating-detail.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class SkillRatingDetailComponent implements OnInit {
   crudDetailOptions: CrudDetailOptions;

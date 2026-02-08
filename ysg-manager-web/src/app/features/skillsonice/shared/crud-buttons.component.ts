@@ -4,7 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'ysg-crud-buttons',
   templateUrl: './crud-buttons.component.html',
-  styleUrls: ['./crud-buttons.component.css']
+  styleUrls: ['./crud-buttons.component.css'],
+  standalone: false
 })
 export class CrudButtonsComponent {
   @Input() deleteDisabled = false;

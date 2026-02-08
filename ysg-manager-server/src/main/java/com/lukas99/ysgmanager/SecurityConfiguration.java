@@ -22,14 +22,6 @@ public class SecurityConfiguration {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    /*
-      In Okta, add 2 'groups' claims (Access Token & ID Token) and add the applications to
-      the corresponding groups. See:
-      https://developer.okta.com/blog/2019/06/20/spring-preauthorize
-      Use @EnableGlobalMethodSecurity(prePostEnabled = true) in case @PreAuthorize
-      should be used on REST controller methods. Or configure it in SecurityConfiguration e.g.
-      .requestMatchers("/api/v1/secure").hasAuthority("ysg-admins")
-     */
     return http
         // disable CSRF protection for now, otherwise POST requests do not work with https
         .csrf(AbstractHttpConfigurer::disable)
@@ -57,12 +49,10 @@ public class SecurityConfiguration {
     var source = new UrlBasedCorsConfigurationSource();
     var config = new CorsConfiguration();
     config.setAllowCredentials(true);
-    // also add origins to auth.interceptor.ts and to Okta trusted Origins (Security -> API)
-    // at https://dev-280604-admin.okta.com/admin/access/api/trusted_origins
-    // also see: https://developer.okta.com/docs/guides/enable-cors/main/
+    // also add origins to auth.interceptor.ts and to Keycloak Client configuration
     config.addAllowedOrigin("http://localhost:4200");
-    config.addAllowedOrigin("https://youngstargames.zapto.org");
     config.addAllowedOrigin("https://ysg-manager-server-24h6rzjfpa-ew.a.run.app");
+    config.addAllowedOrigin("https://ysg-manager--k8vb2jl.jollydesert-aef2d738.northeurope.azurecontainerapps.io");
     config.addAllowedMethod("*");
     config.addAllowedHeader("*");
     source.registerCorsConfiguration("/**", config);

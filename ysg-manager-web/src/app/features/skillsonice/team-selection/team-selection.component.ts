@@ -9,7 +9,8 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'ysg-team-selection',
   templateUrl: './team-selection.component.html',
-  styleUrls: ['./team-selection.component.css']
+  styleUrls: ['./team-selection.component.css'],
+  standalone: false
 })
 export class TeamSelectionComponent implements OnInit {
   private destroy = new Subject<void>();

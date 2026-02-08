@@ -13,7 +13,8 @@ interface Position {
 @Component({
   selector: 'ysg-player-detail',
   templateUrl: 'player-detail.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class PlayerDetailComponent implements OnInit {
   crudDetailOptions!: CrudDetailOptions;

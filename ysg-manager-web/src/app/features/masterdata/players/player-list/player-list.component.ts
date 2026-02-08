@@ -8,7 +8,8 @@ import { CrudListOptions } from '../../../../shared/crud/crud-list/crud-list.com
 @Component({
   selector: 'ysg-player-list',
   templateUrl: 'player-list.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class PlayerListComponent implements OnInit {
   crudListOptions!: CrudListOptions;
@@ -27,7 +28,8 @@ export class PlayerListComponent implements OnInit {
         {
           field: 'position',
           headerName: this.translateService.instant('PLAYER_POSITION'),
-          cellRenderer: (params) => this.translatePlayerPosition(params.value),
+          cellRenderer: (params: any) =>
+            this.translatePlayerPosition(params.value),
           filterValueGetter: (params) =>
             this.translatePlayerPosition(params.data.position),
           sort: 'asc'

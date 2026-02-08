@@ -7,7 +7,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'ysg-team-detail',
   templateUrl: 'team-detail.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class TeamDetailComponent {
   crudDetailOptions: CrudDetailOptions;

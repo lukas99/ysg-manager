@@ -18,7 +18,8 @@ import { TeamsService } from '../../../core/services/teams.service';
 @Component({
   selector: 'ysg-rating-detail',
   templateUrl: './rating-detail.component.html',
-  styleUrls: ['./rating-detail.component.css']
+  styleUrls: ['./rating-detail.component.css'],
+  standalone: false
 })
 export class RatingDetailComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();

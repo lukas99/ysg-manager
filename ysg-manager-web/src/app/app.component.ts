@@ -1,11 +1,11 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { fromEvent, merge, of, Subject } from 'rxjs';
-import { OKTA_AUTH, OktaAuthStateService } from '@okta/okta-angular';
 import { delay, filter, mapTo, takeUntil } from 'rxjs/operators';
-import { AuthState, OktaAuth } from '@okta/okta-auth-js';
 import { MatSidenav } from '@angular/material/sidenav';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { NavigationEnd, Router } from '@angular/router';
+import { LoginResponse, OidcSecurityService } from 'angular-auth-oidc-client';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 /**
  * The main component of this app which contains the basic layout structure.
@@ -13,6 +13,7 @@ import { NavigationEnd, Router } from '@angular/router';
  * Side navigation inspired by https://github.com/thisiszoaib/angular-responsive-sidebar
  */
 @Component({
+  standalone: false,
   selector: 'ysg-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.css']
@@ -20,19 +21,20 @@ import { NavigationEnd, Router } from '@angular/router';
 export class AppComponent implements OnInit, OnDestroy {
   isOnline = true;
   isAuthenticated = false;
+  isAdmin = false;
+  isSkillOperator = false;
   private destroy = new Subject<void>();
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
 
   constructor(
-    private authStateService: OktaAuthStateService,
-    @Inject(OKTA_AUTH) public oktaAuth: OktaAuth,
+    private oidcSecurityService: OidcSecurityService,
     private observer: BreakpointObserver,
     private router: Router
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.initializeOnlineStatus();
-    await this.initializeAuthentication();
+    this.initializeAuthentication();
   }
 
   private initializeOnlineStatus() {
@@ -43,15 +45,21 @@ export class AppComponent implements OnInit, OnDestroy {
     ).subscribe((isOnline) => (this.isOnline = isOnline));
   }
 
-  private async initializeAuthentication() {
-    this.isAuthenticated = await this.oktaAuth.isAuthenticated();
-    // Subscribe to authentication state changes
-    this.authStateService.authState$
+  private initializeAuthentication(): void {
+    this.oidcSecurityService
+      .checkAuth()
       .pipe(takeUntil(this.destroy))
-      .subscribe(
-        (authState: AuthState) =>
-          (this.isAuthenticated = !!authState.isAuthenticated)
-      );
+      .subscribe((loginResponse: LoginResponse) => {
+        this.isAuthenticated = loginResponse.isAuthenticated;
+        const jwt = jwtDecode(loginResponse.accessToken);
+        this.isSkillOperator = this.hasRole(jwt, 'YSG_SKILL_OPERATOR');
+        this.isAdmin = this.hasRole(jwt, 'YSG_ADMIN');
+      });
+  }
+
+  private hasRole(jwt: JwtPayload, role: string): boolean {
+    const roles: string[] = (jwt as any).realm_access.roles;
+    return roles.includes(role);
   }
 
   ngOnDestroy(): void {

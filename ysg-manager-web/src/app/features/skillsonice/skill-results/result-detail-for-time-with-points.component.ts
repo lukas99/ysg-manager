@@ -4,6 +4,7 @@ import { ResultDetailModel } from './result-detail.model';
 @Component({
   selector: 'ysg-result-detail-for-time-with-points',
   templateUrl: './result-detail-for-time-with-points.component.html',
-  styleUrls: ['./result-detail-for-time-with-points.component.css']
+  styleUrls: ['./result-detail-for-time-with-points.component.css'],
+  standalone: false
 })
 export class ResultDetailForTimeWithPointsComponent extends ResultDetailModel {}

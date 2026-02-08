@@ -80,18 +80,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ysg-manager-web:build"
+            "buildTarget": "ysg-manager-web:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ysg-manager-web:build:production"
+              "buildTarget": "ysg-manager-web:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ysg-manager-web:build"
+            "buildTarget": "ysg-manager-web:build"
           }
         },
         "e2e": {

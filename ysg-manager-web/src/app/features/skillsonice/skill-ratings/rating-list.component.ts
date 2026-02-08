@@ -12,7 +12,8 @@ import { flatMap, takeUntil, tap } from 'rxjs/operators';
 @Component({
   selector: 'ysg-rating-list',
   templateUrl: './rating-list.component.html',
-  styleUrls: ['./rating-list.component.css']
+  styleUrls: ['./rating-list.component.css'],
+  standalone: false
 })
 export class RatingListComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();

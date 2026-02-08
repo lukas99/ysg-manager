@@ -190,13 +190,6 @@
             </goals>
             <configuration>
               <profiles>${spring.profiles.active}</profiles>
-              <!-- For AOT processing we need to set dummy values to the environment variables.
-                   See https://github.com/spring-attic/spring-native/issues/1470 -->
-              <systemPropertyVariables>
-                <OKTA_CLIENT_ID>id</OKTA_CLIENT_ID>
-                <OKTA_CLIENT_SECRET>secret</OKTA_CLIENT_SECRET>
-                <OKTA_DOMAIN>okta.com</OKTA_DOMAIN>
-              </systemPropertyVariables>
             </configuration>
           </execution>
         </executions>

@@ -1,36 +1,38 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { takeUntil } from 'rxjs/operators';
-import { OKTA_AUTH, OktaAuthStateService } from '@okta/okta-angular';
-import { AuthState, OktaAuth } from '@okta/okta-auth-js';
 
 @Component({
   selector: 'ysg-login',
   templateUrl: 'login.component.html',
-  styleUrls: []
+  styleUrls: [],
+  standalone: false
 })
 export class LoginComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
   private destroy = new Subject<void>();
 
-  constructor(
-    private authStateService: OktaAuthStateService,
-    @Inject(OKTA_AUTH) public oktaAuth: OktaAuth
-  ) {}
+  constructor(private oidcSecurityService: OidcSecurityService) {}
 
   async ngOnInit() {
-    this.isAuthenticated = await this.oktaAuth.isAuthenticated();
     // Subscribe to authentication state changes
-    this.authStateService.authState$
+    this.oidcSecurityService
+      .isAuthenticated()
       .pipe(takeUntil(this.destroy))
-      .subscribe(
-        (authState: AuthState) =>
-          (this.isAuthenticated = !!authState.isAuthenticated)
-      );
+      .subscribe((isAuthenticated) => (this.isAuthenticated = isAuthenticated));
   }
 
   ngOnDestroy(): void {
     this.destroy.next();
     this.destroy.complete();
+  }
+
+  protected signIn() {
+    this.oidcSecurityService.authorize();
+  }
+
+  protected signOut() {
+    this.oidcSecurityService.logoff().subscribe((_) => {});
   }
 }

@@ -4,8 +4,7 @@ describe('LanguageSelectionComponent', () => {
   let component: LanguagePickerComponent;
   let translateService = <any>{
     getBrowserLang: jest.fn(),
-    useLanguage: jest.fn(),
-    setDefaultLang: jest.fn()
+    use: jest.fn()
   };
 
   beforeEach(() => {
@@ -18,7 +17,7 @@ describe('LanguageSelectionComponent', () => {
     component.ngOnInit();
 
     expect(component.currentLanguage.name).toBe('English');
-    expect(translateService.setDefaultLang).toHaveBeenCalledWith('en');
+    expect(translateService.use).toHaveBeenCalledWith('en');
   });
 
   it('uses German if browsers language is not available', () => {
@@ -27,13 +26,13 @@ describe('LanguageSelectionComponent', () => {
     component.ngOnInit();
 
     expect(component.currentLanguage.name).toBe('Deutsch');
-    expect(translateService.setDefaultLang).toHaveBeenCalledWith('de');
+    expect(translateService.use).toHaveBeenCalledWith('de');
   });
 
   it('can use a given language', () => {
     component.useLanguage({ code: 'fr', name: 'French', abbreviation: 'FR' });
 
     expect(component.currentLanguage.name).toBe('French');
-    expect(translateService.setDefaultLang).toHaveBeenCalledWith('fr');
+    expect(translateService.use).toHaveBeenCalledWith('fr');
   });
 });

@@ -13,7 +13,8 @@ import {
 @Component({
   selector: 'ysg-stopwatch',
   templateUrl: './stopwatch.component.html',
-  styleUrls: ['./stopwatch.component.css']
+  styleUrls: ['./stopwatch.component.css'],
+  standalone: false
 })
 export class StopwatchComponent implements OnInit, OnDestroy {
   counter = 0;
