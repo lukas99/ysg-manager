@@ -89,7 +89,7 @@ export class SkillDetailComponent implements OnInit {
           Validators.required
         ],
         number: [''],
-        _links: ['']
+        _links: []
       }),
       crudService: this.skillsService,
       routerListUrl: '/skills'

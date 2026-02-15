@@ -21,7 +21,7 @@ export class TeamDetailComponent {
     this.crudDetailOptions = {
       form: this.formBuilder.group({
         name: ['', Validators.required],
-        _links: ['']
+        _links: []
       }),
       crudService: teamsService,
       routerListUrl: '/teams'

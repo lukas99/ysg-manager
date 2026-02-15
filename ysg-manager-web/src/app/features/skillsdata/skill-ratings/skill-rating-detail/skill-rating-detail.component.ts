@@ -43,7 +43,7 @@ export class SkillRatingDetailComponent implements OnInit {
         player: new UntypedFormControl(),
         // fields also needed for model
         score: [{ value: '' }, Validators.required],
-        _links: ['']
+        _links: []
       }),
       crudService: skillRatingsService,
       routerListUrl: '/skillratings'

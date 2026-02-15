@@ -51,7 +51,7 @@ export class SkillResultDetailComponent implements OnInit {
           this.isWithPoints() ? Validators.required : Validators.nullValidator
         ],
         failures: [''],
-        _links: ['']
+        _links: []
       }),
       crudService: skillResultsService,
       routerListUrl: '/skillresults'

@@ -44,7 +44,7 @@ export class PlayerDetailComponent implements OnInit {
         lastName: [''],
         shirtNumber: ['', Validators.required],
         position: [PlayerPosition.SKATER, Validators.required],
-        _links: ['']
+        _links: []
       }),
       crudService: this.playersService,
       routerListUrl: '/players'

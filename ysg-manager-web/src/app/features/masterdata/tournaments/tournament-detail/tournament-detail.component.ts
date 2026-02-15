@@ -21,7 +21,7 @@ export class TournamentDetailComponent {
         name: ['', Validators.required],
         dateDescription: [''],
         active: [false],
-        _links: ['']
+        _links: []
       }),
       crudService: tournamentsService,
       routerListUrl: '/tournaments'
