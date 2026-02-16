@@ -75,12 +75,11 @@ How to solve identity management?
 * (-) increased complexity because it needs to be run as separate container
 * (-) higher costs because multiple containers need to be run
 
-**Okta**
-* (+) popular, state-of-the-art identity and access management cloud service
+**Cloud-IAM**
+* (+) state-of-the-art identity and access management cloud service based on Keycloak
 * (+) free for small projects
-* (+) well documented
+* (+) existing know-how
 * (+) decreases complexity because only one container needs to be run
-* (-) non-existing know-how
 
 **Self-made with Spring Security**
 * (-) error-prone because it's self-made
@@ -88,7 +87,7 @@ How to solve identity management?
 * (+) simple, quick to build
 * (+) ysg-manager can still be run as single container, no container orchestration needed -> cheap
 
-**Decision**: Okta. Popular and well documented. No additional container needed because it's a cloud service.
+**Decision**: Cloud-IAM. Cloud service based on Keycloak for which know-how already exists. No additional container needed because it's a cloud service.
 
 ## Quality Requirements
 Quality Tree
