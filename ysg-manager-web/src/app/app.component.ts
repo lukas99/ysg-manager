@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { fromEvent, merge, of, Subject } from 'rxjs';
 import { delay, filter, mapTo, takeUntil } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -18,7 +24,7 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   isOnline = true;
   isAuthenticated = false;
   isAdmin = false;

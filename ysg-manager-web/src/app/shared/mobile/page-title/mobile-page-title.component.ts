@@ -7,7 +7,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   standalone: false
 })
 export class MobilePageTitleComponent {
-  @Input('disableBackLink') disableBackLink = false;
+  @Input() disableBackLink = false;
   @Output() backClicked = new EventEmitter<any>();
 
   navigateBack() {

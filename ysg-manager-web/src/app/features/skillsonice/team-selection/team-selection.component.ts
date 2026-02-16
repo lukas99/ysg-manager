@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Team } from '../../../types';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamsService } from '../../../core/services/teams.service';
@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./team-selection.component.css'],
   standalone: false
 })
-export class TeamSelectionComponent implements OnInit {
+export class TeamSelectionComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();
   selectedSkillId: string | null = null;
   isSkillChef: boolean = false;

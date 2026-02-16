@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SkillsService } from '../../../core/services/skills.service';
 import { combineLatest, Subject } from 'rxjs';
 import { Skill, SkillType } from '../../../types';
@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./skill-selection.component.css'],
   standalone: false
 })
-export class SkillSelectionComponent implements OnInit {
+export class SkillSelectionComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();
   skills: Skill[] = [];
   isSkillChef: boolean = false;

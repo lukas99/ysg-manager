@@ -147,7 +147,6 @@ export interface Ranking {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SkillRanking extends Ranking {}
 
 export interface SkillRankingList {
@@ -156,7 +155,6 @@ export interface SkillRankingList {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SkillTournamentRanking extends Ranking {}
 
 export interface SkillTournamentRankingList {
