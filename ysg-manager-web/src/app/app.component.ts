@@ -57,9 +57,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroy))
       .subscribe((loginResponse: LoginResponse) => {
         this.isAuthenticated = loginResponse.isAuthenticated;
-        const jwt = jwtDecode(loginResponse.accessToken);
-        this.isSkillOperator = this.hasRole(jwt, 'YSG_SKILL_OPERATOR');
-        this.isAdmin = this.hasRole(jwt, 'YSG_ADMIN');
+        if (this.isAuthenticated) {
+          const jwt = jwtDecode(loginResponse.accessToken);
+          this.isSkillOperator = this.hasRole(jwt, 'YSG_SKILL_OPERATOR');
+          this.isAdmin = this.hasRole(jwt, 'YSG_ADMIN');
+        }
       });
   }
 
