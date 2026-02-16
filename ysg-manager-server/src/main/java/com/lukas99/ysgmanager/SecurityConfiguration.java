@@ -27,7 +27,7 @@ public class SecurityConfiguration {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(customizer -> customizer
             .requestMatchers("/", "/index.html", "/**.js", "/**.css", "/favicon.ico",
-                "/assets/images/**.jpg", "/assets/i18n/**.json").permitAll()
+                "/assets/images/**.jpg", "/assets/icons/**.png", "/assets/i18n/**.json").permitAll()
             // to support PWA
             .requestMatchers("/manifest.webmanifest", "/ngsw.json").permitAll()
             .anyRequest().authenticated()
