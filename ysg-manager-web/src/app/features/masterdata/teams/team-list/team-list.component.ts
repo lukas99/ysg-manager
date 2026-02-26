@@ -24,7 +24,10 @@ export class TeamListComponent {
         }
       ],
       crudService: teamsService,
-      routerDetailUrl: '/teams/detail'
+      routerDetailUrl: '/teams/detail',
+      enableCreate: true,
+      enableEdit: true,
+      enableDelete: true
     };
   }
 }

@@ -90,7 +90,10 @@ describe('CrudListAgComponent', () => {
         }
       ],
       crudService: tournamentsService,
-      routerDetailUrl: '/tournaments/detail'
+      routerDetailUrl: '/tournaments/detail',
+      enableCreate: true,
+      enableEdit: true,
+      enableDelete: true
     };
   });
 

@@ -64,7 +64,10 @@ export class SkillListComponent {
         }
       ],
       crudService: skillsService,
-      routerDetailUrl: '/skills/detail'
+      routerDetailUrl: '/skills/detail',
+      enableCreate: true,
+      enableEdit: true,
+      enableDelete: true
     };
   }
 

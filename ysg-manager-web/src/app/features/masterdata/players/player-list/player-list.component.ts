@@ -49,7 +49,10 @@ export class PlayerListComponent implements OnInit {
         }
       ],
       crudService: this.playersService,
-      routerDetailUrl: '/players/detail'
+      routerDetailUrl: '/players/detail',
+      enableCreate: true,
+      enableEdit: true,
+      enableDelete: true
     };
   }
 

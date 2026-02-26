@@ -66,7 +66,10 @@ export class SkillRatingListComponent implements OnInit {
         }
       ],
       crudService: this.skillRatingsService,
-      routerDetailUrl: '/skillratings/detail'
+      routerDetailUrl: '/skillratings/detail',
+      enableCreate: true,
+      enableEdit: true,
+      enableDelete: true
     };
   }
 

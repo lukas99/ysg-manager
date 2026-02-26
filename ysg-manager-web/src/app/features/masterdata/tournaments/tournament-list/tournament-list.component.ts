@@ -38,7 +38,10 @@ export class TournamentListComponent {
         }
       ],
       crudService: tournamentsService,
-      routerDetailUrl: '/tournaments/detail'
+      routerDetailUrl: '/tournaments/detail',
+      enableCreate: true,
+      enableEdit: true,
+      enableDelete: true
     };
   }
 

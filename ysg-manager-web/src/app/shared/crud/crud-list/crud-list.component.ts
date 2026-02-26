@@ -24,6 +24,18 @@ export interface CrudListOptions {
    * The url to the detail page.
    */
   routerDetailUrl: string;
+  /**
+   * Whether the create button should be enabled.
+   */
+  enableCreate: boolean;
+  /**
+   * Whether the edit button should be enabled.
+   */
+  enableEdit: boolean;
+  /**
+   * Whether the delete button should be enabled.
+   */
+  enableDelete: boolean;
 }
 
 /**
@@ -97,13 +109,17 @@ export class CrudListComponent implements OnInit {
   }
 
   edit(node: any) {
-    this.options.crudService.setSelectedItem(node.data);
-    this.navigateToDetailView();
+    if (this.options.enableEdit) {
+      this.options.crudService.setSelectedItem(node.data);
+      this.navigateToDetailView();
+    }
   }
 
   createItem() {
-    this.options.crudService.removeSelectedItem();
-    this.navigateToDetailView();
+    if (this.options.enableCreate) {
+      this.options.crudService.removeSelectedItem();
+      this.navigateToDetailView();
+    }
   }
 
   private navigateToDetailView() {

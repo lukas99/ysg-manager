@@ -77,7 +77,10 @@ export class SkillTournamentRankingListComponent {
         }
       ],
       crudService: skillTournamentRankingsService,
-      routerDetailUrl: ''
+      routerDetailUrl: '',
+      enableCreate: false,
+      enableEdit: false,
+      enableDelete: false
     };
   }
 

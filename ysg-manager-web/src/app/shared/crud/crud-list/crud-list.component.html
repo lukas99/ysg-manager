@@ -3,19 +3,23 @@
     <ng-content></ng-content>
   </h1>
   <span class="header-actions">
-    <button mat-icon-button (click)="createItem()">
+    <button
+      mat-icon-button
+      [disabled]="!options.enableCreate"
+      (click)="createItem()"
+    >
       <mat-icon>add</mat-icon>
     </button>
     <button
       mat-icon-button
-      [disabled]="!isItemSelected"
+      [disabled]="!options.enableEdit || !isItemSelected"
       (click)="editSelectedItem()"
     >
       <mat-icon>edit</mat-icon>
     </button>
     <button
       mat-icon-button
-      [disabled]="!isItemSelected"
+      [disabled]="!options.enableDelete || !isItemSelected"
       (click)="deleteSelectedItem()"
     >
       <mat-icon>delete</mat-icon>

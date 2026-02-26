@@ -76,7 +76,10 @@ export class SkillResultListComponent implements OnInit {
         }
       ],
       crudService: this.skillResultsService,
-      routerDetailUrl: '/skillresults/detail'
+      routerDetailUrl: '/skillresults/detail',
+      enableCreate: true,
+      enableEdit: true,
+      enableDelete: true
     };
   }
 

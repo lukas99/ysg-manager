@@ -77,7 +77,10 @@ export class SkillRankingListComponent {
         }
       ],
       crudService: skillRankingsService,
-      routerDetailUrl: ''
+      routerDetailUrl: '',
+      enableCreate: false,
+      enableEdit: false,
+      enableDelete: false
     };
   }
 
