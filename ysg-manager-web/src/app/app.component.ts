@@ -29,6 +29,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   isAuthenticated = false;
   isAdmin = false;
   isSkillOperator = false;
+  isCoach = false;
   private destroy = new Subject<void>();
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
 
@@ -61,6 +62,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
           const jwt = jwtDecode(loginResponse.accessToken);
           this.isSkillOperator = this.hasRole(jwt, 'YSG_SKILL_OPERATOR');
           this.isAdmin = this.hasRole(jwt, 'YSG_ADMIN');
+          this.isCoach = this.hasRole(jwt, 'YSG_COACH');
         }
       });
   }
