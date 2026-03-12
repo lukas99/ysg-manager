@@ -33,8 +33,8 @@
         <version>1.9.1</version>
 
         <configuration>
-          <nodeVersion>v20.20.0</nodeVersion>
-          <npmVersion>10.8.2</npmVersion>
+          <nodeVersion>v24.14.0</nodeVersion>
+          <npmVersion>11.9.0</npmVersion>
           <workingDirectory>.</workingDirectory>
         </configuration>
 
