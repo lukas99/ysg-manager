@@ -13,7 +13,8 @@ import { MatDialog } from '@angular/material/dialog';
 import {
   ConfirmationDialogComponent,
   ConfirmationDialogData
-} from '../../shared/confirmation-dialog/confirmation-dialog.component';
+} from '@shared/confirmation-dialog/confirmation-dialog.component';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 /**
  * Shows an error dialog in case an HTTP error occurs.
@@ -22,6 +23,7 @@ import {
 export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
     private translateService: TranslateService,
+    private oidcSecurityService: OidcSecurityService,
     public dialog: MatDialog
   ) {}
 
@@ -32,9 +34,13 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error) => {
         if (error instanceof HttpErrorResponse) {
-          this.showDialog(error);
+          if (error.status === 401) {
+            this.oidcSecurityService.authorize();
+          } else {
+            this.showDialog(error);
+          }
         }
-        return throwError(error);
+        return throwError(() => error);
       })
     );
   }
