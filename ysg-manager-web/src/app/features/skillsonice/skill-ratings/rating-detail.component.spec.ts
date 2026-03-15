@@ -79,8 +79,8 @@ describe('RatingDetailComponent', () => {
       component.ngOnInit();
       tick(50); // delay from loading-delay-indicator
 
-      expect(component.selectedTeam).toBe(selectedTeam);
-      expect(component.selectedSkill).toBe(selectedSkill);
+      expect(component.selectedTeam()).toBe(selectedTeam);
+      expect(component.selectedSkill()).toBe(selectedSkill);
     }));
 
     describe('rating exists', () => {
@@ -92,7 +92,7 @@ describe('RatingDetailComponent', () => {
         component.ngOnInit();
         tick(50); // delay from loading-delay-indicator
 
-        expect(component.skillRating).toBe(existingRating);
+        expect(component.skillRating()).toBe(existingRating);
       }));
 
       it('disables the player position toggle', fakeAsync(() => {
@@ -104,7 +104,7 @@ describe('RatingDetailComponent', () => {
         tick(50); // delay from loading-delay-indicator
 
         expect(component.disablePlayerPositionToggle).toBeTruthy();
-        expect(component.skillRating).toBe(existingRating);
+        expect(component.skillRating()).toBe(existingRating);
       }));
 
       it('enables the player position toggle', fakeAsync(() => {
@@ -115,8 +115,8 @@ describe('RatingDetailComponent', () => {
         component.ngOnInit();
         tick(50); // delay from loading-delay-indicator
 
-        expect(component.disablePlayerPositionToggle).toBeFalsy();
-        expect(component.skillRating).toBe(existingRating);
+        expect(component.disablePlayerPositionToggle()).toBeFalsy();
+        expect(component.skillRating()).toBe(existingRating);
       }));
     });
 
@@ -145,13 +145,15 @@ describe('RatingDetailComponent', () => {
         component.ngOnInit();
         tick(50); // delay from loading-delay-indicator
 
-        expect(component.skillRating.score).toBe(0);
-        expect(component.skillRating.player.team).toBe(selectedTeam);
-        expect(component.skillRating.player.position).toBe(
+        expect(component.skillRating()!.score).toBe(0);
+        expect(component.skillRating()!.player.team).toBe(selectedTeam);
+        expect(component.skillRating()!.player.position).toBe(
           PlayerPosition.SKATER
         );
-        expect(component.skillRating.player._links.team).toBe(selectedTeamLink);
-        expect(component.skillRating._links.skill).toBe(selectedSkillLink);
+        expect(component.skillRating()!.player._links.team).toBe(
+          selectedTeamLink
+        );
+        expect(component.skillRating()!._links.skill).toBe(selectedSkillLink);
       }));
 
       it('disables the player position toggle and preselects the position value', fakeAsync(() => {
@@ -163,7 +165,7 @@ describe('RatingDetailComponent', () => {
         tick(50); // delay from loading-delay-indicator
 
         expect(component.disablePlayerPositionToggle).toBeTruthy();
-        expect(component.skillRating.player.position).toBe(
+        expect(component.skillRating()!.player.position).toBe(
           PlayerPosition.GOALTENDER
         );
       }));
@@ -176,8 +178,8 @@ describe('RatingDetailComponent', () => {
         component.ngOnInit();
         tick(50); // delay from loading-delay-indicator
 
-        expect(component.disablePlayerPositionToggle).toBeFalsy();
-        expect(component.skillRating.player.position).toBe(
+        expect(component.disablePlayerPositionToggle()).toBeFalsy();
+        expect(component.skillRating()!.player.position).toBe(
           PlayerPosition.SKATER
         );
       }));
@@ -185,11 +187,11 @@ describe('RatingDetailComponent', () => {
   });
 
   it('should delete a skill rating', fakeAsync(() => {
-    component.selectedSkill = selectedSkill;
-    component.selectedTeam = selectedTeam;
+    component.selectedSkill.set(selectedSkill);
+    component.selectedTeam.set(selectedTeam);
 
     const skillRating = {} as SkillRating;
-    component.skillRating = skillRating;
+    component.skillRating.set(skillRating);
     skillRatingsService.deleteSkillRating = jest.fn(() => of(skillRating));
 
     component.delete();
@@ -213,8 +215,8 @@ describe('RatingDetailComponent', () => {
   }));
 
   it('should cancel the skill rating editing', () => {
-    component.selectedSkill = selectedSkill;
-    component.selectedTeam = selectedTeam;
+    component.selectedSkill.set(selectedSkill);
+    component.selectedTeam.set(selectedTeam);
 
     component.cancel();
 
@@ -233,8 +235,8 @@ describe('RatingDetailComponent', () => {
 
   describe('save', () => {
     beforeEach(() => {
-      component.selectedSkill = selectedSkill;
-      component.selectedTeam = selectedTeam;
+      component.selectedSkill.set(selectedSkill);
+      component.selectedTeam.set(selectedTeam);
     });
 
     it('should allow to update own rating which already exists', fakeAsync(() => {
@@ -244,7 +246,7 @@ describe('RatingDetailComponent', () => {
         player: { shirtNumber: 20 },
         _links: { self: { href: 'self-link' } }
       } as SkillRating;
-      component.skillRating = existingRating;
+      component.skillRating.set(existingRating);
       // rating for this player already exists (it's the rating we want to update)
       skillRatingsService.getSkillRatingsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() =>
@@ -279,12 +281,12 @@ describe('RatingDetailComponent', () => {
     }));
 
     it('should prevent to update rating to player which already exists', fakeAsync(() => {
-      component.skillRating = {
+      component.skillRating.set({
         id: 40,
         score: 90,
         player: { shirtNumber: 20 },
         _links: { self: { href: 'self-link' } }
-      } as SkillRating;
+      } as SkillRating);
       // rating for this player already exists (it's another rating)
       skillRatingsService.getSkillRatingsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() =>
@@ -310,7 +312,7 @@ describe('RatingDetailComponent', () => {
     }));
 
     it('should create new rating', fakeAsync(() => {
-      component.skillRating = { player: { shirtNumber: 20 } } as SkillRating;
+      component.skillRating.set({ player: { shirtNumber: 20 } } as SkillRating);
       // rating for this player doesn't yet exist
       skillRatingsService.getSkillRatingsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() => of([]));
@@ -319,7 +321,7 @@ describe('RatingDetailComponent', () => {
       tick(50); // delay from loading-delay-indicator
 
       expect(skillRatingsService.createSkillRating).toHaveBeenCalledWith(
-        component.skillRating,
+        component.skillRating(),
         selectedSkill
       );
       expect(component.loadingIndicator.isLoading).toBe(false);
@@ -337,7 +339,7 @@ describe('RatingDetailComponent', () => {
     }));
 
     it('should prevent to create a new rating when a rating already exists', fakeAsync(() => {
-      component.skillRating = { player: { shirtNumber: 20 } } as SkillRating;
+      component.skillRating.set({ player: { shirtNumber: 20 } } as SkillRating);
       // rating for this player already exists
       skillRatingsService.getSkillRatingsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() =>
@@ -365,7 +367,7 @@ describe('RatingDetailComponent', () => {
   describe('playerChanged', () => {
     beforeEach(() => {
       // created new rating
-      component.skillRating = { player: { shirtNumber: 20 } } as SkillRating;
+      component.skillRating.set({ player: { shirtNumber: 20 } } as SkillRating);
     });
 
     it('detects that a skill rating for a player already exists', fakeAsync(() => {
@@ -384,7 +386,7 @@ describe('RatingDetailComponent', () => {
       component.playerChanged();
       tick(50); // delay from loading-delay-indicator
 
-      expect(component.skillRating.player.shirtNumber).toBe(0);
+      expect(component.skillRating()!.player.shirtNumber).toBe(0);
       expect(component.loadingIndicator.isLoading).toBe(false);
       expect(showAlertDialogRatingAlreadyExists).toHaveBeenCalledTimes(1);
     }));
@@ -397,7 +399,7 @@ describe('RatingDetailComponent', () => {
       component.playerChanged();
       tick(50); // delay from loading-delay-indicator
 
-      expect(component.skillRating.player.shirtNumber).toBe(20);
+      expect(component.skillRating()!.player.shirtNumber).toBe(20);
       expect(component.loadingIndicator.isLoading).toBe(false);
       expect(showAlertDialogRatingAlreadyExists).toHaveBeenCalledTimes(0);
     }));

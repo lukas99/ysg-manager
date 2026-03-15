@@ -80,10 +80,10 @@ describe('RatingListComponent', () => {
       expect(
         skillRatingsService.getSkillRatingsBySkillAndTeam
       ).toHaveBeenCalledWith(skill, team);
-      expect(component.skillRatings.length).toBe(3);
-      expect(component.skillRatings[0]).toEqual(rating1);
-      expect(component.skillRatings[1]).toEqual(rating2);
-      expect(component.skillRatings[2]).toEqual(rating3);
+      expect(component.skillRatings().length).toBe(3);
+      expect(component.skillRatings()[0]).toEqual(rating1);
+      expect(component.skillRatings()[1]).toEqual(rating2);
+      expect(component.skillRatings()[2]).toEqual(rating3);
       expect(component.loadingIndicator.isLoading).toBe(false);
     }));
   });

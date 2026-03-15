@@ -2,35 +2,35 @@
   [showProgress]="loadingIndicator.isLoading"
 ></ysg-progress-bar>
 <ysg-mobile-page-title (backClicked)="cancel()">
-  {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
-  {{ selectedTeam?.name }}
+  {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill()?.number }}:
+  {{ selectedTeam()?.name }}
 </ysg-mobile-page-title>
-<ng-container *ngIf="skillResult">
-  <ysg-player
-    [(player)]="skillResult.player"
-    (playerChange)="playerChanged()"
-    [disablePositionToggle]="
-      disablePlayerPositionToggle || loadingIndicator.isLoading
-    "
-  ></ysg-player>
-  <ysg-points
-    [(points)]="skillResult.points"
-    [allow3PointsAddition]="true"
-    [disabled]="loadingIndicator.isLoading"
-  ></ysg-points>
-  <ysg-failures
-    [(failures)]="skillResult.failures"
-    [disabled]="loadingIndicator.isLoading"
-  ></ysg-failures>
-  <ysg-crud-buttons
-    (deleteClicked)="delete()"
-    [deleteDisabled]="loadingIndicator.isLoading || !resultExists()"
-    (cancelClicked)="cancel()"
-    [cancelDisabled]="loadingIndicator.isLoading"
-    (saveClicked)="save()"
-    [saveDisabled]="
-      loadingIndicator.isLoading || !(skillResult.player.shirtNumber > 0)
-    "
-  >
-  </ysg-crud-buttons>
-</ng-container>
+@if (skillResult(); as skillResult) {
+<ysg-player
+  [(player)]="skillResult.player"
+  (playerChange)="playerChanged()"
+  [disablePositionToggle]="
+    disablePlayerPositionToggle() || loadingIndicator.isLoading
+  "
+></ysg-player>
+<ysg-points
+  [(points)]="skillResult.points"
+  [allow3PointsAddition]="true"
+  [disabled]="loadingIndicator.isLoading"
+></ysg-points>
+<ysg-failures
+  [(failures)]="skillResult.failures"
+  [disabled]="loadingIndicator.isLoading"
+></ysg-failures>
+<ysg-crud-buttons
+  (deleteClicked)="delete()"
+  [deleteDisabled]="loadingIndicator.isLoading || !resultExists()"
+  (cancelClicked)="cancel()"
+  [cancelDisabled]="loadingIndicator.isLoading"
+  (saveClicked)="save()"
+  [saveDisabled]="
+    loadingIndicator.isLoading || !(skillResult.player.shirtNumber > 0)
+  "
+>
+</ysg-crud-buttons>
+}

@@ -1,13 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { Skill, SkillRating, Team } from '../../../types';
 import { SkillRatingsService } from '../../../core/services/skill-ratings.service';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import { LoadingDelayIndicator } from '@shared/loading-delay/loading-delay-indicator';
 import { combineLatest, Subject } from 'rxjs';
 import { SkillsService } from '../../../core/services/skills.service';
 import { TeamsService } from '../../../core/services/teams.service';
-import { flatMap, takeUntil, tap } from 'rxjs/operators';
+import { switchMap, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'ysg-rating-list',
@@ -19,7 +19,7 @@ export class RatingListComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();
   selectedSkill!: Skill;
   selectedTeam!: Team;
-  skillRatings: SkillRating[] = [];
+  skillRatings = signal<SkillRating[]>([]);
   loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
@@ -42,16 +42,16 @@ export class RatingListComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         takeUntil(this.destroy),
-        tap(([loading, skill, team]) => {
+        tap(([_, skill, team]) => {
           this.selectedSkill = skill;
           this.selectedTeam = team;
         }),
-        flatMap(([loading, skill, team]) =>
+        switchMap(([_, skill, team]) =>
           this.skillRatingsService.getSkillRatingsBySkillAndTeam(skill, team)
         )
       )
       .subscribe((skillRatings) => {
-        this.skillRatings = skillRatings;
+        this.skillRatings.set(skillRatings);
         this.loadingIndicator.finishLoading();
       });
   }

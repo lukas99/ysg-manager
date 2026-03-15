@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import {
   Player,
   PlayerPosition,
@@ -10,8 +10,14 @@ import { SkillRatingsService } from '../../../core/services/skill-ratings.servic
 import { ActivatedRoute, Router } from '@angular/router';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
 import { combineLatest, forkJoin, Observable, Subject } from 'rxjs';
-import { defaultIfEmpty, flatMap, map, take, takeUntil } from 'rxjs/operators';
-import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import {
+  defaultIfEmpty,
+  switchMap,
+  map,
+  take,
+  takeUntil
+} from 'rxjs/operators';
+import { LoadingDelayIndicator } from '@shared/loading-delay/loading-delay-indicator';
 import { SkillsService } from '../../../core/services/skills.service';
 import { TeamsService } from '../../../core/services/teams.service';
 
@@ -23,10 +29,10 @@ import { TeamsService } from '../../../core/services/teams.service';
 })
 export class RatingDetailComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();
-  selectedSkill!: Skill;
-  selectedTeam!: Team;
-  skillRating!: SkillRating;
-  disablePlayerPositionToggle = false;
+  selectedSkill = signal<Skill | null>(null);
+  selectedTeam = signal<Team | null>(null);
+  skillRating = signal<SkillRating | null>(null);
+  disablePlayerPositionToggle = signal(false);
   loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
@@ -51,29 +57,29 @@ export class RatingDetailComponent implements OnInit, OnDestroy {
       this.teamsService.getTeam(teamId)
     ])
       .pipe(takeUntil(this.destroy))
-      .subscribe(([loading, skill, team]) => {
-        this.selectedSkill = skill;
-        this.selectedTeam = team;
+      .subscribe(([_, skill, team]) => {
+        this.selectedSkill.set(skill);
+        this.selectedTeam.set(team);
 
         let singlePossiblePosition =
           this.getSinglePossiblePlayerPosition(skill);
-        this.disablePlayerPositionToggle = !!singlePossiblePosition;
+        this.disablePlayerPositionToggle.set(!!singlePossiblePosition);
 
         if (skillRatingId !== null) {
           // empty object if no value present
           this.skillRatingsService
             .getSkillRating(skillRatingId)
-            .subscribe((skillRating) => (this.skillRating = skillRating));
+            .subscribe((skillRating) => this.skillRating.set(skillRating));
         } else {
-          this.skillRating = {
+          this.skillRating.set({
             score: 0,
             player: {
-              team: this.selectedTeam,
+              team: this.selectedTeam(),
               position: singlePossiblePosition || PlayerPosition.SKATER,
-              _links: { team: this.selectedTeam._links.self }
+              _links: { team: this.selectedTeam()!._links.self }
             } as Player,
-            _links: { skill: this.selectedSkill._links.self }
-          } as SkillRating;
+            _links: { skill: this.selectedSkill()!._links.self }
+          } as SkillRating);
         }
 
         this.loadingIndicator.finishLoading();
@@ -100,7 +106,7 @@ export class RatingDetailComponent implements OnInit, OnDestroy {
    * @return Whether the current rating already exists. Returns false in case it's a new rating.
    */
   ratingExists(): boolean {
-    return !!this.skillRating.id;
+    return !!this.skillRating()!.id;
   }
 
   playerChanged() {
@@ -109,7 +115,7 @@ export class RatingDetailComponent implements OnInit, OnDestroy {
       ratingForSkillExists: this.ratingForSkillExists()
     }).subscribe(({ ratingForSkillExists }) => {
       if (ratingForSkillExists) {
-        this.skillRating.player.shirtNumber = 0;
+        this.skillRating()!.player.shirtNumber = 0;
         this.showAlertDialogRatingForSkillAlreadyExists();
       }
       this.loadingIndicator.finishLoading();
@@ -119,7 +125,7 @@ export class RatingDetailComponent implements OnInit, OnDestroy {
   delete() {
     forkJoin({
       loading: this.loadingIndicator.startLoading(),
-      delete: this.skillRatingsService.deleteSkillRating(this.skillRating)
+      delete: this.skillRatingsService.deleteSkillRating(this.skillRating()!)
     }).subscribe(() => {
       this.loadingIndicator.finishLoading();
       this.navigateToRatingList();
@@ -145,14 +151,14 @@ export class RatingDetailComponent implements OnInit, OnDestroy {
       }
       if (this.ratingExists()) {
         this.skillRatingsService
-          .updateSkillRating(this.skillRating)
+          .updateSkillRating(this.skillRating()!)
           .subscribe(() => {
             this.loadingIndicator.finishLoading();
             this.navigateToRatingList();
           });
       } else {
         this.skillRatingsService
-          .createSkillRating(this.skillRating, this.selectedSkill)
+          .createSkillRating(this.skillRating()!, this.selectedSkill()!)
           .subscribe(() => {
             this.loadingIndicator.finishLoading();
             this.navigateToRatingList();
@@ -166,9 +172,9 @@ export class RatingDetailComponent implements OnInit, OnDestroy {
       [
         'skillsonice',
         'skills',
-        this.selectedSkill.id,
+        this.selectedSkill()!.id,
         'teams',
-        this.selectedTeam.id,
+        this.selectedTeam()!.id,
         'ratings'
       ],
       { queryParamsHandling: 'merge' } // to preserve isSkillChef
@@ -178,18 +184,18 @@ export class RatingDetailComponent implements OnInit, OnDestroy {
   private ratingForSkillExists(): Observable<boolean> {
     return this.skillRatingsService
       .getSkillRatingsBySkillAndTeamAndPlayerShirtNumber(
-        this.selectedSkill,
-        this.selectedTeam,
-        this.skillRating.player.shirtNumber
+        this.selectedSkill()!,
+        this.selectedTeam()!,
+        this.skillRating()!.player.shirtNumber
       )
       .pipe(
-        flatMap((list) => list),
+        switchMap((list) => list),
         take(1),
         map((existingRating) => {
           const isCurrentRating =
-            !!this.skillRating._links &&
-            !!this.skillRating._links.self &&
-            this.skillRating._links.self.href ===
+            !!this.skillRating()!._links &&
+            !!this.skillRating()!._links.self &&
+            this.skillRating()!._links.self.href ===
               existingRating?._links.self.href;
           return !isCurrentRating; // allow to update own rating (this.skillRating)
         }),

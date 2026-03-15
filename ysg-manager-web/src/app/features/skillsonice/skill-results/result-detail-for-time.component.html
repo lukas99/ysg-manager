@@ -2,47 +2,47 @@
   [showProgress]="loadingIndicator.isLoading"
 ></ysg-progress-bar>
 <ysg-mobile-page-title (backClicked)="cancel()">
-  {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
-  {{ selectedTeam?.name }}
+  {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill()?.number }}:
+  {{ selectedTeam()?.name }}
 </ysg-mobile-page-title>
-<ng-container *ngIf="skillResult">
-  <ysg-player
-    [(player)]="skillResult.player"
-    (playerChange)="playerChanged()"
-    [disablePositionToggle]="
-      disablePlayerPositionToggle || loadingIndicator.isLoading
-    "
-  ></ysg-player>
-  <ysg-stopwatch
-    [(time)]="skillResult.time"
-    (runningChange)="stopWatchRunning = $event"
-    (editingChange)="stopWatchEditing = $event"
-    [disabled]="loadingIndicator.isLoading"
-  ></ysg-stopwatch>
-  <ysg-failures
-    [(failures)]="skillResult.failures"
-    [disabled]="loadingIndicator.isLoading"
-  ></ysg-failures>
-  <ysg-crud-buttons
-    (deleteClicked)="delete()"
-    [deleteDisabled]="
-      stopWatchRunning ||
-      stopWatchEditing ||
-      loadingIndicator.isLoading ||
-      !resultExists()
-    "
-    (cancelClicked)="cancel()"
-    [cancelDisabled]="
-      stopWatchRunning || stopWatchEditing || loadingIndicator.isLoading
-    "
-    (saveClicked)="save()"
-    [saveDisabled]="
-      stopWatchRunning ||
-      stopWatchEditing ||
-      loadingIndicator.isLoading ||
-      !(skillResult.player.shirtNumber > 0) ||
-      !(skillResult.time > 0)
-    "
-  >
-  </ysg-crud-buttons>
-</ng-container>
+@if (skillResult(); as skillResult) {
+<ysg-player
+  [(player)]="skillResult.player"
+  (playerChange)="playerChanged()"
+  [disablePositionToggle]="
+    disablePlayerPositionToggle() || loadingIndicator.isLoading
+  "
+></ysg-player>
+<ysg-stopwatch
+  [(time)]="skillResult.time"
+  (runningChange)="stopWatchRunning.set($event)"
+  (editingChange)="stopWatchEditing.set($event)"
+  [disabled]="loadingIndicator.isLoading"
+></ysg-stopwatch>
+<ysg-failures
+  [(failures)]="skillResult.failures"
+  [disabled]="loadingIndicator.isLoading"
+></ysg-failures>
+<ysg-crud-buttons
+  (deleteClicked)="delete()"
+  [deleteDisabled]="
+    stopWatchRunning() ||
+    stopWatchEditing() ||
+    loadingIndicator.isLoading ||
+    !resultExists()
+  "
+  (cancelClicked)="cancel()"
+  [cancelDisabled]="
+    stopWatchRunning() || stopWatchEditing() || loadingIndicator.isLoading
+  "
+  (saveClicked)="save()"
+  [saveDisabled]="
+    stopWatchRunning() ||
+    stopWatchEditing() ||
+    loadingIndicator.isLoading ||
+    !(skillResult.player.shirtNumber > 0) ||
+    !(skillResult.time > 0)
+  "
+>
+</ysg-crud-buttons>
+}

@@ -7,11 +7,17 @@ import {
 } from '../../../types';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Directive, OnDestroy, OnInit } from '@angular/core';
+import { Directive, OnDestroy, OnInit, signal } from '@angular/core';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
-import { defaultIfEmpty, flatMap, map, take, takeUntil } from 'rxjs/operators';
+import {
+  defaultIfEmpty,
+  map,
+  switchMap,
+  take,
+  takeUntil
+} from 'rxjs/operators';
 import { combineLatest, forkJoin, Observable, Subject } from 'rxjs';
-import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import { LoadingDelayIndicator } from '@shared/loading-delay/loading-delay-indicator';
 import { SkillsService } from '../../../core/services/skills.service';
 import { TeamsService } from '../../../core/services/teams.service';
 
@@ -21,12 +27,12 @@ import { TeamsService } from '../../../core/services/teams.service';
 @Directive()
 export abstract class ResultDetailModel implements OnInit, OnDestroy {
   private destroy = new Subject<void>();
-  selectedSkill!: Skill;
-  selectedTeam!: Team;
-  skillResult!: SkillResult;
-  stopWatchRunning: boolean = false;
-  stopWatchEditing: boolean = false;
-  disablePlayerPositionToggle = false;
+  selectedSkill = signal<Skill | null>(null);
+  selectedTeam = signal<Team | null>(null);
+  skillResult = signal<SkillResult | null>(null);
+  stopWatchRunning = signal(false);
+  stopWatchEditing = signal(false);
+  disablePlayerPositionToggle = signal(false);
   loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
@@ -51,31 +57,31 @@ export abstract class ResultDetailModel implements OnInit, OnDestroy {
       this.teamsService.getTeam(teamId)
     ])
       .pipe(takeUntil(this.destroy))
-      .subscribe(([loading, skill, team]) => {
-        this.selectedSkill = skill;
-        this.selectedTeam = team;
+      .subscribe(([_, skill, team]) => {
+        this.selectedSkill.set(skill);
+        this.selectedTeam.set(team);
 
         let singlePossiblePosition =
           this.getSinglePossiblePlayerPosition(skill);
-        this.disablePlayerPositionToggle = !!singlePossiblePosition;
+        this.disablePlayerPositionToggle.set(!!singlePossiblePosition);
 
         if (skillResultId !== null) {
           // empty object if no value present
           this.skillResultsService
             .getSkillResult(skillResultId)
-            .subscribe((skillResult) => (this.skillResult = skillResult));
+            .subscribe((skillResult) => this.skillResult.set(skillResult));
         } else {
-          this.skillResult = {
+          this.skillResult.set({
             time: 0,
             failures: 0,
             points: 0,
             player: {
-              team: this.selectedTeam,
+              team: team,
               position: singlePossiblePosition || PlayerPosition.SKATER,
-              _links: { team: this.selectedTeam._links.self }
+              _links: { team: team._links.self }
             } as Player,
-            _links: { skill: this.selectedSkill._links.self }
-          } as SkillResult;
+            _links: { skill: skill._links.self }
+          } as SkillResult);
         }
 
         this.loadingIndicator.finishLoading();
@@ -104,7 +110,7 @@ export abstract class ResultDetailModel implements OnInit, OnDestroy {
       resultForSkillExists: this.resultForSkillExists()
     }).subscribe(({ resultForSkillExists }) => {
       if (resultForSkillExists) {
-        this.skillResult.player.shirtNumber = 0;
+        this.skillResult()!.player.shirtNumber = 0;
         this.showAlertDialogResultForSkillAlreadyExists();
       }
       this.loadingIndicator.finishLoading();
@@ -114,7 +120,7 @@ export abstract class ResultDetailModel implements OnInit, OnDestroy {
   delete() {
     forkJoin({
       loading: this.loadingIndicator.startLoading(),
-      delete: this.skillResultsService.deleteSkillResult(this.skillResult)
+      delete: this.skillResultsService.deleteSkillResult(this.skillResult()!)
     }).subscribe(() => {
       this.loadingIndicator.finishLoading();
       this.navigateToResultList();
@@ -140,14 +146,14 @@ export abstract class ResultDetailModel implements OnInit, OnDestroy {
       }
       if (this.resultExists()) {
         this.skillResultsService
-          .updateSkillResult(this.skillResult)
+          .updateSkillResult(this.skillResult()!)
           .subscribe(() => {
             this.loadingIndicator.finishLoading();
             this.navigateToResultList();
           });
       } else {
         this.skillResultsService
-          .createSkillResult(this.skillResult, this.selectedSkill)
+          .createSkillResult(this.skillResult()!, this.selectedSkill()!)
           .subscribe(() => {
             this.loadingIndicator.finishLoading();
             this.navigateToResultList();
@@ -157,7 +163,7 @@ export abstract class ResultDetailModel implements OnInit, OnDestroy {
   }
 
   protected resultExists(): boolean {
-    return !!this.skillResult.id;
+    return !!this.skillResult()!.id;
   }
 
   private navigateToResultList() {
@@ -165,9 +171,9 @@ export abstract class ResultDetailModel implements OnInit, OnDestroy {
       [
         'skillsonice',
         'skills',
-        this.selectedSkill.id,
+        this.selectedSkill()!.id,
         'teams',
-        this.selectedTeam.id,
+        this.selectedTeam()!.id,
         'results'
       ],
       { queryParamsHandling: 'merge' } // to preserve isSkillChef
@@ -177,18 +183,18 @@ export abstract class ResultDetailModel implements OnInit, OnDestroy {
   private resultForSkillExists(): Observable<boolean> {
     return this.skillResultsService
       .getSkillResultsBySkillAndTeamAndPlayerShirtNumber(
-        this.selectedSkill,
-        this.selectedTeam,
-        this.skillResult.player.shirtNumber
+        this.selectedSkill()!,
+        this.selectedTeam()!,
+        this.skillResult()!.player.shirtNumber
       )
       .pipe(
-        flatMap((list) => list),
+        switchMap((list) => list),
         take(1),
         map((existingResult) => {
           const isCurrentRating =
-            !!this.skillResult._links &&
-            !!this.skillResult._links.self &&
-            this.skillResult._links.self.href ===
+            !!this.skillResult()!._links &&
+            !!this.skillResult()!._links.self &&
+            this.skillResult()!._links.self.href ===
               existingResult?._links.self.href;
           return !isCurrentRating; // allow to update own result (this.skillResult)
         }),

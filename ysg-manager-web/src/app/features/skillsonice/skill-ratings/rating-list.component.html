@@ -2,21 +2,23 @@
   [showProgress]="loadingIndicator.isLoading"
 ></ysg-progress-bar>
 
-<ysg-mobile-page-title (backClicked)="navigateBack()" *ngIf="selectedSkill">
+@if (selectedSkill) {
+<ysg-mobile-page-title (backClicked)="navigateBack()">
   {{ 'SKILLS_ON_ICE_SKILL' | translate }} {{ selectedSkill?.number }}:
   {{ selectedTeam?.name }}
 </ysg-mobile-page-title>
+}
 
-<mat-selection-list [multiple]="false">
-  <mat-list-option
-    *ngFor="let skillRating of skillRatings"
-    [value]="skillRating"
-  >
+<mat-selection-list [multiple]="false" [hideSingleSelectionIndicator]="true">
+  @for (skillRating of skillRatings(); track skillRating) {
+  <mat-list-option [value]="skillRating">
     <div class="row-content" (click)="editRating(skillRating)">
       <div class="row-content skill-rating-player">
         <span>
           #{{ skillRating.player.shirtNumber }}
-          <span *ngIf="skillRating.player.position === 'GOALTENDER'"> TH </span>
+          @if (skillRating.player.position === 'GOALTENDER') {
+          <span> TH </span>
+          }
         </span>
       </div>
       <div class="row-content">
@@ -27,14 +29,11 @@
       </div>
     </div>
   </mat-list-option>
+  }
 </mat-selection-list>
 
-<button
-  mat-fab
-  color="primary"
-  class="add-button"
-  *ngIf="!loadingIndicator.isLoading"
-  (click)="createRating()"
->
+@if (!loadingIndicator.isLoading) {
+<button mat-fab color="primary" class="add-button" (click)="createRating()">
   <mat-icon>add</mat-icon>
 </button>
+}

@@ -79,8 +79,8 @@ describe('ResultDetailModel', () => {
       component.ngOnInit();
       tick(50); // delay from loading-delay-indicator
 
-      expect(component.selectedTeam).toBe(selectedTeam);
-      expect(component.selectedSkill).toBe(selectedSkill);
+      expect(component.selectedTeam()).toBe(selectedTeam);
+      expect(component.selectedSkill()).toBe(selectedSkill);
     }));
 
     describe('result exists', () => {
@@ -92,7 +92,7 @@ describe('ResultDetailModel', () => {
         component.ngOnInit();
         tick(50); // delay from loading-delay-indicator
 
-        expect(component.skillResult).toBe(existingResult);
+        expect(component.skillResult()).toBe(existingResult);
       }));
 
       it('disables the player position toggle', fakeAsync(() => {
@@ -103,8 +103,8 @@ describe('ResultDetailModel', () => {
         component.ngOnInit();
         tick(50); // delay from loading-delay-indicator
 
-        expect(component.disablePlayerPositionToggle).toBeTruthy();
-        expect(component.skillResult).toBe(existingResult);
+        expect(component.disablePlayerPositionToggle()).toBeTruthy();
+        expect(component.skillResult()).toBe(existingResult);
       }));
 
       it('enables the player position toggle', fakeAsync(() => {
@@ -115,8 +115,8 @@ describe('ResultDetailModel', () => {
         component.ngOnInit();
         tick(50); // delay from loading-delay-indicator
 
-        expect(component.disablePlayerPositionToggle).toBeFalsy();
-        expect(component.skillResult).toBe(existingResult);
+        expect(component.disablePlayerPositionToggle()).toBeFalsy();
+        expect(component.skillResult()).toBe(existingResult);
       }));
     });
 
@@ -145,15 +145,17 @@ describe('ResultDetailModel', () => {
         component.ngOnInit();
         tick(50); // delay from loading-delay-indicator
 
-        expect(component.skillResult.time).toBe(0);
-        expect(component.skillResult.failures).toBe(0);
-        expect(component.skillResult.points).toBe(0);
-        expect(component.skillResult.player.team).toBe(selectedTeam);
-        expect(component.skillResult.player.position).toBe(
+        expect(component.skillResult()!.time).toBe(0);
+        expect(component.skillResult()!.failures).toBe(0);
+        expect(component.skillResult()!.points).toBe(0);
+        expect(component.skillResult()!.player.team).toBe(selectedTeam);
+        expect(component.skillResult()!.player.position).toBe(
           PlayerPosition.SKATER
         );
-        expect(component.skillResult.player._links.team).toBe(selectedTeamLink);
-        expect(component.skillResult._links.skill).toBe(selectedSkillLink);
+        expect(component.skillResult()!.player._links.team).toBe(
+          selectedTeamLink
+        );
+        expect(component.skillResult()!._links.skill).toBe(selectedSkillLink);
       }));
 
       it('disables the player position toggle and preselects the position value', fakeAsync(() => {
@@ -165,7 +167,7 @@ describe('ResultDetailModel', () => {
         tick(50); // delay from loading-delay-indicator
 
         expect(component.disablePlayerPositionToggle).toBeTruthy();
-        expect(component.skillResult.player.position).toBe(
+        expect(component.skillResult()!.player.position).toBe(
           PlayerPosition.SKATER
         );
       }));
@@ -178,8 +180,8 @@ describe('ResultDetailModel', () => {
         component.ngOnInit();
         tick(50); // delay from loading-delay-indicator
 
-        expect(component.disablePlayerPositionToggle).toBeFalsy();
-        expect(component.skillResult.player.position).toBe(
+        expect(component.disablePlayerPositionToggle()).toBeFalsy();
+        expect(component.skillResult()!.player.position).toBe(
           PlayerPosition.SKATER
         );
       }));
@@ -187,11 +189,11 @@ describe('ResultDetailModel', () => {
   });
 
   it('should delete a skill result', fakeAsync(() => {
-    component.selectedSkill = selectedSkill;
-    component.selectedTeam = selectedTeam;
+    component.selectedSkill.set(selectedSkill);
+    component.selectedTeam.set(selectedTeam);
 
     const skillResult = {} as SkillResult;
-    component.skillResult = skillResult;
+    component.skillResult.set(skillResult);
     skillResultsService.deleteSkillResult = jest.fn(() => of(skillResult));
 
     component.delete();
@@ -215,8 +217,8 @@ describe('ResultDetailModel', () => {
   }));
 
   it('should cancel the skill result editing', () => {
-    component.selectedSkill = selectedSkill;
-    component.selectedTeam = selectedTeam;
+    component.selectedSkill.set(selectedSkill);
+    component.selectedTeam.set(selectedTeam);
 
     component.cancel();
 
@@ -235,8 +237,8 @@ describe('ResultDetailModel', () => {
 
   describe('save', () => {
     beforeEach(() => {
-      component.selectedSkill = selectedSkill;
-      component.selectedTeam = selectedTeam;
+      component.selectedSkill.set(selectedSkill);
+      component.selectedTeam.set(selectedTeam);
     });
 
     it('should allow to update own result which already exists', fakeAsync(() => {
@@ -246,7 +248,7 @@ describe('ResultDetailModel', () => {
         player: { shirtNumber: 20 },
         _links: { self: { href: 'self-link' } }
       } as SkillResult;
-      component.skillResult = existingResult;
+      component.skillResult.set(existingResult);
       // result for this player already exists (it's the result we want to update)
       skillResultsService.getSkillResultsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() =>
@@ -281,12 +283,12 @@ describe('ResultDetailModel', () => {
     }));
 
     it('should prevent to update result to player which already exists', fakeAsync(() => {
-      component.skillResult = {
+      component.skillResult.set({
         id: 40,
         time: 2.5,
         player: { shirtNumber: 20 },
         _links: { self: { href: 'self-link' } }
-      } as SkillResult;
+      } as SkillResult);
       // result for this player already exists (it's another result)
       skillResultsService.getSkillResultsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() =>
@@ -312,7 +314,7 @@ describe('ResultDetailModel', () => {
     }));
 
     it('should create new result', fakeAsync(() => {
-      component.skillResult = { player: { shirtNumber: 20 } } as SkillResult;
+      component.skillResult.set({ player: { shirtNumber: 20 } } as SkillResult);
       // result for this player doesn't yet exist
       skillResultsService.getSkillResultsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() => of([]));
@@ -321,7 +323,7 @@ describe('ResultDetailModel', () => {
       tick(50); // delay from loading-delay-indicator
 
       expect(skillResultsService.createSkillResult).toHaveBeenCalledWith(
-        component.skillResult,
+        component.skillResult(),
         selectedSkill
       );
       expect(component.loadingIndicator.isLoading).toBe(false);
@@ -339,7 +341,7 @@ describe('ResultDetailModel', () => {
     }));
 
     it('should prevent to create a new result when a result already exists', fakeAsync(() => {
-      component.skillResult = { player: { shirtNumber: 20 } } as SkillResult;
+      component.skillResult.set({ player: { shirtNumber: 20 } } as SkillResult);
       // result for this player already exists
       skillResultsService.getSkillResultsBySkillAndTeamAndPlayerShirtNumber =
         jest.fn(() =>
@@ -368,7 +370,7 @@ describe('ResultDetailModel', () => {
   describe('playerChanged', () => {
     beforeEach(() => {
       // created new result
-      component.skillResult = { player: { shirtNumber: 20 } } as SkillResult;
+      component.skillResult.set({ player: { shirtNumber: 20 } } as SkillResult);
     });
 
     it('detects that a skill result for a player already exists', fakeAsync(() => {
@@ -387,7 +389,7 @@ describe('ResultDetailModel', () => {
       component.playerChanged();
       tick(50); // delay from loading-delay-indicator
 
-      expect(component.skillResult.player.shirtNumber).toBe(0);
+      expect(component.skillResult()!.player.shirtNumber).toBe(0);
       expect(component.loadingIndicator.isLoading).toBe(false);
       expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(1);
     }));
@@ -400,7 +402,7 @@ describe('ResultDetailModel', () => {
       component.playerChanged();
       tick(50); // delay from loading-delay-indicator
 
-      expect(component.skillResult.player.shirtNumber).toBe(20);
+      expect(component.skillResult()!.player.shirtNumber).toBe(20);
       expect(component.loadingIndicator.isLoading).toBe(false);
       expect(showAlertDialogResultAlreadyExists).toHaveBeenCalledTimes(0);
     }));
