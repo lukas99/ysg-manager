@@ -3,7 +3,8 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  ViewChild
+  ViewChild,
+  signal
 } from '@angular/core';
 import { fromEvent, merge, of, Subject } from 'rxjs';
 import { delay, filter, mapTo, takeUntil } from 'rxjs/operators';
@@ -25,11 +26,11 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
   styleUrls: ['app.component.css']
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
-  isOnline = true;
-  isAuthenticated = false;
-  isAdmin = false;
-  isSkillOperator = false;
-  isCoach = false;
+  isOnline = signal(true);
+  isAuthenticated = signal(false);
+  isAdmin = signal(false);
+  isSkillOperator = signal(false);
+  isCoach = signal(false);
   private destroy = new Subject<void>();
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
 
@@ -49,7 +50,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       of(navigator.onLine),
       fromEvent(window, 'online').pipe(mapTo(true)),
       fromEvent(window, 'offline').pipe(mapTo(false))
-    ).subscribe((isOnline) => (this.isOnline = isOnline));
+    ).subscribe((isOnline) => this.isOnline.set(isOnline));
   }
 
   private initializeAuthentication(): void {
@@ -57,12 +58,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       .checkAuth()
       .pipe(takeUntil(this.destroy))
       .subscribe((loginResponse: LoginResponse) => {
-        this.isAuthenticated = loginResponse.isAuthenticated;
-        if (this.isAuthenticated) {
+        this.isAuthenticated.set(loginResponse.isAuthenticated);
+        if (this.isAuthenticated()) {
           const jwt = jwtDecode(loginResponse.accessToken);
-          this.isSkillOperator = this.hasRole(jwt, 'YSG_SKILL_OPERATOR');
-          this.isAdmin = this.hasRole(jwt, 'YSG_ADMIN');
-          this.isCoach = this.hasRole(jwt, 'YSG_COACH');
+          this.isSkillOperator.set(this.hasRole(jwt, 'YSG_SKILL_OPERATOR'));
+          this.isAdmin.set(this.hasRole(jwt, 'YSG_ADMIN'));
+          this.isCoach.set(this.hasRole(jwt, 'YSG_COACH'));
         }
       });
   }

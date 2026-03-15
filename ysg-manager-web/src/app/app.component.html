@@ -1,4 +1,4 @@
-<mat-toolbar [color]="isOnline ? 'primary' : 'warn'">
+<mat-toolbar [color]="isOnline() ? 'primary' : 'warn'">
   <button
     mat-icon-button
     *ngIf="sidenav.mode === 'over'"
@@ -16,7 +16,9 @@
   }}</span>
 
   <span class="show-menu-content-top-right"></span>
-  <ysg-tournament-picker *ngIf="isAuthenticated"></ysg-tournament-picker>
+  @if (isAuthenticated()) {
+  <ysg-tournament-picker></ysg-tournament-picker>
+  }
   <ysg-language-picker></ysg-language-picker>
   <ysg-login></ysg-login>
 </mat-toolbar>
@@ -39,9 +41,9 @@
       <span>{{ 'NAVIGATION_HOME' | translate }}</span>
     </button>
 
-    @if (isAdmin) {
+    @if (isAdmin()) {
     <mat-divider></mat-divider>
-    } @if (isAdmin) {
+    } @if (isAdmin()) {
     <button
       mat-button
       color="white"
@@ -51,19 +53,19 @@
       <mat-icon>calendar_month</mat-icon>
       <span>{{ 'NAVIGATION_TOURNAMENTS' | translate }}</span>
     </button>
-    } @if (isAdmin) {
+    } @if (isAdmin()) {
     <button mat-button color="white" class="menu-button" routerLink="teams">
       <mat-icon>group</mat-icon>
       <span>{{ 'NAVIGATION_TEAMS' | translate }}</span>
     </button>
-    } @if (isAdmin || isSkillOperator || isCoach) {
+    } @if (isAdmin() || isSkillOperator() || isCoach()) {
     <mat-divider></mat-divider>
-    } @if (isAdmin) {
+    } @if (isAdmin()) {
     <button mat-button color="white" class="menu-button" routerLink="skills">
       <mat-icon>assessment</mat-icon>
       <span>{{ 'NAVIGATION_SKILLS' | translate }}</span>
     </button>
-    } @if (isAdmin || isSkillOperator) {
+    } @if (isAdmin() || isSkillOperator()) {
     <button
       mat-button
       color="white"
@@ -73,7 +75,7 @@
       <mat-icon>sports_hockey</mat-icon>
       <span>{{ 'NAVIGATION_SKILLS_ON_ICE' | translate }}</span>
     </button>
-    } @if (isAdmin || isCoach) {
+    } @if (isAdmin() || isCoach()) {
     <button
       mat-button
       color="white"
@@ -83,7 +85,7 @@
       <mat-icon>list</mat-icon>
       <span>{{ 'NAVIGATION_SKILL_RANKINGS' | translate }}</span>
     </button>
-    } @if (isAdmin || isCoach) {
+    } @if (isAdmin() || isCoach()) {
     <button
       mat-button
       color="white"
