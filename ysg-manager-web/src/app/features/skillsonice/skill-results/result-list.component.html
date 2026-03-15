@@ -9,7 +9,7 @@
 </ysg-mobile-page-title>
 }
 
-<mat-selection-list [multiple]="false">
+<mat-selection-list [multiple]="false" [hideSingleSelectionIndicator]="true">
   @for (skillResult of skillResults(); track skillResult) {
   <mat-list-option [value]="skillResult">
     <div class="row-content" (click)="editResult(skillResult)">
