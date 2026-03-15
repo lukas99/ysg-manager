@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { Team } from '../../../types';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamsService } from '../../../core/services/teams.service';
 import { combineLatest, Subject } from 'rxjs';
-import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import { LoadingDelayIndicator } from '@shared/loading-delay/loading-delay-indicator';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -16,7 +16,7 @@ export class TeamSelectionComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();
   selectedSkillId: string | null = null;
   isSkillChef: boolean = false;
-  teams: Team[] = [];
+  teams = signal<Team[]>([]);
   loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
@@ -36,7 +36,7 @@ export class TeamSelectionComponent implements OnInit, OnDestroy {
     ])
       .pipe(takeUntil(this.destroy))
       .subscribe(([loading, teams]) => {
-        this.teams = teams;
+        this.teams.set(teams);
         this.loadingIndicator.finishLoading();
       });
   }

@@ -46,7 +46,7 @@ describe('TeamSelectionComponent', () => {
       component.ngOnInit();
       tick(50); // delay from loading-delay-indicator
 
-      expect(component.teams).toEqual(teams);
+      expect(component.teams()).toEqual(teams);
       expect(component.loadingIndicator.isLoading).toEqual(false);
     }));
   });
