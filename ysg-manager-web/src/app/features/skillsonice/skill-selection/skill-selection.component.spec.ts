@@ -62,8 +62,8 @@ describe('SkillSelectionComponent', () => {
   describe('ngOnInit', () => {
     it('when loaded initially', () => {
       component.ngOnInit();
-      expect(component.isSkillChef).toBeFalsy();
-      expect(component.isRoleSelected).toBeFalsy();
+      expect(component.isSkillChef()).toBeFalsy();
+      expect(component.isRoleSelected()).toBeFalsy();
     });
 
     it('when skill chef navigates back', () => {
@@ -73,8 +73,8 @@ describe('SkillSelectionComponent', () => {
       component = new SkillSelectionComponent(skillsService, router, route);
 
       component.ngOnInit();
-      expect(component.isSkillChef).toBeTruthy();
-      expect(component.isRoleSelected).toBeTruthy();
+      expect(component.isSkillChef()).toBeTruthy();
+      expect(component.isRoleSelected()).toBeTruthy();
     });
 
     it('when skill expert navigates back', () => {
@@ -84,35 +84,35 @@ describe('SkillSelectionComponent', () => {
       component = new SkillSelectionComponent(skillsService, router, route);
 
       component.ngOnInit();
-      expect(component.isSkillChef).toBeFalsy();
-      expect(component.isRoleSelected).toBeTruthy();
+      expect(component.isSkillChef()).toBeFalsy();
+      expect(component.isRoleSelected()).toBeTruthy();
     });
 
     it('loads the skills', fakeAsync(() => {
       component.ngOnInit();
       tick(50); // delay from loading-delay-indicator
 
-      expect(component.skills).toEqual(skills);
+      expect(component.skills()).toEqual(skills);
       expect(component.loadingIndicator.isLoading).toEqual(false);
     }));
   });
 
   it('toggles role selection', () => {
-    expect(component.isRoleSelected).toBeFalsy();
-    expect(component.isSkillChef).toBeFalsy();
+    expect(component.isRoleSelected()).toBeFalsy();
+    expect(component.isSkillChef()).toBeFalsy();
 
     component.roleToggleClicked(true);
-    expect(component.isRoleSelected).toBeTruthy();
-    expect(component.isSkillChef).toBeTruthy();
+    expect(component.isRoleSelected()).toBeTruthy();
+    expect(component.isSkillChef()).toBeTruthy();
 
     component.roleToggleClicked(false);
-    expect(component.isRoleSelected).toBeTruthy();
-    expect(component.isSkillChef).toBeFalsy();
+    expect(component.isRoleSelected()).toBeTruthy();
+    expect(component.isSkillChef()).toBeFalsy();
   });
 
   describe('showSkill', () => {
     it('shows the correct skills for a skill chef', () => {
-      component.isSkillChef = true;
+      component.isSkillChef.set(true);
       expect(component.showSkill(magicTransitions)).toBeTruthy();
       expect(component.showSkill(bestShot)).toBeTruthy();
       expect(component.showSkill(passAndGo)).toBeTruthy();
@@ -122,7 +122,7 @@ describe('SkillSelectionComponent', () => {
     });
 
     it('shows the correct skills for a skill chef', () => {
-      component.isSkillChef = false;
+      component.isSkillChef.set(false);
       expect(component.showSkill(magicTransitions)).toBeTruthy();
       expect(component.showSkill(bestShot)).toBeFalsy();
       expect(component.showSkill(passAndGo)).toBeFalsy();
@@ -133,7 +133,7 @@ describe('SkillSelectionComponent', () => {
   });
 
   it('handles the selection of a skill', () => {
-    component.isSkillChef = true;
+    component.isSkillChef.set(true);
 
     component.skillSelected(magicTransitions);
 

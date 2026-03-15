@@ -8,15 +8,8 @@
 <!-- It's not possible for a mat-button-toggle-group to have no preselected option set
      with a value attribute on the mat-button-toggle. So use two groups which are
      visible / invisible accordingly. -->
-<mat-button-toggle-group *ngIf="!isRoleSelected">
-  <mat-button-toggle (click)="roleToggleClicked(true)">
-    {{ 'SKILLS_ON_ICE_SKILL_CHEF' | translate }}
-  </mat-button-toggle>
-  <mat-button-toggle (click)="roleToggleClicked(false)">
-    {{ 'SKILLS_ON_ICE_SKILL_EXPERT' | translate }}
-  </mat-button-toggle>
-</mat-button-toggle-group>
-<mat-button-toggle-group *ngIf="isRoleSelected" [(ngModel)]="isSkillChef">
+@if (isRoleSelected()) {
+<mat-button-toggle-group [(ngModel)]="isSkillChef">
   <mat-button-toggle (click)="roleToggleClicked(true)" [value]="true">
     {{ 'SKILLS_ON_ICE_SKILL_CHEF' | translate }}
   </mat-button-toggle>
@@ -24,11 +17,18 @@
     {{ 'SKILLS_ON_ICE_SKILL_EXPERT' | translate }}
   </mat-button-toggle>
 </mat-button-toggle-group>
-
-<ng-container *ngIf="isRoleSelected">
-  <ng-container *ngFor="let skill of skills">
-    <mat-card *ngIf="showSkill(skill)" (click)="skillSelected(skill)">
-      <mat-card-title> {{ skill?.number }} - {{ skill?.name }} </mat-card-title>
-    </mat-card>
-  </ng-container>
-</ng-container>
+} @else {
+<mat-button-toggle-group>
+  <mat-button-toggle (click)="roleToggleClicked(true)">
+    {{ 'SKILLS_ON_ICE_SKILL_CHEF' | translate }}
+  </mat-button-toggle>
+  <mat-button-toggle (click)="roleToggleClicked(false)">
+    {{ 'SKILLS_ON_ICE_SKILL_EXPERT' | translate }}
+  </mat-button-toggle>
+</mat-button-toggle-group>
+} @if (isRoleSelected()) { @for (skill of skills(); track skill) { @if
+(showSkill(skill)) {
+<mat-card (click)="skillSelected(skill)">
+  <mat-card-title> {{ skill?.number }} - {{ skill?.name }} </mat-card-title>
+</mat-card>
+} } }

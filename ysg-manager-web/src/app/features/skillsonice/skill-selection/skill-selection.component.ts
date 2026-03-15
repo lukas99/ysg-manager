@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { SkillsService } from '../../../core/services/skills.service';
 import { combineLatest, Subject } from 'rxjs';
 import { Skill, SkillType } from '../../../types';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import { LoadingDelayIndicator } from '@shared/loading-delay/loading-delay-indicator';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -14,9 +14,9 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class SkillSelectionComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();
-  skills: Skill[] = [];
-  isSkillChef: boolean = false;
-  isRoleSelected: boolean = false;
+  skills = signal<Skill[]>([]);
+  isSkillChef = signal(false);
+  isRoleSelected = signal(false);
   loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
@@ -27,8 +27,8 @@ export class SkillSelectionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const isSkillChef = this.route.snapshot.queryParamMap.get('isSkillChef');
-    this.isSkillChef = isSkillChef === 'true';
-    this.isRoleSelected = isSkillChef !== null;
+    this.isSkillChef.set(isSkillChef === 'true');
+    this.isRoleSelected.set(isSkillChef !== null);
 
     combineLatest([
       this.loadingIndicator.startLoading(),
@@ -36,18 +36,18 @@ export class SkillSelectionComponent implements OnInit, OnDestroy {
     ])
       .pipe(takeUntil(this.destroy))
       .subscribe(([loading, skills]) => {
-        this.skills = skills;
+        this.skills.set(skills);
         this.loadingIndicator.finishLoading();
       });
   }
 
   roleToggleClicked(isSkillChef: boolean) {
-    this.isRoleSelected = true;
-    this.isSkillChef = isSkillChef;
+    this.isRoleSelected.set(true);
+    this.isSkillChef.set(isSkillChef);
   }
 
   showSkill(skill: Skill): boolean {
-    if (this.isSkillChef) {
+    if (this.isSkillChef()) {
       return (
         this.skillTypeNeedsResults(skill.typeForPlayers) ||
         this.skillTypeNeedsResults(skill.typeForGoaltenders)
@@ -78,7 +78,7 @@ export class SkillSelectionComponent implements OnInit, OnDestroy {
 
   skillSelected(skill: Skill) {
     this.router.navigate(['skillsonice', 'skills', skill.id, 'teams'], {
-      queryParams: { isSkillChef: this.isSkillChef },
+      queryParams: { isSkillChef: this.isSkillChef() },
       queryParamsHandling: 'merge'
     });
   }
