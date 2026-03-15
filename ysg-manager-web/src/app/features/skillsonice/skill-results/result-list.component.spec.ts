@@ -58,8 +58,8 @@ describe('ResultListComponent', () => {
       component.ngOnInit();
       tick(50); // delay from loading-delay-indicator
 
-      expect(component.showTime).toBeTruthy();
-      expect(component.showPoints).toBeTruthy();
+      expect(component.showTime()).toBeTruthy();
+      expect(component.showPoints()).toBeTruthy();
     }));
 
     it('should load the skill results', fakeAsync(() => {
@@ -85,10 +85,10 @@ describe('ResultListComponent', () => {
       expect(
         skillResultsService.getSkillResultsBySkillAndTeam
       ).toHaveBeenCalledWith(skill, team);
-      expect(component.skillResults.length).toBe(3);
-      expect(component.skillResults[0]).toEqual(result1);
-      expect(component.skillResults[1]).toEqual(result2);
-      expect(component.skillResults[2]).toEqual(result3);
+      expect(component.skillResults().length).toBe(3);
+      expect(component.skillResults()[0]).toEqual(result1);
+      expect(component.skillResults()[1]).toEqual(result2);
+      expect(component.skillResults()[2]).toEqual(result3);
       expect(component.loadingIndicator.isLoading).toBe(false);
     }));
   });

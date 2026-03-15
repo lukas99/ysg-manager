@@ -1,13 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SkillResultsService } from '../../../core/services/skill-results.service';
 import { Skill, SkillResult, SkillType, Team } from '../../../types';
 import { SkillTypeService } from '../../../core/services/skill-type.service';
 import { combineLatest, Subject } from 'rxjs';
-import { LoadingDelayIndicator } from '../../../shared/loading-delay/loading-delay-indicator';
+import { LoadingDelayIndicator } from '@shared/loading-delay/loading-delay-indicator';
 import { SkillsService } from '../../../core/services/skills.service';
 import { TeamsService } from '../../../core/services/teams.service';
-import { tap, flatMap, takeUntil } from 'rxjs/operators';
+import { tap, takeUntil, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'ysg-result-list',
@@ -19,9 +19,9 @@ export class ResultListComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();
   selectedSkill!: Skill;
   selectedTeam!: Team;
-  skillResults: SkillResult[] = [];
-  showTime = false;
-  showPoints = false;
+  skillResults = signal<SkillResult[]>([]);
+  showTime = signal(false);
+  showPoints = signal(false);
   loadingIndicator = new LoadingDelayIndicator();
 
   constructor(
@@ -44,20 +44,22 @@ export class ResultListComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         takeUntil(this.destroy),
-        tap(([loading, skill, team]) => {
+        tap(([_, skill, team]) => {
           this.selectedSkill = skill;
           this.selectedTeam = team;
-          this.showTime = this.skillTypeService.isWithTime(this.selectedSkill);
-          this.showPoints = this.skillTypeService.isWithPoints(
-            this.selectedSkill
+          this.showTime.set(
+            this.skillTypeService.isWithTime(this.selectedSkill)
+          );
+          this.showPoints.set(
+            this.skillTypeService.isWithPoints(this.selectedSkill)
           );
         }),
-        flatMap(([loading, skill, team]) =>
+        switchMap(([_, skill, team]) =>
           this.skillResultsService.getSkillResultsBySkillAndTeam(skill, team)
         )
       )
       .subscribe((skillResults) => {
-        this.skillResults = skillResults;
+        this.skillResults.set(skillResults);
         this.loadingIndicator.finishLoading();
       });
   }
