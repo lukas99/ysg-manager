@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { TournamentsService } from '../services/tournaments.service';
 import { Tournament } from '../../types';
 import { NavigationEnd, Router } from '@angular/router';
@@ -17,9 +17,9 @@ import { Subject } from 'rxjs';
 export class TournamentPickerComponent implements OnInit, OnDestroy {
   private destroy = new Subject<void>();
 
-  isEditable = false;
-  tournaments: Tournament[] = [];
-  selectedTournamentName = '';
+  isEditable = signal(false);
+  tournaments = signal<Tournament[]>([]);
+  selectedTournamentName = signal('');
 
   constructor(
     private tournamentService: TournamentsService,
@@ -40,19 +40,19 @@ export class TournamentPickerComponent implements OnInit, OnDestroy {
     this.tournamentService
       .getTournaments()
       .pipe(takeUntil(this.destroy))
-      .subscribe((tournaments) => (this.tournaments = tournaments));
+      .subscribe((tournaments) => this.tournaments.set(tournaments));
 
     this.tournamentService
       .getApplicationTournament()
       .pipe(takeUntil(this.destroy))
-      .subscribe(
-        (tournament) => (this.selectedTournamentName = tournament.name)
+      .subscribe((tournament) =>
+        this.selectedTournamentName.set(tournament.name)
       );
   }
 
   useTournament(tournament: Tournament) {
     this.tournamentService.setApplicationTournament(tournament);
-    this.selectedTournamentName = tournament.name;
+    this.selectedTournamentName.set(tournament.name);
   }
 
   private loadCurrentRoute() {
@@ -63,7 +63,7 @@ export class TournamentPickerComponent implements OnInit, OnDestroy {
       )
       .subscribe((navigationEndEvent) => {
         const currentRoute = (<NavigationEnd>navigationEndEvent).url;
-        this.isEditable = currentRoute === '/tournaments';
+        this.isEditable.set(currentRoute === '/tournaments');
       });
   }
 }

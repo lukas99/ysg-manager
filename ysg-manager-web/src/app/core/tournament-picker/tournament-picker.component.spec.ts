@@ -35,13 +35,13 @@ describe('TournamentPickerComponent', () => {
     it('loads all tournaments', fakeAsync(() => {
       component.ngOnInit();
       tick();
-      expect(component.tournaments).toBe(tournaments);
+      expect(component.tournaments()).toBe(tournaments);
     }));
 
     it('loads the selected tournament name', fakeAsync(() => {
       component.ngOnInit();
       tick();
-      expect(component.selectedTournamentName).toBe('YSG 2020');
+      expect(component.selectedTournamentName()).toBe('YSG 2020');
     }));
   });
 
@@ -55,7 +55,7 @@ describe('TournamentPickerComponent', () => {
       component.ngOnInit();
       tick();
 
-      expect(component.isEditable).toBeTruthy();
+      expect(component.isEditable()).toBeTruthy();
     }));
 
     it('is not editable', fakeAsync(() => {
@@ -67,7 +67,7 @@ describe('TournamentPickerComponent', () => {
       component.ngOnInit();
       tick();
 
-      expect(component.isEditable).toBeFalsy();
+      expect(component.isEditable()).toBeFalsy();
     }));
   });
 
@@ -77,6 +77,6 @@ describe('TournamentPickerComponent', () => {
     expect(tournamentService.setApplicationTournament).toHaveBeenCalledWith(
       tournament1
     );
-    expect((component.selectedTournamentName = 'YSG 2019'));
+    expect(component.selectedTournamentName()).toBe('YSG 2019');
   });
 });
