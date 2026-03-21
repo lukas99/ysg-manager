@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormControl,
   Validators
 } from '@angular/forms';
-import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
+import { CrudDetailOptions } from '@shared/crud/crud-detail/crud-detail.component';
 import { SkillResultsService } from '../../../../core/services/skill-results.service';
 import { TeamsService } from '../../../../core/services/teams.service';
 import { Player, Skill, SkillResult, Team } from '../../../../types';
@@ -24,8 +24,8 @@ export class SkillResultDetailComponent implements OnInit {
 
   selectedSkill!: Skill;
 
-  teams!: Team[];
-  players!: Player[];
+  teams = signal<Team[]>([]);
+  players = signal<Player[]>([]);
 
   constructor(
     private skillResultsService: SkillResultsService,
@@ -61,7 +61,7 @@ export class SkillResultDetailComponent implements OnInit {
   ngOnInit(): void {
     this.initPlayerAndTeam();
     this.teamsService.getTeams().subscribe((teams) => {
-      this.teams = teams;
+      this.teams.set(teams);
     });
   }
 
@@ -88,12 +88,13 @@ export class SkillResultDetailComponent implements OnInit {
 
   onTeamSelected(selectedTeam: Team) {
     this.playerService.getPlayers(selectedTeam).subscribe((players) => {
-      this.players = players.filter((player) =>
+      const filteredPlayers = players.filter((player) =>
         this.skillTypeService.canRecordResultForPlayerAndSkill(
           player,
           this.selectedSkill
         )
       );
+      this.players.set(filteredPlayers);
     });
   }
 

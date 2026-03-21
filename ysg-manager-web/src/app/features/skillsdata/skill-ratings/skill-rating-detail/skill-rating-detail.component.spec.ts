@@ -139,7 +139,7 @@ describe('SkillRatingDetailComponent', () => {
     it('loads the available teams', fakeAsync(() => {
       component.ngOnInit();
       tick();
-      expect(component.teams).toBe(teams);
+      expect(component.teams()).toBe(teams);
     }));
   });
 
@@ -147,7 +147,7 @@ describe('SkillRatingDetailComponent', () => {
     component.onTeamSelected(team1);
     tick();
 
-    expect(component.players).toStrictEqual(players);
+    expect(component.players()).toStrictEqual(players);
     expect(playersService.getPlayers).toHaveBeenCalledWith(team1);
   }));
 

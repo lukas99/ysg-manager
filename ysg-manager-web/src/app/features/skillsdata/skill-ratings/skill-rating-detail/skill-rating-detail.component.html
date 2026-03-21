@@ -8,9 +8,11 @@
           (selectionChange)="onTeamSelected($event.value)"
           [compareWith]="compareObjects"
         >
-          <mat-option *ngFor="let team of teams" [value]="team">
+          @for (team of teams(); track team) {
+          <mat-option [value]="team">
             {{ team.name }}
           </mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="fill">
@@ -20,10 +22,12 @@
           (selectionChange)="onPlayerSelected($event.value)"
           [compareWith]="compareObjects"
         >
-          <mat-option *ngFor="let player of players" [value]="player">
+          @for (player of players(); track player) {
+          <mat-option [value]="player">
             {{ player.shirtNumber }} - {{ player.lastName }}
             {{ player.firstName }}
           </mat-option>
+          }
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="fill">

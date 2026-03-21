@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CrudDetailOptions } from '../../../../shared/crud/crud-detail/crud-detail.component';
+import { Component, OnInit, signal } from '@angular/core';
+import { CrudDetailOptions } from '@shared/crud/crud-detail/crud-detail.component';
 import { Player, Skill, SkillRating, Team } from '../../../../types';
 import { SkillRatingsService } from '../../../../core/services/skill-ratings.service';
 import { TeamsService } from '../../../../core/services/teams.service';
@@ -24,8 +24,8 @@ export class SkillRatingDetailComponent implements OnInit {
 
   selectedSkill!: Skill;
 
-  teams!: Team[];
-  players!: Player[];
+  teams = signal<Team[]>([]);
+  players = signal<Player[]>([]);
 
   constructor(
     private skillRatingsService: SkillRatingsService,
@@ -53,7 +53,7 @@ export class SkillRatingDetailComponent implements OnInit {
   ngOnInit(): void {
     this.initPlayerAndTeam();
     this.teamsService.getTeams().subscribe((teams) => {
-      this.teams = teams;
+      this.teams.set(teams);
     });
   }
 
@@ -80,12 +80,13 @@ export class SkillRatingDetailComponent implements OnInit {
 
   onTeamSelected(selectedTeam: Team) {
     this.playerService.getPlayers(selectedTeam).subscribe((players) => {
-      this.players = players.filter((player) =>
+      const filteredPlayers = players.filter((player) =>
         this.skillTypeService.canRecordRatingForPlayerAndSkill(
           player,
           this.selectedSkill
         )
       );
+      this.players.set(filteredPlayers);
     });
   }
 
