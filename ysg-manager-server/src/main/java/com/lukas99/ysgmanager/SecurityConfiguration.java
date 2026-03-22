@@ -51,7 +51,7 @@ public class SecurityConfiguration {
     config.setAllowCredentials(true);
     // also add origins to auth.interceptor.ts and to Keycloak Client configuration
     config.addAllowedOrigin("http://localhost:4200");
-    config.addAllowedOrigin("https://ysg-manager-server-24h6rzjfpa-ew.a.run.app");
+    config.addAllowedOrigin("https://ysg-manager-server-895187186258.europe-west1.run.app");
     config.addAllowedOrigin("https://ysg-manager--k8vb2jl.jollydesert-aef2d738.northeurope.azurecontainerapps.io");
     config.addAllowedMethod("*");
     config.addAllowedHeader("*");

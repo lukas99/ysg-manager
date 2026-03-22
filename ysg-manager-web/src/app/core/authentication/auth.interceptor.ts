@@ -30,7 +30,7 @@ export class AuthInterceptor implements HttpInterceptor {
     // only add an access token to whitelisted origins
     const allowedOrigins = [
       'http://localhost',
-      'https://ysg-manager-server-24h6rzjfpa-ew.a.run.app',
+      'https://ysg-manager-server-895187186258.europe-west1.run.app',
       'https://ysg-manager--k8vb2jl.jollydesert-aef2d738.northeurope.azurecontainerapps.io'
     ];
     if (allowedOrigins.some((url) => request.urlWithParams.includes(url))) {
