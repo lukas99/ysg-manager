@@ -318,8 +318,8 @@ describe('SkillRatingsService', () => {
 
     it('should get the title of an existing skill rating', () => {
       let player = <Player>{
-        firstName: 'Sven',
-        lastName: 'Meier'
+        shirtNumber: 20,
+        team: team
       };
       let skillRating = <SkillRating>{
         score: 5,
@@ -329,7 +329,7 @@ describe('SkillRatingsService', () => {
 
       const title = service.getSkillRatingTitle(skillRating);
 
-      expect(title).toBe('Sven Meier (Best Shot)');
+      expect(title).toBe('#20 EHC Engelberg (Best Shot)');
     });
   });
 });

@@ -107,7 +107,7 @@ export class SkillResultsService
   getSkillResultTitle(skillResult: SkillResult): string {
     const selectedSkill = <Skill>this.skillsService.getSelectedItemValue();
     if (skillResult.player) {
-      return `${skillResult.player.firstName} ${skillResult.player.lastName} (${selectedSkill.name})`;
+      return `#${skillResult.player.shirtNumber} ${skillResult.player.team.name} (${selectedSkill.name})`;
     } else {
       return `${selectedSkill.name}`;
     }
