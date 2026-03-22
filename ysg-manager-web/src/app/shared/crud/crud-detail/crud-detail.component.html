@@ -1,17 +1,21 @@
+@if (item$ | async; as item) {
 <mat-card>
-  <form *ngIf="item$ | async; let item" [formGroup]="form">
+  <form [formGroup]="form">
     <h1>{{ getTitle(item) }}</h1>
 
     <!-- holds the form fields -->
     <ng-container *ngTemplateOutlet="fieldsTemplate"></ng-container>
 
     <div class="button-container">
-      <button mat-stroked-button color="primary" (click)="save()">
+      <button type="button" mat-stroked-button color="primary" (click)="save()">
         {{ 'SAVE' | translate }} [Ctrl + S]
       </button>
-      <button mat-stroked-button color="warn" (click)="cancel()">
+      <!-- type="button" is important, otherwise the browser submits the form,
+           adds an additional trailing "?" character which then leads to a page reload -->
+      <button type="button" mat-stroked-button color="warn" (click)="cancel()">
         {{ 'CANCEL' | translate }} [Ctrl + C]
       </button>
     </div>
   </form>
 </mat-card>
+}
