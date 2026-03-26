@@ -27,24 +27,15 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    // only add an access token to whitelisted origins
-    const allowedOrigins = [
-      'http://localhost',
-      'https://ysg-manager-server-895187186258.europe-west1.run.app',
-      'https://ysg-manager--k8vb2jl.jollydesert-aef2d738.northeurope.azurecontainerapps.io'
-    ];
-    if (allowedOrigins.some((url) => request.urlWithParams.includes(url))) {
-      return this.oidcSecurityService.getAccessToken().pipe(
-        map((accessToken) =>
-          request.clone({
-            setHeaders: {
-              Authorization: 'Bearer ' + accessToken
-            }
-          })
-        ),
-        switchMap((clonedRequest) => next.handle(clonedRequest))
-      );
-    }
-    return next.handle(request);
+    return this.oidcSecurityService.getAccessToken().pipe(
+      map((accessToken) =>
+        request.clone({
+          setHeaders: {
+            Authorization: 'Bearer ' + accessToken
+          }
+        })
+      ),
+      switchMap((clonedRequest) => next.handle(clonedRequest))
+    );
   }
 }
